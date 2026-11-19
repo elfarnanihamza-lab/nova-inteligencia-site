@@ -1,0 +1,71 @@
+---
+import type { InferGetStaticPropsType, GetStaticPaths } from 'astro';
+import { blogCategoryRobots, getStaticPathsBlogCategory } from '~/utils/blog';
+
+import Layout from '~/layouts/PageLayout.astro';
+import BlogList from '~/components/blog/List.astro';
+import Headline from '~/components/blog/Headline.astro';
+import Pagination from '~/components/blog/Pagination.astro';
+import Breadcrumbs from '~/components/common/Breadcrumbs.astro';
+import { getPermalink, getBlogPermalink } from '~/utils/permalinks';
+
+export const prerender = true;
+
+export const getStaticPaths = (async ({ paginate }) => {
+  return await getStaticPathsBlogCategory({ paginate });
+}) satisfies GetStaticPaths;
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths> & { category: Record<string, string> };
+
+const { page, category } = Astro.props as Props;
+
+const currentPage = page.currentPage ?? 1;
+
+const breadcrumbs = [
+  { text: 'Accueil', href: getPermalink('/') },
+  { text: 'Blog', href: getBlogPermalink() },
+  ...(currentPage > 1
+    ? [{ text: category.title, href: getPermalink(category.slug, 'category') }, { text: `Page ${currentPage}` }]
+    : [{ text: category.title }]),
+];
+
+// Title / description optimisés par catégorie (repli générique pour une nouvelle catégorie)
+const CATEGORY_SEO: Record<string, [string, string]> = {
+  langues: [
+    'Langues : apprendre une langue, conseils et formats | Nova',
+    "Articles du blog Nova sur l'apprentissage des langues : formats de cours, conseils pratiques et ressources pour progresser à votre rythme au Maroc.",
+  ],
+  'intelligence-artificielle': [
+    'Intelligence artificielle : articles et conseils | Nova',
+    "Articles du blog Nova sur l'intelligence artificielle : comprendre l'IA, ses usages, les compétences clés et comment se former à l'IA au Maroc.",
+  ],
+  'competences-numeriques': [
+    'Compétences numériques : articles et conseils | Nova IA',
+    'Articles du blog Nova sur les compétences numériques : outils, programmation, marketing digital et conseils pour booster votre employabilité.',
+  ],
+};
+const [catTitle, catDesc] = CATEGORY_SEO[category.slug] ?? [
+  `${category.title} : articles et conseils | Nova Inteligencia`,
+  `Articles du blog Nova Inteligencia Group sur le thème « ${category.title} » : conseils, ressources et actualités sur l'IA et le digital.`,
+];
+
+const metadata = {
+  title: `${catTitle}${currentPage > 1 ? ` (page ${currentPage})` : ''}`,
+  ignoreTitleTemplate: true,
+  description: catDesc,
+  openGraph: { images: [{ url: '~/assets/images/og/blog.png', width: 1200, height: 630 }] },
+  robots: {
+    index: blogCategoryRobots?.index,
+    follow: blogCategoryRobots?.follow,
+  },
+};
+---
+
+<Layout metadata={metadata}>
+  <Breadcrumbs bar items={breadcrumbs} />
+  <section class="px-4 md:px-6 py-12 sm:py-16 lg:py-20 mx-auto max-w-4xl">
+    <Headline>{category.title}</Headline>
+    <BlogList posts={page.data} />
+    <Pagination prevUrl={page.url.prev} nextUrl={page.url.next} />
+  </section>
+</Layout>

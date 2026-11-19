@@ -1,0 +1,104 @@
+---
+import { Icon } from 'astro-icon/components';
+
+export interface Props {
+  items: Array<{ label: string; href: string }>;
+  /** `gradient` : dégradé bleu numérique → bleu lumineux ; `navy` : bleu nuit. */
+  variant?: 'gradient' | 'navy';
+  /** Durée d'un tour complet, en secondes. */
+  duration?: number;
+  label: string;
+  /** Bouton fixe à droite de la bande (optionnel). */
+  action?: { text: string; href: string };
+  size?: 'md' | 'lg';
+}
+const { items, variant = 'gradient', duration = 45, label, action, size = 'md' } = Astro.props;
+const bg = variant === 'gradient' ? 'bg-brand-gradient' : 'bg-navy-deep';
+const text = size === 'lg' ? 'text-lg md:text-2xl font-bold tracking-tight' : 'text-sm md:text-[0.95rem] font-semibold uppercase tracking-[0.16em]';
+---
+
+<section class:list={['marquee-band relative text-white', bg]} aria-label={label}>
+  <div class:list={['flex flex-col items-stretch', action ? 'lg:flex-row lg:items-center' : '']}>
+    <div class="marquee relative min-w-0 flex-1 overflow-hidden">
+      <div class="marquee-track flex w-max" style={`--marquee-duration:${duration}s`}>
+        {
+          [0, 1].map((copy) => (
+            <ul class="flex shrink-0 items-center" {...(copy === 1 ? { 'aria-hidden': 'true' } : {})}>
+              {items.map((it) => (
+                <li class="flex items-center">
+                  <a
+                    href={it.href}
+                    class:list={['marquee-item whitespace-nowrap px-5 py-4 md:px-7 md:py-5', text]}
+                    {...(copy === 1 ? { tabindex: -1 } : {})}
+                  >
+                    {it.label}
+                  </a>
+                  <Icon name="tabler:sparkles" class="h-4 w-4 shrink-0 text-white/55" aria-hidden="true" />
+                </li>
+              ))}
+            </ul>
+          ))
+        }
+      </div>
+    </div>
+    {
+      action && (
+        <div class="relative z-10 flex shrink-0 justify-center border-t border-white/10 px-4 py-4 lg:border-l lg:border-t-0 lg:px-8">
+          <a href={action.href} class="btn-primary whitespace-nowrap">
+            {action.text}
+            <Icon name="tabler:arrow-right" class="h-5 w-5" aria-hidden="true" />
+          </a>
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .marquee {
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  }
+  .marquee-track {
+    will-change: transform;
+    animation: nova-marquee var(--marquee-duration, 45s) linear infinite;
+  }
+  .marquee:focus-within .marquee-track {
+    animation-play-state: paused;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+  .marquee:hover .marquee-track {
+    animation-play-state: paused;
+  }
+}
+  .marquee-item {
+    transition: opacity 0.2s ease;
+  }
+  @media (hover: hover) and (pointer: fine) {
+  .marquee:hover .marquee-item {
+    opacity: 0.7;
+  }
+}
+  @media (hover: hover) and (pointer: fine) {
+  .marquee:hover .marquee-item:hover {
+    opacity: 1;
+    text-decoration: underline;
+    text-underline-offset: 6px;
+    text-decoration-thickness: 1px;
+  }
+}
+  @keyframes nova-marquee {
+    to {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .marquee {
+      overflow-x: auto;
+    }
+    .marquee-track {
+      animation: none;
+    }
+  }
+</style>

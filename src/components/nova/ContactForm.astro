@@ -1,0 +1,615 @@
+---
+/**
+ * Formulaire unique du site (accueil, contact, entreprises, fiches formation) : MÊMES champs, même ordre, mêmes
+ * libellés et mêmes validations partout. Référence : le formulaire complet de la page Contact.
+ *   1. Nom complet* · 2. Téléphone* (+212) · 3. E-mail* · 4. Ville · 5. Vous êtes · 6. Formation souhaitée
+ *   7. Message · 8. Consentement*
+ * - Envoi en JSON vers le webhook PUBLIC_FORM_WEBHOOK (Make, Zapier, n8n, Formspree, CRM…) ; succès affiché
+ *   uniquement après une réponse HTTP 2xx. Variable vide : ouverture du client mail du visiteur, pré-rempli
+ *   (comportement de secours, le message affiché le dit clairement). Mode démo sans webhook : envoi désactivé.
+ * - Validation au blur et à l'envoi (téléphone marocain +212, e-mail, consentement) ; après un envoi refusé, un
+ *   résumé reçoit le focus et liste chaque champ en erreur avec un lien vers lui (erreurs en ligne conservées).
+ * - Sans JavaScript : méthode POST (jamais de données personnelles dans l'URL) ; sans webhook, ouverture du mail.
+ * - `compact` : variante de PRÉSENTATION uniquement (espacements plus serrés). Elle ne retire aucun champ.
+ */
+import { getCollection } from 'astro:content';
+import { Icon } from 'astro-icon/components';
+import { SITE_CONFIG, CATEGORIES } from '~/site.config';
+
+export interface Props {
+  formId?: string;
+  /** Slug de la formation présélectionnée. */
+  formation?: string;
+  /** @deprecated conservé pour compatibilité : titre de la formation. */
+  formationTitle?: string;
+  profil?: 'particulier' | 'entreprise' | 'etudiant';
+  /** Présentation plus serrée (accueil). Les champs restent identiques. */
+  compact?: boolean;
+  buttonLabel?: string;
+}
+const {
+  formId = 'contact-form',
+  formation = '',
+  profil = '',
+  compact = false,
+  buttonLabel = 'Envoyer ma demande',
+} = Astro.props;
+
+const all = (await getCollection('formations', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
+const groups = Object.entries(CATEGORIES)
+  .map(([key, c]) => ({ label: c.label, items: all.filter((f) => f.data.categorie === key) }))
+  .filter((g) => g.items.length);
+
+const endpoint = SITE_CONFIG.form.endpoint;
+const demoDisabled = SITE_CONFIG.form.disabled;
+const wa = SITE_CONFIG.contact.whatsapp.replace(/\D/g, '');
+const id = (n: string) => `${formId}-${n}`;
+const field = 'nova-field block w-full px-4 py-3 text-base text-heading placeholder:text-[#7c889c]';
+const label = 'mb-1.5 flex items-baseline gap-1.5 text-[0.84rem] font-semibold tracking-[0.01em] text-heading';
+const req = '<span aria-hidden="true" class="text-[#c0262d]">*</span><span class="sr-only"> (obligatoire)</span>';
+const optional = '<span class="text-xs font-normal text-muted">facultatif</span>';
+// Le type distingue la provenance pour le traitement en aval (inchangé : accueil = inscription).
+const type = compact ? 'inscription' : 'contact';
+---
+
+<div class:list={['nova-form-wrap relative', compact && 'is-compact']} data-form-wrap>
+  <form
+    id={formId}
+    class:list={['nova-form grid sm:grid-cols-2', compact ? 'gap-4' : 'gap-5']}
+    method="post"
+    {...!endpoint && !demoDisabled ? { action: `mailto:${SITE_CONFIG.contact.email}`, enctype: 'text/plain' } : {}}
+    data-endpoint={endpoint}
+    data-email={SITE_CONFIG.contact.email}
+    data-wa={wa}
+    data-type={type}
+    data-demo-disabled={demoDisabled ? '' : undefined}
+    novalidate
+  >
+    {
+      demoDisabled && (
+        <div class="sm:col-span-2" role="note" id={id('demo-note')}>
+          <p class="rounded-xl border border-[#cfe3fb] bg-[#eef6ff] px-4 py-3 text-sm leading-relaxed text-[#111111]">
+            <strong class="font-semibold">Version de démonstration :</strong> ce formulaire n'envoie aucune demande pour le moment. Pour nous joindre,
+            écrivez à <a class="font-semibold underline underline-offset-2" href={`mailto:${SITE_CONFIG.contact.email}`}>{SITE_CONFIG.contact.email}</a>
+            {wa && <> ou utilisez le bouton WhatsApp.</>}
+          </p>
+        </div>
+      )
+    }
+
+    <!-- Résumé d'erreurs : reçoit le focus après un envoi refusé, chaque ligne mène au champ concerné -->
+    <div class="sm:col-span-2" hidden data-summary tabindex="-1" aria-labelledby={id('summary-title')}>
+      <div class="rounded-xl border border-[#f3c4c6] bg-[#fdf2f2] px-4 py-3 text-sm text-[#9b1c22]">
+        <p id={id('summary-title')} class="font-semibold">Merci de corriger les champs suivants :</p>
+        <ul class="mt-1.5 list-disc space-y-0.5 pl-5" data-summary-list></ul>
+      </div>
+    </div>
+
+    <!-- 1. Nom complet -->
+    <div>
+      <label for={id('nom')} class={label}>Nom complet <Fragment set:html={req} /></label>
+      <input
+        id={id('nom')}
+        name="nom"
+        type="text"
+        required
+        minlength="3"
+        maxlength="120"
+        autocomplete="name"
+        class={field}
+        placeholder="Prénom et nom"
+        aria-describedby={id('nom-err')}
+        data-label="Nom complet"
+      />
+      <p id={id('nom-err')} class="field-error mt-1.5 text-sm text-[#b42318]" aria-live="polite"></p>
+    </div>
+
+    <!-- 2. Téléphone (+212) -->
+    <div>
+      <label for={id('tel')} class={label}>Téléphone <Fragment set:html={req} /></label>
+      <div class="relative">
+        <span class="nova-prefix pointer-events-none absolute inset-y-1.5 left-1.5 flex items-center rounded-lg px-2.5 text-sm font-semibold text-heading" aria-hidden="true">
+          +212
+        </span>
+        <input
+          id={id('tel')}
+          name="telephone"
+          type="tel"
+          inputmode="tel"
+          maxlength="20"
+          required
+          autocomplete="tel-national"
+          class:list={[field, '!pl-[4.4rem]']}
+          placeholder="6 12 34 56 78"
+          aria-describedby={`${id('tel-hint')} ${id('tel-err')}`}
+          data-label="Téléphone"
+        />
+      </div>
+      <p id={id('tel-hint')} class="mt-1.5 text-xs text-muted">Indicatif +212 inclus : saisissez vos 9 chiffres.</p>
+      <p id={id('tel-err')} class="field-error mt-1 text-sm text-[#b42318]" aria-live="polite"></p>
+    </div>
+
+    <!-- 3. E-mail -->
+    <div>
+      <label for={id('email')} class={label}>E-mail <Fragment set:html={req} /></label>
+      <input
+        id={id('email')}
+        name="email"
+        type="email"
+        required
+        maxlength="254"
+        autocomplete="email"
+        class={field}
+        placeholder="vous@exemple.com"
+        aria-describedby={id('email-err')}
+        data-label="E-mail"
+      />
+      <p id={id('email-err')} class="field-error mt-1.5 text-sm text-[#b42318]" aria-live="polite"></p>
+    </div>
+
+    <!-- 4. Ville (facultatif) -->
+    <div>
+      <label for={id('ville')} class={label}>Ville <Fragment set:html={optional} /></label>
+      <input id={id('ville')} name="ville" type="text" maxlength="80" autocomplete="address-level2" class={field} placeholder="Casablanca" />
+    </div>
+
+    <!-- 5. Vous êtes -->
+    <fieldset class="sm:col-span-2">
+      <legend class={label}>Vous êtes</legend>
+      <div class="grid gap-3 sm:grid-cols-3">
+        {
+          [
+            ['particulier', 'Particulier', 'tabler:user'],
+            ['entreprise', 'Entreprise', 'tabler:building'],
+            ['etudiant', 'Étudiant', 'tabler:school'],
+          ].map(([value, text, icon]) => (
+            <label class="profil-opt flex cursor-pointer items-center gap-3 px-4 py-3 text-sm font-semibold text-heading">
+              <input type="radio" name="profil" value={value} checked={profil === value} class="h-5 w-5 shrink-0 accent-[#111111]" />
+              <Icon name={icon} class="profil-icon h-5 w-5" aria-hidden="true" />
+              {text}
+            </label>
+          ))
+        }
+      </div>
+    </fieldset>
+
+    <!-- 6. Formation souhaitée (liste identique partout) -->
+    <div class="sm:col-span-2">
+      <label for={id('formation')} class={label}>Formation souhaitée</label>
+      <select id={id('formation')} name="formation" class:list={[field, 'nova-select']} data-preset={formation}>
+        <option value="">Je ne sais pas encore — conseillez-moi</option>
+        {
+          groups.map((g) => (
+            <optgroup label={g.label}>
+              {g.items.map((f) => (
+                <option value={f.id} selected={f.id === formation}>
+                  {f.data.title}
+                </option>
+              ))}
+            </optgroup>
+          ))
+        }
+        <option value="sur-mesure" selected={formation === 'sur-mesure'}>Formation sur mesure pour mon entreprise</option>
+        <option value="service-marketing" selected={formation === 'service-marketing'}>Service marketing digital pour mon entreprise</option>
+      </select>
+    </div>
+
+    <!-- 7. Message (facultatif) -->
+    <div class="sm:col-span-2">
+      <label for={id('message')} class={label}>Message <Fragment set:html={optional} /></label>
+      <textarea
+        id={id('message')}
+        name="message"
+        rows={compact ? 3 : 4}
+        maxlength="2000"
+        class={field}
+        placeholder="Vos objectifs, vos disponibilités, le nombre de participants…"></textarea>
+    </div>
+
+    <!-- Anti-spam : champ piège invisible pour les humains -->
+    <div class="absolute -left-[9999px] h-px w-px overflow-hidden" aria-hidden="true">
+      <label for={id('website')}>Ne pas remplir ce champ</label>
+      <input id={id('website')} name="website" type="text" tabindex="-1" autocomplete="off" />
+    </div>
+
+    <!-- 8. Consentement -->
+    <div class="sm:col-span-2">
+      <label class="consent-opt flex min-h-11 cursor-pointer items-start gap-3 text-base leading-relaxed text-muted">
+        <input
+          id={id('consent')}
+          type="checkbox"
+          name="consent"
+          required
+          class="mt-0.5 h-5 w-5 shrink-0 accent-[#111111]"
+          aria-describedby={id('consent-err')}
+          data-label="Consentement"
+        />
+        <span>
+          J'accepte que {SITE_CONFIG.name} traite mes données pour répondre à ma demande, conformément à la loi
+          marocaine n° 09-08 et au RGPD.
+          <Fragment set:html={req} />
+          <a href="/politique-de-confidentialite" class="flex min-h-11 w-fit items-center font-semibold text-ink underline underline-offset-2">Lire la politique de confidentialité</a>
+        </span>
+      </label>
+      <p id={id('consent-err')} class="field-error mt-1.5 text-sm text-[#b42318]" aria-live="polite"></p>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-4 sm:col-span-2">
+      <button
+        type="submit"
+        class:list={['btn-primary disabled:cursor-not-allowed disabled:opacity-55', compact ? 'w-full' : 'w-full sm:w-auto']}
+        data-submit
+        disabled={demoDisabled}
+        aria-describedby={demoDisabled ? id('demo-note') : undefined}
+      >
+        <span>{buttonLabel}</span>
+        <Icon name="tabler:send" class="h-5 w-5" aria-hidden="true" />
+      </button>
+      <p class="form-status text-sm text-muted" role="status" aria-live="polite"></p>
+    </div>
+  </form>
+
+  <!-- Confirmation -->
+  <div class="form-success hidden py-6 text-center" tabindex="-1" data-success>
+    <svg class="success-check mx-auto h-20 w-20" viewBox="0 0 52 52" aria-hidden="true">
+      <defs>
+        <linearGradient id={id('ok')} x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#111111"></stop><stop offset="1" stop-color="#b8cc1a"></stop></linearGradient>
+      </defs>
+      <circle cx="26" cy="26" r="24" fill="none" stroke={`url(#${id('ok')})`} stroke-width="2.5"></circle>
+      <path d="M15 27.5l7.5 7.5L38 19" fill="none" stroke={`url(#${id('ok')})`} stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+    <h3 class="mt-6 text-2xl font-bold tracking-tight text-heading" data-success-title>Merci !</h3>
+    <p class="mx-auto mt-3 max-w-md leading-relaxed text-muted" data-success-text>
+      Votre demande a bien été envoyée. Notre équipe vous recontacte très rapidement.
+    </p>
+    <div class="mt-8 flex flex-wrap justify-center gap-3">
+      <a class="btn-whatsapp hidden" href="/contact" target="_blank" rel="noopener noreferrer" data-success-wa>
+        <Icon name="tabler:brand-whatsapp" class="h-5 w-5" aria-hidden="true" /> Poursuivre sur WhatsApp
+      </a>
+      <button type="button" class="btn" data-again>Envoyer une autre demande</button>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Champs : bordures fines, survol discret, focus net (anneau cyan + bord bleu électrique), transitions courtes */
+  .nova-field {
+    border: 1px solid #d5ddeb;
+    border-radius: 0.85rem;
+    background: #fbfcfe;
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255),
+      0 1px 2px rgb(17 17 17 / 4%);
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease,
+      background-color 0.2s ease;
+  }
+  @media (hover: hover) and (pointer: fine) {
+  .nova-field:hover {
+    border-color: #b6c5dd;
+  }
+}
+  .nova-field:focus {
+    outline: none;
+    border-color: #111111;
+    background: #fff;
+    box-shadow:
+      0 0 0 4px rgb(228 248 74 / 18%),
+      0 8px 20px -12px rgb(17 17 17 / 45%);
+  }
+  .nova-field[aria-invalid='true'] {
+    border-color: #c0262d;
+  }
+  .nova-field[aria-invalid='true']:focus {
+    box-shadow: 0 0 0 4px rgb(192 38 45 / 14%);
+  }
+  textarea.nova-field {
+    resize: vertical;
+    min-height: 6rem;
+  }
+  .nova-select {
+    appearance: none;
+    padding-right: 2.75rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%230757c8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.9rem center;
+  }
+  .nova-prefix {
+    background: #eef3fb;
+    color: #111111;
+  }
+
+  /* Profil : options en cartes, état sélectionné bien lisible (pas seulement la couleur : bord + fond + icône) */
+  .profil-opt {
+    border: 1px solid #d5ddeb;
+    border-radius: 0.85rem;
+    background: #fbfcfe;
+    transition:
+      border-color 0.2s ease,
+      background-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+  @media (hover: hover) and (pointer: fine) {
+  .profil-opt:hover {
+    border-color: #111111;
+  }
+}
+  .profil-icon {
+    color: #637086;
+    transition: color 0.2s ease;
+  }
+  .profil-opt:has(input:checked) {
+    border-color: #111111;
+    background: #eef6ff;
+    box-shadow: 0 0 0 3px rgb(228 248 74 / 16%);
+  }
+  .profil-opt:has(input:checked) .profil-icon {
+    color: #111111;
+  }
+  .profil-opt:has(input:focus-visible) {
+    outline: 3px solid rgb(17 17 17 / 45%);
+    outline-offset: 2px;
+  }
+
+  [data-summary]:focus {
+    outline: 3px solid rgb(192 38 45 / 35%);
+    outline-offset: 3px;
+    border-radius: 0.85rem;
+  }
+  [data-summary-list] a {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  /* États : le récapitulatif d'erreurs et les messages de champ apparaissent en douceur (opacité, 6 px) au lieu de surgir */
+  [data-summary]:not([hidden]) {
+    animation: nova-drop 0.18s var(--ease-out) both;
+  }
+  .field-error:not(:empty) {
+    animation: nova-fade 0.15s var(--ease-out) both;
+  }
+  /* Envoi en cours : le bouton s'estompe et le curseur indique l'attente */
+  [data-submit][aria-busy='true'] {
+    opacity: 0.7;
+    cursor: progress;
+  }
+  @keyframes nova-drop {
+    from {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  .form-success:not(.hidden) {
+    animation: nova-pop 0.28s var(--ease-out) both;
+  }
+  .success-check circle {
+    stroke-dasharray: 151;
+    stroke-dashoffset: 151;
+    animation: nova-draw 0.45s cubic-bezier(0.65, 0, 0.35, 1) 0.05s forwards;
+  }
+  .success-check path {
+    stroke-dasharray: 40;
+    stroke-dashoffset: 40;
+    animation: nova-draw 0.3s cubic-bezier(0.65, 0, 0.35, 1) 0.35s forwards;
+  }
+  @keyframes nova-draw {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+  @keyframes nova-pop {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .nova-field,
+    .profil-opt,
+    .profil-icon {
+      transition: none;
+    }
+    [data-summary]:not([hidden]),
+    .field-error:not(:empty),
+    .form-success:not(.hidden),
+    .success-check circle,
+    .success-check path {
+      animation: none;
+      stroke-dashoffset: 0;
+    }
+  }
+</style>
+
+<script>
+  type Field = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+
+  /** Normalise un numéro marocain : renvoie +212XXXXXXXXX ou '' si invalide. */
+  const normalizePhone = (raw: string) => {
+    let d = raw.replace(/[\s.\-()]/g, '');
+    if (d.startsWith('+212')) d = d.slice(4);
+    else if (d.startsWith('00212')) d = d.slice(5);
+    else if (d.startsWith('212') && d.length === 12) d = d.slice(3);
+    if (d.startsWith('0')) d = d.slice(1);
+    return /^[5-7]\d{8}$/.test(d) ? `+212${d}` : '';
+  };
+
+  const validators: Record<string, (el: Field) => string> = {
+    nom: (el) => (el.value.trim().length < 3 ? 'Indiquez votre nom complet (au moins 3 caractères).' : ''),
+    telephone: (el) =>
+      !el.value.trim()
+        ? 'Indiquez votre numéro de téléphone.'
+        : normalizePhone(el.value)
+          ? ''
+          : 'Numéro invalide : 9 chiffres commençant par 5, 6 ou 7 (ex. 6 12 34 56 78).',
+    email: (el) =>
+      !el.value.trim()
+        ? 'Indiquez votre adresse e-mail.'
+        : /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(el.value.trim())
+          ? ''
+          : 'Adresse e-mail invalide (ex. vous@exemple.com).',
+    consent: (el) => ((el as HTMLInputElement).checked ? '' : 'Merci d’accepter le traitement de vos données pour envoyer la demande.'),
+  };
+
+  const init = () => {
+    document.querySelectorAll<HTMLFormElement>('form.nova-form:not([data-ready])').forEach((form) => {
+      form.dataset.ready = '1';
+      const wrap = form.closest<HTMLElement>('[data-form-wrap]')!;
+      const success = wrap.querySelector<HTMLElement>('[data-success]')!;
+      const status = form.querySelector<HTMLElement>('.form-status')!;
+      const summary = form.querySelector<HTMLElement>('[data-summary]')!;
+      const summaryList = summary.querySelector<HTMLUListElement>('[data-summary-list]')!;
+      const submit = form.querySelector<HTMLButtonElement>('[data-submit]')!;
+      const loadedAt = Date.now();
+
+      const check = (el: Field) => {
+        const v = validators[el.name];
+        if (!v) return true;
+        const msg = v(el);
+        el.setAttribute('aria-invalid', msg ? 'true' : 'false');
+        const err = form.querySelector<HTMLElement>(`#${el.id}-err`);
+        if (err) err.textContent = msg;
+        return !msg;
+      };
+      const validated = () => [...form.querySelectorAll<Field>('input[name], select[name], textarea[name]')].filter((el) => validators[el.name]);
+
+      validated().forEach((el) => {
+        el.addEventListener('blur', () => {
+          el.dataset.touched = '1';
+          check(el);
+        });
+        el.addEventListener((el as HTMLInputElement).type === 'checkbox' ? 'change' : 'input', () => {
+          if (el.dataset.touched || el.getAttribute('aria-invalid') === 'true') check(el);
+        });
+      });
+
+      // Résumé : un lien par champ en erreur ; un clic place le focus dans le champ.
+      summaryList.addEventListener('click', (e) => {
+        const a = (e.target as HTMLElement).closest<HTMLAnchorElement>('a[data-field]');
+        if (!a) return;
+        e.preventDefault();
+        form.querySelector<HTMLElement>(`#${a.dataset.field}`)?.focus();
+      });
+
+      // Pré-remplissage : ?formation=slug (ou ancien lien avec le titre)
+      const select = form.querySelector<HTMLSelectElement>('select[name="formation"]');
+      const preset = new URLSearchParams(location.search).get('formation');
+      if (select && preset && !select.dataset.preset) {
+        const opt = [...select.options].find((o) => o.value === preset || o.text.trim() === preset.trim());
+        if (opt) select.value = opt.value;
+      }
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        // Démo sans webhook : aucune validation « réussie », aucun envoi, aucune ouverture de messagerie.
+        if (form.hasAttribute('data-demo-disabled')) return;
+        const fields = validated();
+        const invalid = fields.filter((el) => !check(el));
+        if (invalid.length) {
+          summaryList.replaceChildren(
+            ...invalid.map((el) => {
+              const li = document.createElement('li');
+              const a = document.createElement('a');
+              a.href = `#${el.id}`;
+              a.dataset.field = el.id;
+              const msg = form.querySelector<HTMLElement>(`#${el.id}-err`)?.textContent ?? '';
+              a.textContent = `${el.dataset.label ?? el.name} : ${msg}`;
+              li.append(a);
+              return li;
+            })
+          );
+          summary.hidden = false;
+          summary.focus();
+          return;
+        }
+        summary.hidden = true;
+
+        const fd = new FormData(form);
+        if (fd.get('website') || Date.now() - loadedAt < 1500) return; // robot probable
+        const formationValue = String(fd.get('formation') || '');
+        const payload = {
+          type: form.dataset.type,
+          nom: String(fd.get('nom') || '').trim(),
+          telephone: normalizePhone(String(fd.get('telephone') || '')),
+          email: String(fd.get('email') || '').trim(),
+          ville: String(fd.get('ville') || '').trim(),
+          profil: String(fd.get('profil') || ''),
+          formation: formationValue,
+          formationTitre: formationValue ? select?.selectedOptions[0]?.text.trim() || '' : '',
+          message: String(fd.get('message') || '').trim(),
+          consentement: true,
+          page: location.href,
+          date: new Date().toISOString(),
+          source: 'site-nova',
+        };
+        const firstName = payload.nom.split(/\s+/)[0];
+
+        const showSuccess = (text: string) => {
+          success.querySelector<HTMLElement>('[data-success-title]')!.textContent = `Merci, ${firstName} !`;
+          success.querySelector<HTMLElement>('[data-success-text]')!.textContent = text;
+          const waBtn = success.querySelector<HTMLAnchorElement>('[data-success-wa]')!;
+          if (form.dataset.wa) {
+            const msg = `Bonjour, je viens d'envoyer une demande sur votre site${payload.formationTitre ? ` pour la formation « ${payload.formationTitre} »` : ''}. Je m'appelle ${payload.nom}.`;
+            waBtn.href = `https://wa.me/${form.dataset.wa}?text=${encodeURIComponent(msg)}`;
+            waBtn.classList.remove('hidden');
+          }
+          form.classList.add('hidden');
+          success.classList.remove('hidden');
+          success.focus();
+        };
+
+        const endpoint = form.dataset.endpoint;
+        if (endpoint) {
+          submit.disabled = true;
+          submit.setAttribute('aria-busy', 'true');
+          status.textContent = 'Envoi en cours…';
+          try {
+            const res = await fetch(endpoint, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+              body: JSON.stringify(payload),
+            });
+            if (!res.ok) throw new Error(String(res.status));
+            status.textContent = '';
+            showSuccess('Votre demande a bien été envoyée. Notre équipe vous recontacte très rapidement.');
+            form.reset();
+          } catch {
+            status.textContent = `L'envoi a échoué. Réessayez ou écrivez-nous à ${form.dataset.email}.`;
+          } finally {
+            submit.disabled = false;
+            submit.removeAttribute('aria-busy');
+          }
+        } else {
+          // Secours sans webhook : ouverture du client mail pré-rempli.
+          const lines = [
+            `Nom : ${payload.nom}`,
+            `Téléphone : ${payload.telephone}`,
+            `E-mail : ${payload.email}`,
+            payload.ville && `Ville : ${payload.ville}`,
+            payload.profil && `Profil : ${payload.profil}`,
+            `Formation : ${payload.formationTitre || 'à définir'}`,
+            payload.message && `Message : ${payload.message}`,
+          ].filter(Boolean);
+          location.href = `mailto:${form.dataset.email}?subject=${encodeURIComponent('Demande via le site — ' + (payload.formationTitre || 'information'))}&body=${encodeURIComponent(lines.join('\n'))}`;
+          showSuccess(`Votre messagerie s'ouvre avec votre demande pré-remplie : il ne reste qu'à l'envoyer. Si rien ne s'ouvre, écrivez-nous à ${form.dataset.email}.`);
+        }
+      });
+
+      wrap.querySelector('[data-again]')?.addEventListener('click', () => {
+        success.classList.add('hidden');
+        form.classList.remove('hidden');
+        form.querySelector<HTMLInputElement>('input[name="nom"]')?.focus();
+      });
+    });
+  };
+
+  document.addEventListener('astro:page-load', init);
+</script>

@@ -1,0 +1,189 @@
+---
+/**
+ * Bouton WhatsApp flottant.
+ * - Affiché uniquement si un numéro est configuré (SITE_CONFIG.contact.whatsapp) : aucun numéro n'est inventé.
+ *   En mode démonstration (PUBLIC_DEMO_MODE=true), un aperçu désactivé est montré tant que le numéro manque.
+ * - Apparition douce (sans anneaux ni animation de largeur : coûteux en mise en page) ; libellé dévoilé au survol (souris) ;
+ *   compact sur mobile.
+ * - Masqué quand le menu mobile est ouvert ou qu'un champ de formulaire est en cours de saisie (écrans tactiles).
+ */
+import { Icon } from 'astro-icon/components';
+import { whatsappLink, SITE_CONFIG } from '~/site.config';
+import { DEMO_MODE } from '~/site.config';
+
+const configured = !!SITE_CONFIG.contact.whatsapp.replace(/\D/g, '');
+const preview = !configured && DEMO_MODE;
+---
+
+{
+  configured && (
+    <a
+      href={whatsappLink()}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="wa-fab"
+      aria-label="Écrire à Nova Inteligencia Group sur WhatsApp (nouvelle fenêtre)"
+      data-wa
+    >
+      <span class="wa-orb" aria-hidden="true">
+        <Icon name="tabler:brand-whatsapp" />
+      </span>
+      <span class="wa-label" aria-hidden="true">Écrire sur WhatsApp</span>
+    </a>
+  )
+}
+{
+  preview && (
+    <span class="wa-fab is-disabled" role="img" aria-label="WhatsApp : numéro à configurer" title="Numéro WhatsApp à configurer dans src/site.config.ts" data-wa>
+      <span class="wa-orb" aria-hidden="true">
+        <Icon name="tabler:brand-whatsapp" />
+      </span>
+      <span class="wa-label" aria-hidden="true">Numéro à configurer</span>
+    </span>
+  )
+}
+
+<style>
+  .wa-fab {
+    position: fixed;
+    z-index: 50;
+    right: max(1rem, env(safe-area-inset-right));
+    bottom: max(1rem, env(safe-area-inset-bottom));
+    display: flex;
+    align-items: center;
+    height: 3.25rem;
+    padding: 0.25rem;
+    border-radius: 9999px;
+    background: #111111;
+    color: #fff;
+    isolation: isolate;
+    text-decoration: none;
+    box-shadow:
+      0 18px 36px -16px rgb(17 17 17 / 70%),
+      0 6px 14px -8px rgb(17 17 17 / 45%);
+    animation: wa-in 0.28s var(--ease-out, cubic-bezier(0.23, 1, 0.32, 1)) 0.3s backwards;
+    transition:
+      transform 0.16s var(--ease-out, cubic-bezier(0.23, 1, 0.32, 1)),
+      box-shadow 0.15s ease,
+      opacity 0.2s ease;
+  }
+  .wa-orb {
+    /* cercle WhatsApp : couleur dans --whatsapp-bg (CustomStyles.astro) ; icône blanche héritée de .wa-fab */
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    flex-shrink: 0;
+    border-radius: 9999px;
+    background: var(--whatsapp-bg);
+    transition: background-color 0.15s ease;
+  }
+  .wa-orb :global(svg) {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+  /* Libellé : pastille posée à gauche du bouton, révélée par opacité + translation (aucune propriété de mise en page animée) */
+  .wa-label {
+    position: absolute;
+    right: calc(100% + 0.5rem);
+    top: 50%;
+    display: flex;
+    align-items: center;
+    height: 2.75rem;
+    padding: 0 1.1rem;
+    border-radius: 9999px;
+    background: #111111;
+    box-shadow: 0 10px 24px -12px rgb(17 17 17 / 60%);
+    font-size: 0.92rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    opacity: 0;
+    translate: 8px -50%;
+    pointer-events: none;
+    transition:
+      opacity 0.15s ease,
+      translate 0.2s var(--ease-out, cubic-bezier(0.23, 1, 0.32, 1));
+  }
+  .is-disabled {
+    cursor: not-allowed;
+    filter: grayscale(0.6);
+    opacity: 0.85;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .wa-fab {
+      right: 1.5rem;
+      bottom: 1.5rem;
+      height: 3.5rem;
+    }
+    .wa-orb {
+      width: 3rem;
+      height: 3rem;
+    }
+    .wa-fab:hover .wa-label,
+    .wa-fab:focus-visible .wa-label {
+      opacity: 1;
+      translate: 0 -50%;
+    }
+    .wa-fab:not(.is-disabled):hover {
+      box-shadow:
+        0 24px 44px -18px rgb(17 17 17 / 75%),
+        0 10px 26px -10px rgb(228 248 74 / 55%);
+    }
+    .wa-fab:not(.is-disabled):hover .wa-orb {
+      background: var(--whatsapp-bg-hover);
+    }
+  }
+  .wa-fab:focus-visible {
+    outline: 3px solid rgb(17 17 17 / 55%);
+    outline-offset: 3px;
+  }
+  .wa-fab:not(.is-disabled):active {
+    transform: scale(0.96);
+  }
+
+  /* Menu mobile ouvert ou saisie dans un formulaire (tactile) : le bouton s'efface */
+  :global(body.overflow-hidden) .wa-fab {
+    display: none;
+  }
+  @media (pointer: coarse) {
+    :global(body.is-typing) .wa-fab {
+      opacity: 0;
+      transform: translateY(8px);
+      pointer-events: none;
+    }
+  }
+
+  @keyframes wa-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .wa-fab,
+    .wa-label {
+      animation: none;
+    }
+    .wa-fab,
+    .wa-label {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  // Sur écran tactile, le bouton s'efface pendant la saisie pour ne jamais masquer un champ ou un bouton d'envoi.
+  const isField = (el: EventTarget | null) => el instanceof HTMLElement && el.matches('input:not([type="checkbox"]):not([type="radio"]), textarea, select');
+  document.addEventListener('focusin', (e) => {
+    if (isField(e.target)) document.body.classList.add('is-typing');
+  });
+  document.addEventListener('focusout', (e) => {
+    if (isField(e.target)) document.body.classList.remove('is-typing');
+  });
+</script>

@@ -1,0 +1,56 @@
+---
+/**
+ * Photo du site (src/assets/images/photos/<name>.jpg), servie en AVIF/WebP aux tailles utiles.
+ * - `tint` : voile bleu nuit → bleu numérique très léger pour harmoniser la photo avec la palette.
+ * - Le zoom de « mise en place » à l'apparition et au survol est géré en CSS (transform uniquement).
+ * Crédits et licences : src/assets/images/photos/CREDITS.md
+ */
+import { Picture } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+const photos = import.meta.glob<{ default: ImageMetadata }>('/src/assets/images/photos/*.jpg', { eager: true });
+
+export interface Props {
+  name: string;
+  alt: string;
+  class?: string;
+  sizes?: string;
+  widths?: number[];
+  loading?: 'lazy' | 'eager';
+  aspect?: string;
+  tint?: boolean;
+  position?: string;
+}
+const {
+  name,
+  alt,
+  class: className = '',
+  sizes = '(min-width: 1024px) 50vw, 100vw',
+  widths = [480, 768, 1080, 1440],
+  loading = 'lazy',
+  aspect,
+  tint = true,
+  position = 'center',
+} = Astro.props;
+
+const src = photos[`/src/assets/images/photos/${name}.jpg`]?.default;
+if (!src) throw new Error(`Photo introuvable : ${name}`);
+---
+
+<div class:list={['photo-frame relative overflow-hidden bg-navy', className]} style={aspect ? `aspect-ratio:${aspect}` : undefined}>
+  <Picture
+    src={src}
+    alt={alt}
+    formats={['avif', 'webp']}
+    widths={widths.filter((w) => w <= src.width)}
+    sizes={sizes}
+    loading={loading}
+    decoding="async"
+    {...(loading === 'eager' ? { fetchpriority: 'high' } : {})}
+    pictureAttributes={{ class: 'block h-full w-full' }}
+    class="photo-img h-full w-full object-cover"
+    style={`object-position:${position}`}
+  />
+  {tint && <span class="photo-tint" aria-hidden="true" />}
+  <slot />
+</div>

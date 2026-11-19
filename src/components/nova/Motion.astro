@@ -1,0 +1,38 @@
+---
+// Langage de mouvement global : révélations au défilement ([data-reveal], [data-reveal-line])
+// Respecte prefers-reduced-motion. Compatible View Transitions.
+---
+
+<script is:inline>
+  document.documentElement.classList.add('js');
+</script>
+
+<script>
+  const reduce = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let io: IntersectionObserver | undefined;
+
+  const init = () => {
+    document.documentElement.classList.add('js');
+    io?.disconnect();
+    const items = document.querySelectorAll<HTMLElement>('[data-reveal], [data-reveal-line]');
+    if (!('IntersectionObserver' in window) || reduce()) {
+      items.forEach((el) => el.classList.add('is-revealed'));
+      return;
+    }
+    io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          const el = e.target as HTMLElement;
+          el.classList.add('is-revealed');
+          io?.unobserve(el);
+        }
+      },
+      { rootMargin: '0px 0px -8% 0px', threshold: 0.12 }
+    );
+    items.forEach((el) => io!.observe(el));
+  };
+
+  document.addEventListener('astro:after-swap', () => document.documentElement.classList.add('js'));
+  document.addEventListener('astro:page-load', init);
+</script>

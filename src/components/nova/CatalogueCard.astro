@@ -1,0 +1,328 @@
+---
+/**
+ * Carte du catalogue (thème College) : photo, étiquette de catégorie, niveau, résumé, durée / modalités, tarif.
+ * Toute la carte est cliquable (lien du titre étiré). Attributs data-* lus par le filtre de /formations.
+ * Aucun tarif en dollars : voir priceKind() / formatPrice() dans utils/placeholders.ts.
+ */
+import type { CollectionEntry } from 'astro:content';
+import { Icon } from 'astro-icon/components';
+import Photo from '~/components/nova/Photo.astro';
+import { CATEGORIES } from '~/site.config';
+import { PHOTOS } from '~/data/catalogue-visuals';
+import { ph, formatPrice, priceKind, visible, hasPh } from '~/utils/placeholders';
+
+export interface Props {
+  formation: CollectionEntry<'formations'>;
+  index?: number;
+  /** Classes supplémentaires sur le <li> racine. */
+  class?: string;
+}
+const { formation, index = 0, class: className = '' } = Astro.props;
+const d = formation.data;
+const href = `/formations/${formation.id}`;
+const cat = CATEGORIES[d.categorie];
+const kind = priceKind(d.prix, d.devise);
+const price = formatPrice(d.prix, d.devise);
+const lvl = d.niveauNum;
+const levelLabel = lvl ? d.niveau.split('—')[1]?.trim() : undefined;
+const duree = hasPh(d.duree) ? undefined : d.duree;
+const modalites = hasPh(d.modalites) ? undefined : d.modalites;
+const photo = PHOTOS[formation.id] ?? { name: 'equipe-marketing', position: 'center' };
+const COLOR: Record<string, string> = { ia: '#111111', 'ia-metier': '#2563eb', parcours: '#111111', innovation: '#111111', junior: '#059669' };
+const color = COLOR[d.categorie] ?? '#111111';
+---
+
+<li
+  class:list={['cat-card', className]}
+  style={`--cc:${color};--reveal-delay:${(index % 3) * 40}ms`}
+  data-categorie={d.categorie}
+  data-niveau={lvl ?? 0}
+  data-gratuit={kind === 'free' ? 'oui' : 'non'}
+  data-reveal
+>
+  <article class="cat-inner">
+    <div class="cat-media">
+      <Photo
+        name={photo.name}
+        alt=""
+        aspect="16/10"
+        tint={false}
+        widths={[400, 640, 800]}
+        sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 92vw"
+        position={photo.position}
+        class="h-full w-full !rounded-none"
+        loading={index < 3 ? 'eager' : 'lazy'}
+      />
+      <span class="cat-badge">
+        <Icon name={cat.icon} aria-hidden="true" />
+        {cat.label}
+      </span>
+      {
+        kind === 'free' && (
+          <span class="cat-free">
+            <Icon name="tabler:gift" aria-hidden="true" />
+            Gratuit
+          </span>
+        )
+      }
+    </div>
+
+    <div class="cat-body">
+      <p class="cat-level">
+        {lvl ? `Niveau ${lvl}` : visible(d.niveau) ? <Fragment set:html={ph(d.niveau)} /> : cat.label}
+        {levelLabel && <span class="cat-level-sub"> · {levelLabel}</span>}
+      </p>
+      <h3 class="cat-title">
+        <a href={href} class="cat-link" title={d.title}><span class="cat-title-text" dir="auto">{d.title}</span></a>
+      </h3>
+      <p class="cat-desc" dir="auto" set:html={ph(d.resume)} />
+      {
+        (duree || modalites) && (
+          <ul class="cat-facts" role="list">
+            {duree && (
+              <li>
+                <Icon name="tabler:clock-hour-4" aria-hidden="true" />
+                <span class="sr-only">Durée : </span>
+                {duree}
+              </li>
+            )}
+            {modalites && (
+              <li>
+                <Icon name="tabler:map-pin" aria-hidden="true" />
+                <span class="sr-only">Modalité : </span>
+                {modalites}
+              </li>
+            )}
+          </ul>
+        )
+      }
+
+      <div class="cat-foot">
+        <p class="cat-price">
+          <span class="cat-price-label">Tarif</span>
+          {kind === 'free' ? <span class="cat-price-free">Gratuit</span> : visible(price) && <span class:list={['cat-price-val', kind !== 'paid' && 'is-soft']} set:html={ph(price)} />}
+        </p>
+        <span class="cat-cta" aria-hidden="true">
+          Découvrir
+          <Icon name="tabler:arrow-right" />
+        </span>
+      </div>
+    </div>
+  </article>
+</li>
+
+<style>
+  .cat-card {
+    position: relative;
+    display: flex;
+    min-width: 0;
+  }
+  .cat-inner {
+    position: relative;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid #111111;
+    border-radius: 0.5rem;
+    background: #fff;
+    transition:
+      transform 0.25s cubic-bezier(0.23, 1, 0.32, 1),
+      box-shadow 0.25s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  /* Touche signature : ombre pleine citron qui se décale au survol et au focus */
+  @media (hover: hover) and (pointer: fine) {
+    .cat-card:hover .cat-inner {
+      transform: translate(-4px, -4px);
+      box-shadow: 8px 8px 0 #e4f84a, 8px 8px 0 1px #111111;
+    }
+    .cat-card:hover .cat-cta {
+      background: #e4f84a;
+      color: #111111;
+    }
+    .cat-card:hover .cat-cta :global(svg) {
+      transform: translateX(3px);
+    }
+  }
+  .cat-card:focus-within .cat-inner {
+    outline: 3px solid #111111;
+    outline-offset: 3px;
+  }
+  .cat-media {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    border-bottom: 1px solid #111111;
+  }
+  .cat-badge,
+  .cat-free {
+    position: absolute;
+    top: 0.75rem;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    border-radius: 0.25rem;
+    padding: 0.3rem 0.65rem;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .cat-badge {
+    left: 0.75rem;
+    background: #e4f84a;
+    color: #111111;
+  }
+  .cat-free {
+    right: 0.75rem;
+    background: #111111;
+    color: #e4f84a;
+  }
+  .cat-badge :global(svg),
+  .cat-free :global(svg) {
+    width: 0.9rem;
+    height: 0.9rem;
+  }
+  .cat-body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: 1.25rem 1.35rem 1.35rem;
+  }
+  .cat-level {
+    align-self: flex-start;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #111111;
+    box-shadow: inset 0 -0.45em 0 #e4f84a;
+  }
+  .cat-level-sub {
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 600;
+    color: #555555;
+  }
+  .cat-title {
+    margin-top: 0.7rem;
+    font-size: 1.3rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    color: #111111;
+  }
+  .cat-link {
+    color: inherit;
+  }
+  .cat-link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+  .cat-title-text {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+    overflow-wrap: anywhere;
+  }
+  .cat-desc {
+    margin-top: 0.6rem;
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    font-size: 0.92rem;
+    line-height: 1.6;
+    color: #444444;
+  }
+  .cat-facts {
+    margin-top: 0.9rem;
+    display: grid;
+    gap: 0.35rem;
+    font-size: 0.82rem;
+    color: #444444;
+  }
+  .cat-facts li {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+  .cat-facts :global(svg) {
+    width: 1rem;
+    height: 1rem;
+    flex: none;
+    color: #111111;
+  }
+  .cat-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    border-top: 1px solid #d8d8d2;
+    padding-top: 1rem;
+    margin-top: auto;
+  }
+  .cat-body > .cat-foot {
+    margin-top: auto;
+  }
+  .cat-body > .cat-desc,
+  .cat-body > .cat-facts {
+    margin-bottom: 1.1rem;
+  }
+  .cat-price-label {
+    display: block;
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #666660;
+  }
+  .cat-price-val,
+  .cat-price-free {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #111111;
+  }
+  .cat-price-val.is-soft {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #444444;
+  }
+  .cat-price-free {
+    box-shadow: inset 0 -0.45em 0 #e4f84a;
+  }
+  .cat-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 2.75rem;
+    border-radius: 0.25rem;
+    background: #111111;
+    padding: 0 1.1rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #fff;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+  .cat-cta :global(svg) {
+    width: 1rem;
+    height: 1rem;
+    transition: transform 0.25s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cat-inner,
+    .cat-cta,
+    .cat-cta :global(svg) {
+      transition: none;
+    }
+    .cat-card:hover .cat-inner {
+      transform: none;
+    }
+  }
+</style>

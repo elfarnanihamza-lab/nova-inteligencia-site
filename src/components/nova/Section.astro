@@ -1,0 +1,59 @@
+---
+import { ph, visible } from '~/utils/placeholders';
+import TechGrid from '~/components/nova/TechGrid.astro';
+
+export interface Props {
+  id?: string;
+  tone?: 'light' | 'soft' | 'dark';
+  tagline?: string;
+  title?: string;
+  subtitle?: string;
+  align?: 'center' | 'left';
+  class?: string;
+}
+
+const { id, tone = 'light', tagline, title, subtitle, align = 'center', class: className = '' } = Astro.props;
+const bg = { light: 'bg-white', soft: 'bg-offwhite', dark: 'bg-navy text-white' }[tone];
+const isDark = tone === 'dark';
+const titleHtml = ph(title);
+---
+
+<section id={id} class:list={[bg, 'cv-auto relative overflow-hidden', className]}>
+  {isDark && <div class="bg-dots pointer-events-none absolute inset-0 opacity-40" aria-hidden="true" />}
+  {isDark && <TechGrid opacity={0.45} />}
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 py-16 md:py-24 lg:py-28">
+    {
+      (tagline || title || subtitle) && (
+        <div class:list={['mb-12 md:mb-16 max-w-3xl', align === 'center' ? 'mx-auto text-center' : '']}>
+          {tagline && (
+            <p
+              class:list={[
+                'mb-4 inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.2em]',
+                isDark ? 'text-[#e4f84a]' : 'text-ink',
+              ]}
+            >
+              <span class="h-px w-8 bg-brand-gradient" aria-hidden="true" />
+              {tagline}
+            </p>
+          )}
+          {title && (
+            <h2
+              class:list={[
+                'text-[2rem] md:text-[2.75rem] font-bold leading-[1.1] tracking-[-0.025em] font-heading text-balance',
+                isDark ? 'text-white' : 'text-heading',
+              ]}
+              set:html={titleHtml}
+            />
+          )}
+          {subtitle && visible(subtitle) && (
+            <p
+              class:list={['mt-5 text-lg leading-relaxed', isDark ? 'text-[#e5e5df]' : 'text-muted']}
+              set:html={ph(subtitle)}
+            />
+          )}
+        </div>
+      )
+    }
+    <slot />
+  </div>
+</section>

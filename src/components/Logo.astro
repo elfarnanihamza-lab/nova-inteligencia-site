@@ -1,0 +1,35 @@
+---
+import { Image } from 'astro:assets';
+import { SITE_CONFIG } from '~/site.config';
+import logo from '~/assets/brand/logo-mono.png';
+import logoLight from '~/assets/brand/logo-mono-light.png';
+import logoFull from '~/assets/brand/logo-full-mono.png';
+import logoFullLight from '~/assets/brand/logo-full-mono-light.png';
+
+export interface Props {
+  /** `light` : version claire pour fond sombre (pied de page). Logos en monochrome (noir / blanc), en accord avec la charte noir, blanc et citron. */
+  variant?: 'dark' | 'light';
+  /** `full` : logo officiel complet (symbole, NOVA, slogans) ; sinon version compacte (en-tête). */
+  full?: boolean;
+  height?: number;
+  class?: string;
+  /** `lazy` pour un logo hors écran initial (pied de page) : il ne concurrence plus les ressources critiques. */
+  loading?: 'eager' | 'lazy';
+  /** `high` pour le logo de l'en-tête, qui est l'élément LCP des pages à fond clair. */
+  fetchpriority?: 'high' | 'low' | 'auto';
+}
+const { variant = 'dark', full = false, height = 44, class: className = '', loading = 'eager', fetchpriority } = Astro.props;
+const src = full ? (variant === 'light' ? logoFullLight : logoFull) : variant === 'light' ? logoLight : logo;
+---
+
+<Image
+  src={src}
+  alt={SITE_CONFIG.name}
+  height={height}
+  width={Math.round(height * (src.width / src.height))}
+  densities={[1, 2]}
+  loading={loading}
+  fetchpriority={fetchpriority}
+  class:list={['w-auto', className]}
+  style={className ? undefined : `height:${height}px`}
+/>

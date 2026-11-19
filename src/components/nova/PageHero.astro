@@ -1,0 +1,197 @@
+---
+/**
+ * En-tête de page Nova (style éditorial) : fond blanc, filet noir, grand titre serré.
+ * Le panneau citron à droite contient une scène 3D animée en CSS pur (cube NOVA / IA, deux cubes en orbite, anneau).
+ * Décorative (aria-hidden), transform uniquement, immobile avec prefers-reduced-motion, masquée sur mobile
+ * (où le panneau citron n'est qu'un filet). Les boutons éventuels passent dans le slot.
+ */
+import { ph } from '~/utils/placeholders';
+import { getHomePermalink } from '~/utils/permalinks';
+
+export interface Props {
+  title: string;
+  subtitle?: string;
+  tagline?: string;
+  crumbs?: Array<{ text: string; href?: string }>;
+}
+const { title, subtitle, tagline, crumbs = [] } = Astro.props;
+const bigFaces = ['N', 'O', 'V', 'A', 'IA', '+'];
+const miniFaces = [1, 2, 3, 4, 5, 6];
+---
+
+<section class="page-hero relative isolate overflow-hidden border-b border-[#111111] bg-white text-[#111111]">
+  <div class="hero3d pointer-events-none absolute right-0 top-0 -z-10 h-full w-1/3 bg-[#e4f84a] max-md:w-3" aria-hidden="true">
+    <div class="hero3d-stage">
+      <div class="hero3d-ring"></div>
+      <div class="hero3d-scene">
+        <div class="h3-cube h3-big">
+          {bigFaces.map((f, i) => <span class={`h3-face h3-f${i + 1}`}>{f}</span>)}
+        </div>
+        <div class="h3-orbit h3-o1">
+          <div class="h3-cube h3-mini">
+            {miniFaces.map((i) => <span class={`h3-face h3-f${i}`}></span>)}
+          </div>
+        </div>
+        <div class="h3-orbit h3-o2">
+          <div class="h3-cube h3-mini h3-mini-dark">
+            {miniFaces.map((i) => <span class={`h3-face h3-f${i}`}></span>)}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 pt-8 pb-12 md:pt-12 md:pb-20">
+    {
+      crumbs.length > 0 && (
+        <nav aria-label="Fil d'Ariane" class="hero-in mb-6 text-sm text-[#666660]">
+          <ol class="flex flex-wrap items-center gap-2">
+            <li>
+              <a class="inline-flex min-h-11 items-center transition-colors hover:text-[#111111]" href={getHomePermalink()}>
+                Accueil
+              </a>
+            </li>
+            {crumbs.map((c) => (
+              <li class="flex items-center gap-2">
+                <span aria-hidden="true" class="text-[#c9c9c2]">/</span>
+                {c.href ? (
+                  <a class="inline-flex min-h-11 items-center transition-colors hover:text-[#111111]" href={c.href}>
+                    {c.text}
+                  </a>
+                ) : (
+                  <span aria-current="page" class="font-semibold text-[#111111]">{c.text}</span>
+                )}
+              </li>
+            ))}
+          </ol>
+        </nav>
+      )
+    }
+    {
+      tagline && (
+        <p class="hero-in mb-4 inline-block bg-[#e4f84a] px-2 py-1 text-xs font-bold uppercase tracking-[0.14em] text-[#111111]" style="--d:60ms">
+          {tagline}
+        </p>
+      )
+    }
+    <h1
+      class="hero-in max-w-4xl text-[2.4rem] font-bold leading-[1.02] tracking-[-0.035em] font-heading text-balance md:text-[4rem]"
+      style="--d:120ms"
+      set:html={ph(title)}
+    />
+    {
+      subtitle && (
+        <p class="hero-in mt-6 max-w-2xl text-lg leading-relaxed text-[#333333] md:text-xl" style="--d:240ms" set:html={ph(subtitle)} />
+      )
+    }
+    <div class="hero-in" style="--d:340ms"><slot /></div>
+  </div>
+</section>
+
+<style>
+  .hero3d-stage {
+    display: none;
+  }
+  @media (min-width: 768px) {
+    .hero3d {
+      display: grid;
+      place-items: center;
+      perspective: 1000px;
+      overflow: hidden;
+    }
+    .hero3d-stage {
+      position: relative;
+      display: block;
+      width: 11rem;
+      height: 11rem;
+      transform-style: preserve-3d;
+      animation: h3-float 6s ease-in-out infinite;
+    }
+  }
+  .hero3d-scene {
+    position: absolute;
+    inset: 0;
+    transform-style: preserve-3d;
+    transform: rotateX(-24deg) rotateY(30deg);
+    animation: h3-spin 20s linear infinite;
+  }
+  .h3-cube {
+    position: absolute;
+    inset: 0;
+    transform-style: preserve-3d;
+  }
+  .h3-face {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    border: 2px solid #111111;
+    background: #111111;
+    color: #e4f84a;
+    font-weight: 800;
+    font-size: 3.4rem;
+    letter-spacing: -0.04em;
+  }
+  .h3-big .h3-f1 { transform: translateZ(5.5rem); }
+  .h3-big .h3-f2 { transform: rotateY(90deg) translateZ(5.5rem); }
+  .h3-big .h3-f3 { transform: rotateY(180deg) translateZ(5.5rem); }
+  .h3-big .h3-f4 { transform: rotateY(-90deg) translateZ(5.5rem); }
+  .h3-big .h3-f5 { transform: rotateX(90deg) translateZ(5.5rem); }
+  .h3-big .h3-f6 { transform: rotateX(-90deg) translateZ(5.5rem); }
+  .h3-orbit {
+    position: absolute;
+    inset: 0;
+    transform-style: preserve-3d;
+  }
+  .h3-o1 { animation: h3-orbit 9s linear infinite; }
+  .h3-o2 { animation: h3-orbit 14s linear infinite reverse; }
+  .h3-mini {
+    inset: auto;
+    left: 50%;
+    top: 50%;
+    width: 2.6rem;
+    height: 2.6rem;
+    margin: -1.3rem 0 0 -1.3rem;
+    transform: translateX(9rem);
+  }
+  .h3-o2 .h3-mini { transform: translateX(-8rem) translateY(2.6rem); }
+  .h3-mini .h3-face { background: #ffffff; }
+  .h3-mini-dark .h3-face { background: #111111; }
+  .h3-mini .h3-f1 { transform: translateZ(1.3rem); }
+  .h3-mini .h3-f2 { transform: rotateY(90deg) translateZ(1.3rem); }
+  .h3-mini .h3-f3 { transform: rotateY(180deg) translateZ(1.3rem); }
+  .h3-mini .h3-f4 { transform: rotateY(-90deg) translateZ(1.3rem); }
+  .h3-mini .h3-f5 { transform: rotateX(90deg) translateZ(1.3rem); }
+  .h3-mini .h3-f6 { transform: rotateX(-90deg) translateZ(1.3rem); }
+  .hero3d-ring {
+    position: absolute;
+    inset: -3.5rem;
+    border: 2px solid #111111;
+    border-radius: 9999px;
+    transform: rotateX(72deg);
+    animation: h3-ring 12s linear infinite;
+  }
+  @keyframes h3-spin {
+    from { transform: rotateX(-24deg) rotateY(0deg); }
+    to { transform: rotateX(-24deg) rotateY(360deg); }
+  }
+  @keyframes h3-orbit {
+    from { transform: rotateY(0deg); }
+    to { transform: rotateY(360deg); }
+  }
+  @keyframes h3-ring {
+    from { transform: rotateX(72deg) rotateZ(0deg); }
+    to { transform: rotateX(72deg) rotateZ(360deg); }
+  }
+  @keyframes h3-float {
+    0%, 100% { translate: 0 -0.6rem; }
+    50% { translate: 0 0.6rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero3d-stage,
+    .hero3d-scene,
+    .h3-orbit,
+    .hero3d-ring {
+      animation: none;
+    }
+  }
+</style>

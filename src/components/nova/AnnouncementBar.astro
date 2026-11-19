@@ -1,0 +1,145 @@
+---
+/**
+ * Barre d'annonce défilante en haut de page (au-dessus de l'en-tête, elle défile avec la page).
+ * Les messages viennent de ANNOUNCEMENT dans src/site.config.ts : `enabled: false` la masque partout.
+ * - Le texte défile en boucle (transform uniquement) ; pause au survol et au focus clavier.
+ * - Avec prefers-reduced-motion : plus de défilement, les messages sont affichés l'un sous l'autre dans une liste.
+ * - Fermable : le choix est mémorisé (localStorage). Sans JavaScript, la barre reste affichée.
+ * - Le second exemplaire de la boucle est masqué aux lecteurs d'écran et retiré de l'ordre de tabulation.
+ */
+import { Icon } from 'astro-icon/components';
+import { ANNOUNCEMENT } from '~/site.config';
+
+const { enabled, id, items } = ANNOUNCEMENT;
+const copies = [0, 1];
+---
+
+{
+  enabled && items.length > 0 && (
+    <div class="announce border-b border-[#111111] bg-[#e4f84a] text-[#111111]" data-announce role="region" aria-label="Annonces">
+      <div class="mx-auto flex max-w-7xl items-center gap-2 px-2 sm:px-4">
+        <div class="announce-viewport min-w-0 flex-1 overflow-hidden">
+          <div class="announce-track" style={`--announce-count:${items.length}`}>
+            {copies.map((c) => (
+              <ul class="announce-list" role="list" {...(c === 1 ? { 'aria-hidden': 'true' } : {})}>
+                {items.map((it) => (
+                  <li class="announce-item">
+                    <span class="text-sm font-semibold">{it.text}</span>
+                    <a href={it.href} class="announce-link" {...(c === 1 ? { tabindex: -1 } : {})}>
+                      {it.cta}
+                      <Icon name="tabler:arrow-right" class="h-4 w-4" aria-hidden="true" />
+                    </a>
+                    <span class="announce-sep" aria-hidden="true">
+                      ●
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            ))}
+          </div>
+        </div>
+        <button type="button" class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md hover:bg-black/10" aria-label="Fermer les annonces" data-announce-close hidden>
+          <Icon name="tabler:x" class="h-5 w-5" aria-hidden="true" />
+        </button>
+      </div>
+    </div>
+  )
+}
+
+<style>
+  .announce-track {
+    display: flex;
+    width: max-content;
+    animation: announce-scroll calc(var(--announce-count) * 9s) linear infinite;
+    will-change: transform;
+  }
+  .announce-list {
+    display: flex;
+    flex: none;
+    align-items: center;
+    min-width: 100vw;
+  }
+  .announce-item {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 0.75rem;
+    padding-right: 1.5rem;
+    white-space: nowrap;
+  }
+  .announce-link {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.875rem;
+    font-weight: 800;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+  }
+  .announce-link:focus-visible {
+    outline: 3px solid #111111;
+    outline-offset: 2px;
+  }
+  .announce-sep {
+    font-size: 0.5rem;
+  }
+  .announce:hover .announce-track,
+  .announce:focus-within .announce-track {
+    animation-play-state: paused;
+  }
+  @keyframes announce-scroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .announce-track {
+      width: auto;
+      animation: none;
+    }
+    .announce-list[aria-hidden='true'] {
+      display: none;
+    }
+    .announce-list {
+      min-width: 0;
+      flex-direction: column;
+      align-items: flex-start;
+      padding-block: 0.25rem;
+    }
+    .announce-item {
+      flex-wrap: wrap;
+      white-space: normal;
+    }
+    .announce-sep {
+      display: none;
+    }
+  }
+</style>
+
+<script is:inline define:vars={{ announceId: id }}>
+  (function () {
+    var key = 'nova-announce-' + announceId;
+    var bar = document.querySelector('[data-announce]');
+    if (!bar) return;
+    try {
+      if (localStorage.getItem(key) === '1') {
+        bar.remove();
+        return;
+      }
+    } catch (e) {}
+    var btn = bar.querySelector('[data-announce-close]');
+    if (!btn) return;
+    btn.hidden = false;
+    btn.addEventListener('click', function () {
+      try {
+        localStorage.setItem(key, '1');
+      } catch (e) {}
+      bar.remove();
+    });
+  })();
+</script>

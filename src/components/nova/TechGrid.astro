@@ -1,0 +1,9 @@
+---
+// Grille fine en perspective, très discrète, pour les sections bleu nuit.
+export interface Props {
+  opacity?: number;
+}
+const { opacity = 0.5 } = Astro.props;
+---
+
+<div class="tech-grid" style={`--grid-opacity:${opacity}`} aria-hidden="true"><span></span></div>

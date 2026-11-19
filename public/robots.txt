@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://novainteligenciagroup.ma/sitemap-index.xml

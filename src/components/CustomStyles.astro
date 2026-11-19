@@ -1,0 +1,65 @@
+---
+// Direction artistique Nova — palette officielle :
+//   bleu nuit #111111 (dominant) · bleu numérique #111111 · bleu lumineux #b8cc1a
+//   orange #F36B12 · orange clair #FF9B32 (couleurs du logo, conservées telles quelles ci-dessous)
+//   blanc #FFFFFF · fond clair #F6F8FC · gris clair #E8EDF5 · gris texte #637086
+// Couleurs issues du logo officiel 2026. Pour ajuster la palette, modifiez uniquement ces variables.
+//
+// CTA (boutons d'action) et bouton WhatsApp : SOURCE UNIQUE DE VÉRITÉ pour leur couleur.
+// Ne jamais remettre un #hex ou un rgb() en dur dans un composant : changez --cta-bg / --whatsapp-bg ici,
+// le survol (10-12 % plus foncé) se recalcule automatiquement via color-mix().
+---
+
+<style is:inline>
+  :root {
+    --aw-font-sans: var(--font-manrope);
+    --aw-font-serif: var(--font-manrope);
+    /* Titres éditoriaux : Space Grotesk (corps de texte inchangé, Inter). Paire « Tech Startup » vérifiée via la
+       skill ui-ux-pro-max — recommandée pour les produits IA. */
+    --aw-font-heading: var(--font-manrope);
+
+    --aw-color-primary: rgb(17 17 17); /* bleu numérique #111111 */
+    --aw-color-secondary: rgb(17 17 17); /* bleu numérique « encre », pour le texte (contraste AA) */
+    --aw-color-accent: rgb(228 248 74); /* bleu lumineux #b8cc1a */
+    --aw-color-link: rgb(17 17 17);
+    --aw-color-navy: rgb(17 17 17); /* bleu nuit #111111 */
+
+    /* Boutons CTA (header, hero, catalogue…) : bleu électrique de la marque (« bleu lumineux » #b8cc1a),
+       effet lumineux via le reflet et l'ombre teintée déjà en place dans .btn-primary / .cat-cta.
+       L'orange reste réservé au logo et aux accents de marque (badges « GRATUIT », accents du catalogue…), plus aux CTA principaux. */
+    --cta-bg: #111111;
+    --cta-bg-hover: color-mix(in srgb, var(--cta-bg) 90%, black 10%);
+
+    /* Bouton WhatsApp flottant : vert officiel WhatsApp + survol un peu plus sombre. */
+    --whatsapp-bg: #25d366;
+    --whatsapp-bg-hover: color-mix(in srgb, var(--whatsapp-bg) 88%, black 12%);
+
+    --aw-color-text-heading: rgb(17 17 17);
+    --aw-color-text-default: rgb(51 51 51);
+    --aw-color-text-muted: rgb(102 102 96);
+    --aw-color-bg-page: rgb(255 255 255);
+
+    --aw-color-bg-page-dark: rgb(17 17 17);
+
+    ::selection {
+      background-color: #d6ecff;
+      color: #111111;
+    }
+  }
+
+  .dark {
+    --aw-font-sans: var(--font-manrope);
+    --aw-font-serif: var(--font-manrope);
+    --aw-font-heading: var(--font-manrope);
+
+    --aw-color-primary: rgb(17 17 17);
+    --aw-color-secondary: rgb(17 17 17);
+    --aw-color-accent: rgb(228 248 74);
+    --aw-color-link: rgb(228 248 74);
+
+    --aw-color-text-heading: rgb(255 255 255);
+    --aw-color-text-default: rgb(222 230 244);
+    --aw-color-text-muted: rgb(190 202 222);
+    --aw-color-bg-page: rgb(17 17 17);
+  }
+</style>

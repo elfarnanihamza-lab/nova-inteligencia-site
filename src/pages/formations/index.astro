@@ -1,0 +1,365 @@
+---
+import { getCollection } from 'astro:content';
+
+import Layout from '~/layouts/PageLayout.astro';
+import PageHero from '~/components/nova/PageHero.astro';
+import Section from '~/components/nova/Section.astro';
+import CatalogueCard from '~/components/nova/CatalogueCard.astro';
+import StructuredData from '~/components/common/StructuredData.astro';
+import { CATEGORIES, SITE_CONFIG } from '~/site.config';
+import { accentStyle } from '~/data/catalogue-visuals';
+import { priceKind } from '~/utils/placeholders';
+import { breadcrumbSchema } from '~/utils/schema';
+import { formationHref, categoryHref } from '~/utils/formation-links';
+import { Icon } from 'astro-icon/components';
+
+const metadata = {
+  title: 'Formations IA au Maroc : catalogue ChatGPT et automatisation',
+  ignoreTitleTemplate: true,
+  description:
+    'Catalogue des formations IA au Maroc : formation ChatGPT, agents IA, automatisation IA, IA appliquée au métier et entrepreneuriat. Niveaux 1 à 3.',
+  openGraph: { images: [{ url: '~/assets/images/og/formations.png', width: 1200, height: 630 }] },
+};
+
+const formations = (await getCollection('formations', ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.order - b.data.order
+);
+// Guide « Comment choisir » : chaque situation renvoie à une formation (ou une catégorie) existante du catalogue.
+const guide = [
+  { situation: "Vous débutez avec l'IA", answer: 'Level 1 – AI Foundations', href: formationHref('level-1-ai-foundations') },
+  { situation: 'Vous voulez gagner du temps et automatiser vos tâches', answer: 'Level 2 – AI Productivity & Automation', href: formationHref('level-2-ai-productivity-automation') },
+  { situation: 'Vous visez des workflows et des agents IA professionnels', answer: 'Level 3 – AI Professional & Workflows', href: formationHref('level-3-ai-professional-workflows') },
+  { situation: "Vous voulez appliquer l'IA à votre métier", answer: 'Le cursus IA + Métier (3 niveaux)', href: categoryHref('ia-metier') },
+  { situation: 'Vous préparez une carrière dans le digital', answer: 'Nova Digital Master Program', href: formationHref('nova-digital-master-program') },
+  { situation: 'Vous portez un projet ou une startup', answer: 'Nos programmes gratuits en entrepreneuriat', href: categoryHref('innovation') },
+  { situation: 'Pour un enfant ou un adolescent (5–17 ans)', answer: 'IA Junior Academy', href: formationHref('ia-junior-academy') },
+];
+const count = (cat: string) => formations.filter((f) => f.data.categorie === cat).length;
+const freeTotal = formations.filter((f) => priceKind(f.data.prix, f.data.devise) === 'free').length;
+---
+
+<Layout metadata={metadata}>
+  <StructuredData
+    slot="head"
+    schema={breadcrumbSchema([
+      { name: 'Accueil', url: SITE_CONFIG.url },
+      { name: 'Formations', url: `${SITE_CONFIG.url}/formations` },
+    ])}
+  />
+  <PageHero
+    tagline="Catalogue"
+    title="Nos formations en intelligence artificielle et en digital"
+    subtitle="Des parcours pour débutants comme pour experts, de l'initiation à l'IA jusqu'aux workflows et agents professionnels."
+    crumbs={[{ text: 'Formations' }]}
+  />
+
+  <section class="cat-page relative isolate overflow-hidden bg-[#f1f1ec] text-[#111111]">
+        <div class="cat-wide relative mx-auto max-w-7xl px-4 pb-16 pt-2 sm:px-6 md:pb-24">
+      <!-- Filtres : vrais boutons (aria-pressed), pilotés par l'URL -->
+      <form id="filtres" class="cat-filters" aria-label="Filtrer les formations" onsubmit="return false">
+        <div class="cat-group" role="group" aria-label="Catégorie" data-group="categorie">
+          <button type="button" class="cat-chip" data-value="" aria-pressed="true">
+            Toutes <span class="cat-chip-n">{formations.length}</span>
+          </button>
+          {
+            Object.entries(CATEGORIES).map(([k, c]) => (
+              <button type="button" class="cat-chip" data-value={k} aria-pressed="false" style={accentStyle(k)}>
+                <Icon name={c.icon} aria-hidden="true" />
+                {c.label} <span class="cat-chip-n">{count(k)}</span>
+              </button>
+            ))
+          }
+        </div>
+        <div class="cat-row">
+          <div class="cat-group cat-group-sm" role="group" aria-label="Niveau" data-group="niveau">
+            <span class="cat-group-label">Niveau</span>
+            <button type="button" class="cat-chip" data-value="" aria-pressed="true">Tous</button>
+            <button type="button" class="cat-chip" data-value="1" aria-pressed="false">1</button>
+            <button type="button" class="cat-chip" data-value="2" aria-pressed="false">2</button>
+            <button type="button" class="cat-chip" data-value="3" aria-pressed="false">3</button>
+          </div>
+          <div class="cat-group cat-group-sm" role="group" aria-label="Tarif" data-group="tarif">
+            <span class="cat-group-label">Tarif</span>
+            <button type="button" class="cat-chip" data-value="" aria-pressed="true">Tous</button>
+            <button type="button" class="cat-chip cat-chip-free" data-value="oui" aria-pressed="false">
+              <Icon name="tabler:gift" aria-hidden="true" />
+              Gratuit <span class="cat-chip-n">{freeTotal}</span>
+            </button>
+            <button type="button" class="cat-chip" data-value="non" aria-pressed="false">Payant</button>
+          </div>
+          <button type="button" class="cat-reset" id="reinit" hidden>
+            <Icon name="tabler:refresh" aria-hidden="true" />
+            Réinitialiser
+          </button>
+        </div>
+      </form>
+
+      <h2 class="sr-only">Liste des formations</h2>
+      <p id="compteur" class="cat-count" role="status" aria-live="polite"></p>
+
+      <ul id="grille" class="cat-grid" role="list">
+        {formations.map((f, i) => <CatalogueCard formation={f} index={i} />)}
+      </ul>
+      <div id="vide" class="cat-empty" hidden>
+        <p class="text-lg font-semibold">Aucune formation ne correspond à ces critères.</p>
+        <button type="button" class="btn-primary mt-5" id="vide-reinit">Réinitialiser les filtres</button>
+      </div>
+
+      <!-- Comment choisir -->
+      <div class="mt-20">
+        <h2 class="font-heading text-2xl font-bold tracking-tight md:text-3xl">Comment choisir votre formation ?</h2>
+        <p class="mt-2 max-w-2xl text-[#555555]">Partez de votre situation : chaque niveau s'appuie sur le précédent, et un conseiller peut vous orienter si vous hésitez.</p>
+        <ul class="mt-8 grid gap-4 md:grid-cols-2" role="list">
+          {
+            guide.map((g) => (
+              <li>
+                <a href={g.href} class="cat-guide group">
+                  <span>
+                    <span class="block text-sm text-[#666660]">{g.situation}</span>
+                    <span class="mt-1 block font-semibold">{g.answer}</span>
+                  </span>
+                  <Icon name="tabler:arrow-right" class="h-5 w-5 shrink-0 text-[#111111] transition-transform group-hover:translate-x-1" aria-hidden="true" />
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div class="cat-help mt-14">
+        <h2 class="text-2xl font-bold">Vous ne trouvez pas votre formation ?</h2>
+        <p class="mt-2 text-[#f1f1ec]">Dites-nous votre besoin, nous vous conseillons gratuitement.</p>
+        <a href="/contact" class="btn-primary mt-6">Parler à un conseiller</a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .cat-filters {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    border: 1px solid #d8d8d2;
+    border-radius: 1.5rem;
+    background: #fff;
+    box-shadow: 0 2px 12px rgb(0 0 0 / 6%);
+  }
+  .cat-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .cat-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.5rem;
+  }
+  .cat-group-label {
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #666660;
+  }
+  .cat-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 2.75rem;
+    border: 1px solid #d8d8d2;
+    border-radius: 9999px;
+    background: #fff;
+    padding: 0.4rem 1rem;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #333333;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+  .cat-chip :global(svg) {
+    width: 1rem;
+    height: 1rem;
+  }
+  .cat-chip[aria-pressed='true'] {
+    border-color: #111111;
+    background: #111111;
+    color: #fff;
+  }
+  .cat-chip:focus-visible,
+  .cat-reset:focus-visible {
+    outline: 3px solid #111111;
+    outline-offset: 2px;
+  }
+  .cat-chip-n {
+    border-radius: 9999px;
+    background: rgb(100 116 139 / 15%);
+    padding: 0.05rem 0.5rem;
+    font-size: 0.72rem;
+  }
+  .cat-chip[aria-pressed='true'] .cat-chip-n {
+    background: rgb(255 255 255 / 25%);
+  }
+  .cat-reset {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 2.75rem;
+    border-radius: 9999px;
+    padding: 0 1rem;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #111111;
+  }
+  .cat-reset[hidden] {
+    display: none;
+  }
+  .cat-count {
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #666660;
+  }
+  .cat-grid {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 640px) {
+    .cat-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1024px) {
+    .cat-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .cat-empty {
+    margin-top: 2rem;
+    border-radius: 1.5rem;
+    border: 1px dashed #e5e5df;
+    background: #fff;
+    padding: 2rem;
+    text-align: center;
+  }
+  .cat-guide {
+    display: flex;
+    min-height: 4rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    border: 1px solid #d8d8d2;
+    border-radius: 1rem;
+    background: #fff;
+    padding: 1rem 1.25rem;
+    color: #111111;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .cat-guide:focus-visible {
+    outline: 3px solid #111111;
+    outline-offset: 2px;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .cat-guide:hover {
+      border-color: #111111;
+      box-shadow: 0 8px 20px rgb(0 0 0 / 8%);
+    }
+  }
+  .cat-help {
+    border-radius: 1.75rem;
+    background: #111111;
+    padding: 2rem;
+    color: #fff;
+    text-align: center;
+  }
+</style>
+
+<script>
+  // Filtres du catalogue pilotés par l'URL (?categorie=…&niveau=…&tarif=…) : lus au chargement direct, après
+  // actualisation et après navigation interne (View Transitions), et mis à jour dans l'URL (sans nouvelle entrée
+  // d'historique) pour rester partageables. Valeur inconnue : ignorée, tout le catalogue reste visible.
+  const GROUPS = ['categorie', 'niveau', 'tarif'] as const;
+  type Group = (typeof GROUPS)[number];
+
+  const init = () => {
+    const form = document.getElementById('filtres');
+    if (!form || form.dataset.ready) return;
+    form.dataset.ready = '1';
+    const groups = Object.fromEntries(GROUPS.map((g) => [g, form.querySelector<HTMLElement>(`[data-group="${g}"]`)!])) as Record<Group, HTMLElement>;
+    const buttons = (g: Group) => [...groups[g].querySelectorAll<HTMLButtonElement>('button[data-value]')];
+    const state: Record<Group, string> = { categorie: '', niveau: '', tarif: '' };
+    const cards = [...document.querySelectorAll<HTMLElement>('.cat-card')];
+    const compteur = document.getElementById('compteur')!;
+    const vide = document.getElementById('vide')!;
+    const reinit = document.getElementById('reinit') as HTMLButtonElement;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let notice = '';
+
+    const params = new URLSearchParams(location.search);
+    for (const g of GROUPS) {
+      const v = params.get(g);
+      if (!v) continue;
+      if (buttons(g).some((b) => b.dataset.value === v)) state[g] = v;
+      else notice = ' — filtre « ' + v + ' » non reconnu : tout le catalogue est affiché';
+    }
+
+    const apply = (animate: boolean) => {
+      let n = 0;
+      cards.forEach((c) => {
+        const ok =
+          (!state.categorie || c.dataset.categorie === state.categorie) &&
+          (!state.niveau || c.dataset.niveau === state.niveau) &&
+          (!state.tarif || c.dataset.gratuit === state.tarif);
+        const was = !c.classList.contains('hidden');
+        c.classList.toggle('hidden', !ok);
+        c.classList.remove('is-shown');
+        if (ok) {
+          if (animate && !reduce) {
+            c.style.setProperty('--n', String(n));
+            void c.offsetWidth;
+            c.classList.add('is-shown');
+          }
+          n++;
+        }
+        void was;
+      });
+      GROUPS.forEach((g) => buttons(g).forEach((b) => b.setAttribute('aria-pressed', String((b.dataset.value ?? '') === state[g]))));
+      compteur.textContent = n + (n > 1 ? ' formations affichées' : ' formation affichée') + notice;
+      vide.hidden = n > 0;
+      reinit.hidden = !GROUPS.some((g) => state[g]);
+    };
+    const sync = () => {
+      const url = new URL(location.href);
+      for (const g of GROUPS) {
+        if (state[g]) url.searchParams.set(g, state[g]);
+        else url.searchParams.delete(g);
+      }
+      history.replaceState(history.state, '', url.pathname + url.search + url.hash);
+    };
+    const reset = () => {
+      GROUPS.forEach((g) => (state[g] = ''));
+      notice = '';
+      apply(true);
+      sync();
+    };
+
+    GROUPS.forEach((g) =>
+      groups[g].addEventListener('click', (e) => {
+        const b = (e.target as HTMLElement).closest<HTMLButtonElement>('button[data-value]');
+        if (!b) return;
+        state[g] = b.dataset.value ?? '';
+        notice = '';
+        apply(true);
+        sync();
+      })
+    );
+    reinit.addEventListener('click', reset);
+    document.getElementById('vide-reinit')!.addEventListener('click', reset);
+    apply(false);
+  };
+
+  document.addEventListener('astro:page-load', init);
+</script>

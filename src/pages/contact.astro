@@ -1,0 +1,85 @@
+---
+import { Icon } from 'astro-icon/components';
+import Layout from '~/layouts/PageLayout.astro';
+import PageHero from '~/components/nova/PageHero.astro';
+import Section from '~/components/nova/Section.astro';
+import ContactForm from '~/components/nova/ContactForm.astro';
+import LazyMap from '~/components/nova/LazyMap.astro';
+import StructuredData from '~/components/common/StructuredData.astro';
+import { SITE_CONFIG, whatsappLink } from '~/site.config';
+import { ph, visible } from '~/utils/placeholders';
+import { breadcrumbSchema } from '~/utils/schema';
+
+const metadata = {
+  title: 'Contact et inscription : formation IA à Casablanca | Nova',
+  ignoreTitleTemplate: true,
+  description:
+    'Contactez Nova Inteligencia Group à Casablanca pour vous inscrire à une formation intelligence artificielle ou demander un devis IA pour entreprise.',
+  openGraph: { images: [{ url: '~/assets/images/og/contact.png', width: 1200, height: 630 }] },
+};
+
+const c = SITE_CONFIG.contact;
+---
+
+<Layout metadata={metadata}>
+  <StructuredData
+    slot="head"
+    schema={breadcrumbSchema([
+      { name: 'Accueil', url: SITE_CONFIG.url },
+      { name: 'Contact', url: `${SITE_CONFIG.url}/contact` },
+    ])}
+  />
+  <PageHero
+    tagline="Contact"
+    title="Parlons de votre projet de formation"
+    subtitle="Inscription, renseignements ou devis entreprise : notre équipe vous répond."
+    crumbs={[{ text: 'Contact' }]}
+  />
+
+  <Section tone="soft" class="!pt-0">
+    <div class="grid gap-10 pt-10 lg:grid-cols-5">
+      <div class="lg:col-span-3" id="formulaire">
+        <div class="rounded-2xl border border-line bg-white p-6 shadow-sm md:p-8">
+          <h2 class="mb-6 text-2xl font-bold text-heading">Envoyez-nous un message</h2>
+          <ContactForm />
+        </div>
+      </div>
+
+      <div class="space-y-6 lg:col-span-2">
+        <div class="rounded-2xl border border-line bg-white p-6">
+          <h2 class="mb-4 text-xl font-bold text-heading">Nos coordonnées</h2>
+          <ul class="space-y-4 text-default">
+            <li class="flex gap-3">
+              <Icon name="tabler:map-pin" class="mt-0.5 h-5 w-5 shrink-0 text-secondary" />
+              <address class="not-italic">{c.address.street}<br />{c.address.city}, {c.address.countryName}</address>
+            </li>
+            <li class="flex gap-3">
+              <Icon name="tabler:mail" class="mt-0.5 h-5 w-5 shrink-0 text-secondary" />
+              <a class="inline-flex min-h-11 items-center hover:underline" href={`mailto:${c.email}`}>{c.email}</a>
+            </li>
+            {visible(c.phone) && (<li class="flex gap-3">
+              <Icon name="tabler:phone" class="mt-0.5 h-5 w-5 shrink-0 text-secondary" />
+              <span set:html={ph(c.phone)} />
+            </li>)}
+            {visible(c.hours) && (<li class="flex gap-3">
+              <Icon name="tabler:clock" class="mt-0.5 h-5 w-5 shrink-0 text-secondary" />
+              <span set:html={ph(`Horaires : ${c.hours}`)} />
+            </li>)}
+          </ul>
+          {c.whatsapp && (
+          <a
+            href={whatsappLink()}
+            class="btn-whatsapp mt-6 w-full"
+            {...c.whatsapp ? { target: '_blank', rel: 'noopener noreferrer' } : {}}
+          >
+            <Icon name="tabler:brand-whatsapp" class="mr-2 h-5 w-5" /> Discuter sur WhatsApp
+          </a>
+          )}
+          {!c.whatsapp && visible('[À COMPLÉTER]') && <p class="mt-2 text-sm" set:html={ph('Numéro WhatsApp : [À COMPLÉTER]')} />}
+        </div>
+
+        <LazyMap height={340} />
+      </div>
+    </div>
+  </Section>
+</Layout>

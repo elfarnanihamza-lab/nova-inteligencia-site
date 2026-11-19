@@ -1,0 +1,212 @@
+---
+import { Icon } from 'astro-icon/components';
+import Layout from '~/layouts/PageLayout.astro';
+import PageHero from '~/components/nova/PageHero.astro';
+import Section from '~/components/nova/Section.astro';
+import Photo from '~/components/nova/Photo.astro';
+import StructuredData from '~/components/common/StructuredData.astro';
+import { SITE_CONFIG } from '~/site.config';
+import { ph, visible } from '~/utils/placeholders';
+import { SHOW_PLACEHOLDERS } from '~/site.config';
+import { breadcrumbSchema } from '~/utils/schema';
+import { formationHref, categoryHref } from '~/utils/formation-links';
+
+const metadata = {
+  title: 'À propos de Nova Inteligencia Group, centre IA à Casablanca',
+  ignoreTitleTemplate: true,
+  description:
+    'Nova Inteligencia Group, centre de formation en intelligence artificielle à Casablanca : mission, vision et valeurs d\'une IA responsable au Maroc.',
+  openGraph: { images: [{ url: '~/assets/images/og/a-propos.png', width: 1200, height: 630 }] },
+};
+
+const values = [
+  ['Excellence', 'Des standards élevés, de la qualité, de la précision et des résultats mesurables.'],
+  ['Innovation', "Transformer l'intelligence en impact concret."],
+  ['Collaboration', 'Travailler à travers les disciplines, les cultures et les secteurs.'],
+  ['Autonomisation', 'Partager le savoir et les outils avec les dirigeants et les organisations.'],
+  ['IA responsable', 'Une IA éthique, sécurisée, transparente et centrée sur l’humain.'],
+  ['Durabilité', 'Des écosystèmes portés par la technologie pour une croissance durable.'],
+];
+
+// « Apprendre · Innover · Transformer » : signature du logo officiel ; chaque pilier renvoie à des programmes du catalogue.
+const pillars = [
+  {
+    icon: 'tabler:stairs-up',
+    title: 'Apprendre',
+    text: "Des parcours progressifs en trois niveaux, de la prise en main des outils d'IA jusqu'au niveau professionnel. Chaque niveau s'appuie sur le précédent et se termine par une mise en pratique.",
+    link: { text: 'Les formations IA', href: categoryHref('ia') },
+  },
+  {
+    icon: 'tabler:bulb',
+    title: 'Innover',
+    text: "Des programmes gratuits dédiés à l'entrepreneuriat : passer de l'idée au projet, puis incuber, accélérer et développer une startup.",
+    link: { text: 'Entrepreneuriat & innovation', href: categoryHref('innovation') },
+  },
+  {
+    icon: 'tabler:arrows-exchange',
+    title: 'Transformer',
+    text: "Le cursus « IA + Métier » applique l'intelligence artificielle à votre fonction, et nos programmes sur mesure accompagnent les équipes en entreprise.",
+    link: { text: 'Le cursus IA + Métier', href: categoryHref('ia-metier') },
+  },
+];
+
+// Publics réellement visés par le catalogue actuel.
+const audiences = [
+  { icon: 'tabler:user-check', title: 'Professionnels et salariés', text: "Gagner en productivité et appliquer l'IA à son métier.", href: categoryHref('ia-metier') },
+  { icon: 'tabler:building', title: 'Entreprises et institutions', text: 'Former des équipes avec un programme adapté à leurs métiers et à leurs outils.', href: '/entreprises' },
+  { icon: 'tabler:rocket', title: 'Entrepreneurs et porteurs de projet', text: "Structurer un projet, lancer et faire grandir une startup.", href: categoryHref('innovation') },
+  { icon: 'tabler:device-laptop', title: 'Futurs professionnels du digital', text: 'Se préparer aux métiers du digital, comme salarié, freelance ou entrepreneur.', href: formationHref('nova-digital-master-program') },
+  { icon: 'tabler:mood-kid', title: 'Enfants et adolescents (5–17 ans)', text: "S'initier à l'intelligence artificielle avec l'IA Junior Academy.", href: formationHref('ia-junior-academy') },
+];
+---
+
+<Layout metadata={metadata}>
+  <StructuredData
+    slot="head"
+    schema={breadcrumbSchema([
+      { name: 'Accueil', url: SITE_CONFIG.url },
+      { name: 'À propos', url: `${SITE_CONFIG.url}/a-propos` },
+    ])}
+  />
+  <PageHero
+    tagline="À propos"
+    title="Transformer l'intelligence en impact"
+    subtitle="Nova Inteligencia Group accompagne les professionnels, les entreprises et les institutions dans leur transition vers l'intelligence artificielle, depuis le Maroc."
+    crumbs={[{ text: 'À propos' }]}
+  />
+
+  <Section tagline="Notre histoire" title="Mobiliser l'intelligence humaine, artificielle et stratégique" align="left">
+    <div class="grid gap-12 lg:grid-cols-12 lg:gap-16">
+      <div class="space-y-4 text-lg text-default lg:col-span-6">
+        <p>
+          Nova Inteligencia Group est une société de conseil, de technologie et d'innovation dont le siège est au Royaume
+          du Maroc. Elle a été fondée pour aider les organisations à mobiliser l'intelligence humaine, artificielle et
+          stratégique afin de résoudre des problèmes complexes.
+        </p>
+        <p>
+          À l'heure où l'IA transforme l'économie mondiale, Nova ambitionne de positionner l'Afrique et le Moyen-Orient
+          comme des acteurs majeurs d'une IA responsable et à fort impact.
+        </p>
+        {visible('[À COMPLÉTER]') && <p set:html={ph('Date de fondation et étapes clés : [À COMPLÉTER]')} />}
+      </div>
+      <div class="relative lg:col-span-6 lg:row-span-2">
+        <Photo
+          name="casablanca-mosquee-hassan-ii"
+          alt="La mosquée Hassan II et le front de mer de Casablanca, siège de Nova Inteligencia Group"
+          aspect="5/4"
+          class="rounded-[1.75rem] shadow-[0_40px_80px_-48px_rgb(11_31_58/55%)]"
+          sizes="(min-width: 1024px) 560px, 100vw"
+        />
+        <p class="mt-3 flex items-center gap-2 text-sm text-muted">
+          <Icon name="tabler:map-pin" class="h-4 w-4 text-ink" aria-hidden="true" /> Casablanca, siège de Nova Inteligencia Group
+        </p>
+      </div>
+      <dl class="grid gap-5 sm:grid-cols-2 lg:col-span-6">
+        <div class="rounded-2xl border border-line p-6">
+          <dt class="flex items-center gap-2 font-bold text-heading"><Icon name="tabler:target" class="h-5 w-5 text-secondary" /> Notre mission</dt>
+          <dd class="mt-2 text-muted">
+            Aller au-delà de la technologie : construire des systèmes plus intelligents, développer les talents de demain
+            et créer de la valeur durable.
+          </dd>
+        </div>
+        <div class="rounded-2xl border border-line p-6">
+          <dt class="flex items-center gap-2 font-bold text-heading"><Icon name="tabler:eye" class="h-5 w-5 text-secondary" /> Notre vision</dt>
+          <dd class="mt-2 text-muted">
+            Devenir un leader mondial de l'IA, de l'innovation digitale et du conseil stratégique, et rendre des solutions
+            d'IA de qualité accessibles à toute organisation, quelle que soit sa taille ou sa localisation.
+          </dd>
+        </div>
+      </dl>
+    </div>
+  </Section>
+
+  <Section tone="soft" tagline="Notre approche" title="Apprendre · Innover · Transformer" subtitle="Former les talents de l'IA de demain : notre signature résume la façon dont nos programmes sont construits.">
+    <div class="grid gap-6 md:grid-cols-3">
+      {
+        pillars.map((p, i) => (
+          <article class="flex flex-col rounded-2xl border border-line bg-white p-7">
+            <span class="flex h-12 w-12 items-center justify-center rounded-xl bg-offwhite text-ink ring-1 ring-line">
+              <Icon name={p.icon} class="h-6 w-6" aria-hidden="true" />
+            </span>
+            <h3 class="mt-5 text-xl font-bold text-heading">{p.title}</h3>
+            <p class="mt-2 flex-1 leading-relaxed text-muted">{p.text}</p>
+            <a href={p.link.href} class="mt-3 inline-flex min-h-11 items-center gap-1.5 font-semibold text-ink underline underline-offset-4">
+              {p.link.text} <Icon name="tabler:arrow-right" class="h-4 w-4" aria-hidden="true" />
+            </a>
+          </article>
+        ))
+      }
+    </div>
+  </Section>
+
+  <Section tagline="Pour qui ?" title="Des formations pour chaque étape du parcours">
+    <ul class="grid gap-5 sm:grid-cols-2 lg:grid-cols-5" role="list">
+      {
+        audiences.map((a, i) => (
+          <li>
+            <a href={a.href} class="group flex h-full flex-col rounded-2xl border border-line bg-white p-6 transition-colors hover:border-[#111111]">
+              <Icon name={a.icon} class="h-7 w-7 text-ink" aria-hidden="true" />
+              <h3 class="mt-4 font-bold text-heading">{a.title}</h3>
+              <p class="mt-2 text-sm leading-relaxed text-muted">{a.text}</p>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
+
+  <Section tone="soft" tagline="Nos valeurs" title="Ce qui nous guide">
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        values.map(([t, d]) => (
+          <div class="rounded-2xl border border-line bg-white p-6">
+            <h3 class="text-lg font-bold text-heading">{t}</h3>
+            <p class="mt-2 text-muted">{d}</p>
+          </div>
+        ))
+      }
+    </div>
+  </Section>
+
+  {SHOW_PLACEHOLDERS && (
+  <Section id="formateurs" tagline="Nos formateurs" title="Des experts à votre service" subtitle="[À COMPLÉTER] Présentez ici vos formateurs : photo, nom, fonction, parcours.">
+    <div class="grid gap-6 md:grid-cols-3">
+      {
+        [1, 2, 3].map(() => (
+          <article class="rounded-2xl border border-dashed border-amber-400 bg-white p-6 text-center">
+            <div class="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-[#f1f1ec] text-[#888880]" aria-hidden="true">
+              <Icon name="tabler:user" class="h-10 w-10" />
+            </div>
+            <h3 class="mt-4 text-lg font-bold" set:html={ph('[À COMPLÉTER] Prénom Nom')} />
+            <p class="text-sm text-muted" set:html={ph('[À COMPLÉTER] Fonction / spécialité')} />
+            <p class="mt-3 text-sm text-muted" set:html={ph('[À COMPLÉTER] Courte biographie (2 à 3 phrases).')} />
+          </article>
+        ))
+      }
+    </div>
+  </Section>
+  )}
+
+  {SITE_CONFIG.affiliationsVerified && (
+  <Section tone="soft" tagline="Affiliations" title="Membre d'associations de référence" subtitle="[À COMPLÉTER] Précisez la nature et la date de chaque affiliation et ajoutez les logos officiels.">
+    <ul class="grid gap-6 sm:grid-cols-3">
+      {
+        SITE_CONFIG.affiliations.map((a) => (
+          <li class="rounded-2xl border border-line bg-white p-6 text-center">
+            <p class="text-2xl font-bold text-secondary">{a.name}</p>
+            <p class="mt-2 text-sm text-muted">{a.fullName}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
+  )}
+
+  <section class="bg-navy text-white">
+    <div class="max-w-4xl mx-auto px-4 py-14 text-center">
+      <h2 class="text-3xl font-bold">Travaillons ensemble</h2>
+      <p class="mt-3 text-[#d8d8d2]">Une question sur nos formations ? Notre équipe vous répond.</p>
+      <a href="/contact" class="btn-primary mt-6">Nous contacter</a>
+    </div>
+  </section>
+</Layout>

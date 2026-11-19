@@ -1,0 +1,116 @@
+---
+/**
+ * Carte Google Maps chargée en différé : un aperçu stylisé (SVG, aucun appel externe) s'affiche d'abord ;
+ * l'iframe n'est insérée que lorsque la carte arrive à l'écran ou au clic sur « Afficher la carte ».
+ */
+import { Icon } from 'astro-icon/components';
+import { SITE_CONFIG } from '~/site.config';
+
+export interface Props {
+  class?: string;
+  height?: number;
+}
+const { class: className = '', height = 420 } = Astro.props;
+const a = SITE_CONFIG.contact.address;
+const query = encodeURIComponent(`${a.street}, ${a.city}, ${a.countryName}`);
+const src = `https://www.google.com/maps?q=${query}&z=16&output=embed`;
+---
+
+<div
+  class:list={['lazy-map relative overflow-hidden rounded-2xl border border-line bg-navy', className]}
+  style={`height:${height}px`}
+  data-lazy-map={src}
+>
+  <!-- Aperçu stylisé -->
+  <div class="map-preview absolute inset-0" aria-hidden="true">
+    <svg class="h-full w-full" viewBox="0 0 600 420" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <radialGradient id="map-glow" cx="0.5" cy="0.48" r="0.5">
+          <stop offset="0" stop-color="#111111" stop-opacity="0.35"></stop>
+          <stop offset="1" stop-color="#111111" stop-opacity="0"></stop>
+        </radialGradient>
+      </defs>
+      <rect width="600" height="420" fill="#111111"></rect>
+      <g stroke="#e4f84a" stroke-opacity="0.12" stroke-width="1">
+        <path d="M0 60H600M0 140H600M0 230H600M0 320H600M0 390H600M70 0V420M170 0V420M290 0V420M410 0V420M520 0V420"></path>
+      </g>
+      <g stroke="#e4f84a" stroke-opacity="0.28" stroke-width="7" fill="none" stroke-linecap="round">
+        <path d="M-20 300 C 140 260, 240 230, 300 210 S 480 140, 640 100"></path>
+      </g>
+      <g stroke="#e4f84a" stroke-opacity="0.18" stroke-width="4" fill="none">
+        <path d="M120 -10 L 250 430"></path>
+        <path d="M430 -10 L 360 430"></path>
+        <path d="M-10 120 L 610 170"></path>
+      </g>
+      <rect width="600" height="420" fill="url(#map-glow)"></rect>
+      <circle class="map-pulse" cx="300" cy="205" r="22" fill="#111111" fill-opacity="0.25"></circle>
+      <circle cx="300" cy="205" r="9" fill="#111111" stroke="#fff" stroke-width="3"></circle>
+    </svg>
+  </div>
+  <div class="map-cta absolute inset-x-0 bottom-0 flex flex-wrap items-center justify-between gap-3 bg-gradient-to-t from-[#111111] to-transparent p-5 pt-16">
+    <p class="flex items-center gap-2 text-sm font-medium text-white">
+      <Icon name="tabler:map-pin-filled" class="h-5 w-5 text-[#e4f84a]" aria-hidden="true" />
+      {a.street}, {a.city}
+    </p>
+    <button type="button" class="btn-ghost-light !px-4 !py-3 text-sm" data-map-load>
+      <Icon name="tabler:map-2" class="h-4 w-4" aria-hidden="true" /> Afficher la carte
+    </button>
+  </div>
+</div>
+
+<style>
+  .map-pulse {
+    transform-origin: 300px 205px;
+  }
+  .lazy-map iframe {
+    animation: nova-fade 0.6s ease-out both;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .map-pulse {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  const load = (box: HTMLElement) => {
+    if (box.dataset.loaded) return;
+    box.dataset.loaded = '1';
+    const f = document.createElement('iframe');
+    f.src = box.dataset.lazyMap!;
+    f.title = 'Carte : Nova Inteligencia Group, Casablanca';
+    f.loading = 'lazy';
+    f.referrerPolicy = 'no-referrer-when-downgrade';
+    f.allowFullscreen = true;
+    f.className = 'absolute inset-0 h-full w-full border-0';
+    box.appendChild(f);
+    f.addEventListener('load', () => {
+      box.querySelector('.map-preview')?.remove();
+      box.querySelector('.map-cta')?.remove();
+    });
+  };
+
+  const init = () => {
+    const boxes = document.querySelectorAll<HTMLElement>('[data-lazy-map]:not([data-bound])');
+    if (!boxes.length) return;
+    const io =
+      'IntersectionObserver' in window
+        ? new IntersectionObserver(
+            (entries) =>
+              entries.forEach((e) => {
+                if (e.isIntersecting) {
+                  io!.unobserve(e.target);
+                  setTimeout(() => load(e.target as HTMLElement), 600);
+                }
+              }),
+            { rootMargin: '200px 0px' }
+          )
+        : undefined;
+    boxes.forEach((box) => {
+      box.dataset.bound = '1';
+      box.querySelector('[data-map-load]')?.addEventListener('click', () => load(box));
+      io?.observe(box);
+    });
+  };
+  document.addEventListener('astro:page-load', init);
+</script>

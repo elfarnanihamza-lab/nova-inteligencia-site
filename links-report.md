@@ -1,0 +1,187 @@
+# Rapport de maillage interne — liens vers les formations
+
+Généré à partir du site construit (`dist/`) avec `node scripts/links-report.mjs`, puis vérifié par des tests navigateur (Edge piloté, serveur `astro preview` local).
+Règle appliquée (`src/utils/formation-links.ts`) : **fiche** quand un sujet correspond à une formation précise ; **catalogue filtré** `?categorie=…` seulement si la catégorie compte au moins 2 formations ; sinon lien direct vers l'unique fiche. Le build échoue si un lien vise une fiche inexistante.
+
+Formations par catégorie : innovation = 4, junior = 1, ia = 3, ia-metier = 3, parcours = 1.
+
+## Synthèse
+
+| | Avant | Après |
+|---|---|---|
+| Liens vers /formations (toutes pages, occurrences) | 479 | 478 |
+| → fiches | 60 | 177 |
+| → catalogue filtré `?categorie=` | 330 | 212 |
+| → catalogue complet | 89 | 89 |
+| Liens vers un catalogue filtré à **1 seule formation** | **108** | **0** |
+| Accueil : liens vers fiches / catégories / catalogue | 12 / 24 / 4 | 27 / 8 / 4 |
+
+Liens distincts examinés (un même composant répété sur plusieurs pages compte une fois) : **101** — corrigés : **15**, conservés : **85**, supprimés : **1**.
+
+## Liens modifiés (avant / après)
+
+| Texte du lien | Origine | Destination avant | Destination après | Motif | Test | Occurrences |
+|---|---|---|---|---|---|---|
+| ChatGPT | / (bande défilante) | `/formations?categorie=ia` | `/formations/level-2-ai-productivity-automation` | Mot-clé → fiche : module « Optimisation des outils d'IA : ChatGPT, Claude, Gemini… » | ✅ 200 | 1 |
+| Prompt engineering | / (bande défilante) | `/formations?categorie=ia` | `/formations/level-2-ai-productivity-automation` | Mot-clé → fiche : module « Prompt engineering avancé » | ✅ 200 | 1 |
+| Agents IA | / (bande défilante) | `/formations?categorie=ia` | `/formations/level-2-ai-productivity-automation` | Mot-clé → fiche : module « Création d'agents IA » (assistants, bases de connaissances) | ✅ 200 | 1 |
+| Automatisation no-code | / (bande défilante) | `/formations?categorie=ia` | `/formations/level-2-ai-productivity-automation` | Mot-clé → fiche : module « Automatisation des tâches » avec outils no-code | ✅ 200 | 1 |
+| Workflows IA | / (bande défilante) | `/formations?categorie=ia` | `/formations/level-3-ai-professional-workflows` | Mot-clé → fiche : modules « Workflows IA avancés » et « Intégrations et API » | ✅ 200 | 1 |
+| Productivité | / (bande défilante) | `/formations?categorie=ia-metier` | `/formations/level-1-fondamentaux-ia-metier` | Mot-clé → fiche : objectif « Gagner du temps et améliorer sa productivité » | ✅ 200 | 1 |
+| IA appliquée au métier | / (bande défilante) | `/formations?categorie=ia-metier` | `/formations/level-1-fondamentaux-ia-metier` | Mot-clé → fiche d'entrée de la série « IA + Métier » | ✅ 200 | 1 |
+| Analyse de données | / (bande défilante) | `/formations?categorie=ia-metier` | `/formations/level-2-ia-metier-techniques-avancees` | Mot-clé → fiche : « Analyser et interpréter des données avec des outils d'IA avancés » | ✅ 200 | 1 |
+| Stratégie digitale | / (bande défilante) | `/formations?categorie=parcours` | `— (retiré)` | Retiré : aucune formation ne traite réellement ce sujet | — | 1 |
+| Métiers du digital | / (bande défilante) | `/formations?categorie=parcours` | `/formations/nova-digital-master-program` | Mot-clé → fiche : « principaux métiers du digital, outils professionnels » | ✅ 200 | 1 |
+| Entrepreneuriat | / (bande défilante) | `/formations?categorie=innovation` | `/formations/formation-entrepreneuriale-developpement-competences` | Mot-clé → fiche : formation dédiée aux compétences entrepreneuriales | ✅ 200 | 1 |
+| Innovation | / (bande défilante) | `/formations?categorie=innovation` | `/formations/innovation-ia-solutions-technologiques` | Mot-clé → fiche « Innovation, IA et solutions technologiques » | ✅ 200 | 1 |
+| Culture digitale Les métiers du digital, les outils professionnels et  | / (contenu) | `/formations?categorie=parcours` | `/formations/nova-digital-master-program` | Catégorie « parcours » à 1 seule formation → lien direct vers sa fiche | ✅ 200 | 1 |
+| Parcours digital | (toutes les pages) (menu) | `/formations?categorie=parcours` | `/formations/nova-digital-master-program` | Catégorie « parcours » à 1 seule formation → lien direct vers sa fiche | ✅ 200 | 35 |
+| Junior | (toutes les pages) (menu) | `/formations?categorie=junior` | `/formations/ia-junior-academy` | Catégorie « junior » à 1 seule formation → lien direct vers sa fiche | ✅ 200 | 35 |
+| Parcours digital | (toutes les pages) (pied de page) | `/formations?categorie=parcours` | `/formations/nova-digital-master-program` | Catégorie « parcours » à 1 seule formation → lien direct vers sa fiche | ✅ 200 | 35 |
+
+## Liens conservés
+
+| Texte du lien | Origine | Destination avant | Destination après | Motif | Test | Occurrences |
+|---|---|---|---|---|---|---|
+| Voir les formations | / (contenu) | `/formations` | `/formations` | Conservé : catalogue complet | ✅ 200 | 1 |
+| Voir les 12 formations | / (contenu) | `/formations` | `/formations` | Conservé : catalogue complet | ✅ 200 | 1 |
+| Level 1 – AI Foundations | / (contenu) | `/formations/level-1-ai-foundations` | `/formations/level-1-ai-foundations` | Conservé : fiche de la formation | ✅ 200 | 2 |
+| Level 2 – AI Productivity & Automation | / (contenu) | `/formations/level-2-ai-productivity-automation` | `/formations/level-2-ai-productivity-automation` | Conservé : fiche de la formation | ✅ 200 | 2 |
+| Level 3 – AI Professional & Workflows | / (contenu) | `/formations/level-3-ai-professional-workflows` | `/formations/level-3-ai-professional-workflows` | Conservé : fiche de la formation | ✅ 200 | 2 |
+| Level 1 – Fondamentaux IA + « Métier » | / (contenu) | `/formations/level-1-fondamentaux-ia-metier` | `/formations/level-1-fondamentaux-ia-metier` | Conservé : fiche de la formation | ✅ 200 | 2 |
+| Nova Digital Master Program | / (contenu) | `/formations/nova-digital-master-program` | `/formations/nova-digital-master-program` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| Innovation, Intelligence Artificielle et Solutions Technologiques | / (contenu) | `/formations/innovation-ia-solutions-technologiques` | `/formations/innovation-ia-solutions-technologiques` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| Level 2 – IA + « Métier » Techniques avancées | / (contenu) | `/formations/level-2-ia-metier-techniques-avancees` | `/formations/level-2-ia-metier-techniques-avancees` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| Level 3 – AI + « Métier » Professionnel | / (contenu) | `/formations/level-3-ai-metier-professionnel` | `/formations/level-3-ai-metier-professionnel` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| Cursus en IA Formation à l'intelligence artificielle pour un usage opé | / (contenu) | `/formations?categorie=ia` | `/formations?categorie=ia` | Conservé : catégorie de 3 formations | ✅ 200 | 1 |
+| Ingénierie d'affaire Accompagnement stratégique pour bâtir des entrepr | / (contenu) | `/formations?categorie=innovation` | `/formations?categorie=innovation` | Conservé : catégorie de 4 formations | ✅ 200 | 1 |
+| Toutes les formations | (toutes les pages) (menu) | `/formations` | `/formations` | Conservé : catalogue complet | ✅ 200 | 35 |
+| Intelligence artificielle | (toutes les pages) (menu) | `/formations?categorie=ia` | `/formations?categorie=ia` | Conservé : catégorie de 3 formations | ✅ 200 | 35 |
+| IA + Métier | (toutes les pages) (menu) | `/formations?categorie=ia-metier` | `/formations?categorie=ia-metier` | Conservé : catégorie de 3 formations | ✅ 200 | 35 |
+| Entrepreneuriat & innovation | (toutes les pages) (menu) | `/formations?categorie=innovation` | `/formations?categorie=innovation` | Conservé : catégorie de 4 formations | ✅ 200 | 35 |
+| Tout le catalogue | (toutes les pages) (pied de page) | `/formations` | `/formations` | Conservé : catalogue complet | ✅ 200 | 35 |
+| Intelligence artificielle | (toutes les pages) (pied de page) | `/formations?categorie=ia` | `/formations?categorie=ia` | Conservé : catégorie de 3 formations | ✅ 200 | 35 |
+| IA + Métier | (toutes les pages) (pied de page) | `/formations?categorie=ia-metier` | `/formations?categorie=ia-metier` | Conservé : catégorie de 3 formations | ✅ 200 | 35 |
+| Entrepreneuriat & innovation | (toutes les pages) (pied de page) | `/formations?categorie=innovation` | `/formations?categorie=innovation` | Conservé : catégorie de 4 formations | ✅ 200 | 35 |
+| Voir les formations | /404.html (contenu) | `/formations` | `/formations` | Conservé : catalogue complet | ✅ 200 | 1 |
+| Voir nos formations | /blog (contenu) | `/formations` | `/formations` | Conservé : catalogue complet | ✅ 200 | 1 |
+| nos formations | /blog/developpez-vos-competences-numeriques (contenu) | `/formations` | `/formations` | Conservé : catalogue complet | ✅ 200 | 1 |
+| le catalogue des formations | /blog/maitrisez-l-intelligence-artificielle (contenu) | `/formations` | `/formations` | Conservé : catalogue complet | ✅ 200 | 1 |
+| Level 1 – AI Foundations | /formations (contenu) | `/formations/level-1-ai-foundations` | `/formations/level-1-ai-foundations` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| Level 2 – AI Productivity & Automation | /formations (contenu) | `/formations/level-2-ai-productivity-automation` | `/formations/level-2-ai-productivity-automation` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| Level 3 – AI Professional & Workflows | /formations (contenu) | `/formations/level-3-ai-professional-workflows` | `/formations/level-3-ai-professional-workflows` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| Level 1 – Fondamentaux IA + « Métier » | /formations (contenu) | `/formations/level-1-fondamentaux-ia-metier` | `/formations/level-1-fondamentaux-ia-metier` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| Level 2 – IA + « Métier » Techniques avancées | /formations (contenu) | `/formations/level-2-ia-metier-techniques-avancees` | `/formations/level-2-ia-metier-techniques-avancees` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| Level 3 – AI + « Métier » Professionnel | /formations (contenu) | `/formations/level-3-ai-metier-professionnel` | `/formations/level-3-ai-metier-professionnel` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| Nova Digital Master Program | /formations (contenu) | `/formations/nova-digital-master-program` | `/formations/nova-digital-master-program` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| Formation Entrepreneuriale et Développement des Compétences | /formations (contenu) | `/formations/formation-entrepreneuriale-developpement-competences` | `/formations/formation-entrepreneuriale-developpement-competences` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| De l'Idée au Projet : Formation Entrepreneuriale & Compétences | /formations (contenu) | `/formations/de-l-idee-au-projet` | `/formations/de-l-idee-au-projet` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| IA Junior Academy (5–17 ans) | /formations (contenu) | `/formations/ia-junior-academy` | `/formations/ia-junior-academy` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| StartUp Booster : Incuber, Accélérer, Développer | /formations (contenu) | `/formations/startup-booster` | `/formations/startup-booster` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| Innovation, Intelligence Artificielle et Solutions Technologiques | /formations (contenu) | `/formations/innovation-ia-solutions-technologiques` | `/formations/innovation-ia-solutions-technologiques` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| Réinitialiser | /formations (contenu) | `/formations` | `/formations` | Conservé : catalogue complet | ✅ 200 | 1 |
+| Formations | /formations/de-l-idee-au-projet (contenu) | `/formations` | `/formations` | Conservé : catalogue complet | ✅ 200 | 1 |
+| Formation Entrepreneuriale et Développement des Compétences | /formations/de-l-idee-au-projet (contenu) | `/formations/formation-entrepreneuriale-developpement-competences` | `/formations/formation-entrepreneuriale-developpement-competences` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| StartUp Booster : Incuber, Accélérer, Développer | /formations/de-l-idee-au-projet (contenu) | `/formations/startup-booster` | `/formations/startup-booster` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| Innovation, Intelligence Artificielle et Solutions Technologiques | /formations/de-l-idee-au-projet (contenu) | `/formations/innovation-ia-solutions-technologiques` | `/formations/innovation-ia-solutions-technologiques` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| Formations | /formations/formation-entrepreneuriale-developpement-competences (contenu) | `/formations` | `/formations` | Conservé : catalogue complet | ✅ 200 | 1 |
+| De l'Idée au Projet : Formation Entrepreneuriale & Compétences | /formations/formation-entrepreneuriale-developpement-competences (contenu) | `/formations/de-l-idee-au-projet` | `/formations/de-l-idee-au-projet` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| StartUp Booster : Incuber, Accélérer, Développer | /formations/formation-entrepreneuriale-developpement-competences (contenu) | `/formations/startup-booster` | `/formations/startup-booster` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| Innovation, Intelligence Artificielle et Solutions Technologiques | /formations/formation-entrepreneuriale-developpement-competences (contenu) | `/formations/innovation-ia-solutions-technologiques` | `/formations/innovation-ia-solutions-technologiques` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| Formations | /formations/ia-junior-academy (contenu) | `/formations` | `/formations` | Conservé : catalogue complet | ✅ 200 | 1 |
+| Level 1 – AI Foundations | /formations/ia-junior-academy (contenu) | `/formations/level-1-ai-foundations` | `/formations/level-1-ai-foundations` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| Level 2 – AI Productivity & Automation | /formations/ia-junior-academy (contenu) | `/formations/level-2-ai-productivity-automation` | `/formations/level-2-ai-productivity-automation` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| Level 3 – AI Professional & Workflows | /formations/ia-junior-academy (contenu) | `/formations/level-3-ai-professional-workflows` | `/formations/level-3-ai-professional-workflows` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| Formations | /formations/innovation-ia-solutions-technologiques (contenu) | `/formations` | `/formations` | Conservé : catalogue complet | ✅ 200 | 1 |
+| Formation Entrepreneuriale et Développement des Compétences | /formations/innovation-ia-solutions-technologiques (contenu) | `/formations/formation-entrepreneuriale-developpement-competences` | `/formations/formation-entrepreneuriale-developpement-competences` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| De l'Idée au Projet : Formation Entrepreneuriale & Compétences | /formations/innovation-ia-solutions-technologiques (contenu) | `/formations/de-l-idee-au-projet` | `/formations/de-l-idee-au-projet` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| StartUp Booster : Incuber, Accélérer, Développer | /formations/innovation-ia-solutions-technologiques (contenu) | `/formations/startup-booster` | `/formations/startup-booster` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| Formations | /formations/level-1-ai-foundations (contenu) | `/formations` | `/formations` | Conservé : catalogue complet | ✅ 200 | 1 |
+| Level 2 – AI Productivity & Automation | /formations/level-1-ai-foundations (contenu) | `/formations/level-2-ai-productivity-automation` | `/formations/level-2-ai-productivity-automation` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| Level 3 – AI Professional & Workflows | /formations/level-1-ai-foundations (contenu) | `/formations/level-3-ai-professional-workflows` | `/formations/level-3-ai-professional-workflows` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| Level 1 – Fondamentaux IA + « Métier » | /formations/level-1-ai-foundations (contenu) | `/formations/level-1-fondamentaux-ia-metier` | `/formations/level-1-fondamentaux-ia-metier` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| Formations | /formations/level-1-fondamentaux-ia-metier (contenu) | `/formations` | `/formations` | Conservé : catalogue complet | ✅ 200 | 1 |
+| Level 2 – IA + « Métier » Techniques avancées | /formations/level-1-fondamentaux-ia-metier (contenu) | `/formations/level-2-ia-metier-techniques-avancees` | `/formations/level-2-ia-metier-techniques-avancees` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| Level 3 – AI + « Métier » Professionnel | /formations/level-1-fondamentaux-ia-metier (contenu) | `/formations/level-3-ai-metier-professionnel` | `/formations/level-3-ai-metier-professionnel` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| Level 1 – AI Foundations | /formations/level-1-fondamentaux-ia-metier (contenu) | `/formations/level-1-ai-foundations` | `/formations/level-1-ai-foundations` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| Formations | /formations/level-2-ai-productivity-automation (contenu) | `/formations` | `/formations` | Conservé : catalogue complet | ✅ 200 | 1 |
+| Level 1 – AI Foundations | /formations/level-2-ai-productivity-automation (contenu) | `/formations/level-1-ai-foundations` | `/formations/level-1-ai-foundations` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| Level 3 – AI Professional & Workflows | /formations/level-2-ai-productivity-automation (contenu) | `/formations/level-3-ai-professional-workflows` | `/formations/level-3-ai-professional-workflows` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| Level 1 – Fondamentaux IA + « Métier » | /formations/level-2-ai-productivity-automation (contenu) | `/formations/level-1-fondamentaux-ia-metier` | `/formations/level-1-fondamentaux-ia-metier` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| Formations | /formations/level-2-ia-metier-techniques-avancees (contenu) | `/formations` | `/formations` | Conservé : catalogue complet | ✅ 200 | 1 |
+| Level 1 – Fondamentaux IA + « Métier » | /formations/level-2-ia-metier-techniques-avancees (contenu) | `/formations/level-1-fondamentaux-ia-metier` | `/formations/level-1-fondamentaux-ia-metier` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| Level 3 – AI + « Métier » Professionnel | /formations/level-2-ia-metier-techniques-avancees (contenu) | `/formations/level-3-ai-metier-professionnel` | `/formations/level-3-ai-metier-professionnel` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| Level 1 – AI Foundations | /formations/level-2-ia-metier-techniques-avancees (contenu) | `/formations/level-1-ai-foundations` | `/formations/level-1-ai-foundations` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| Formations | /formations/level-3-ai-metier-professionnel (contenu) | `/formations` | `/formations` | Conservé : catalogue complet | ✅ 200 | 1 |
+| Level 1 – Fondamentaux IA + « Métier » | /formations/level-3-ai-metier-professionnel (contenu) | `/formations/level-1-fondamentaux-ia-metier` | `/formations/level-1-fondamentaux-ia-metier` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| Level 2 – IA + « Métier » Techniques avancées | /formations/level-3-ai-metier-professionnel (contenu) | `/formations/level-2-ia-metier-techniques-avancees` | `/formations/level-2-ia-metier-techniques-avancees` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| Level 1 – AI Foundations | /formations/level-3-ai-metier-professionnel (contenu) | `/formations/level-1-ai-foundations` | `/formations/level-1-ai-foundations` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| Formations | /formations/level-3-ai-professional-workflows (contenu) | `/formations` | `/formations` | Conservé : catalogue complet | ✅ 200 | 1 |
+| Level 1 – AI Foundations | /formations/level-3-ai-professional-workflows (contenu) | `/formations/level-1-ai-foundations` | `/formations/level-1-ai-foundations` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| Level 2 – AI Productivity & Automation | /formations/level-3-ai-professional-workflows (contenu) | `/formations/level-2-ai-productivity-automation` | `/formations/level-2-ai-productivity-automation` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| Level 1 – Fondamentaux IA + « Métier » | /formations/level-3-ai-professional-workflows (contenu) | `/formations/level-1-fondamentaux-ia-metier` | `/formations/level-1-fondamentaux-ia-metier` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| Formations | /formations/nova-digital-master-program (contenu) | `/formations` | `/formations` | Conservé : catalogue complet | ✅ 200 | 1 |
+| Level 1 – AI Foundations | /formations/nova-digital-master-program (contenu) | `/formations/level-1-ai-foundations` | `/formations/level-1-ai-foundations` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| Level 2 – AI Productivity & Automation | /formations/nova-digital-master-program (contenu) | `/formations/level-2-ai-productivity-automation` | `/formations/level-2-ai-productivity-automation` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| Level 3 – AI Professional & Workflows | /formations/nova-digital-master-program (contenu) | `/formations/level-3-ai-professional-workflows` | `/formations/level-3-ai-professional-workflows` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| Formations | /formations/startup-booster (contenu) | `/formations` | `/formations` | Conservé : catalogue complet | ✅ 200 | 1 |
+| Formation Entrepreneuriale et Développement des Compétences | /formations/startup-booster (contenu) | `/formations/formation-entrepreneuriale-developpement-competences` | `/formations/formation-entrepreneuriale-developpement-competences` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| De l'Idée au Projet : Formation Entrepreneuriale & Compétences | /formations/startup-booster (contenu) | `/formations/de-l-idee-au-projet` | `/formations/de-l-idee-au-projet` | Conservé : fiche de la formation | ✅ 200 | 1 |
+| Innovation, Intelligence Artificielle et Solutions Technologiques | /formations/startup-booster (contenu) | `/formations/innovation-ia-solutions-technologiques` | `/formations/innovation-ia-solutions-technologiques` | Conservé : fiche de la formation | ✅ 200 | 1 |
+
+## Tests exécutés
+
+| Test | Résultat |
+|---|---|
+| 16 destinations distinctes répondent 200 | ✅  |
+| ?categorie=innovation : 4 formation(s), chargement direct + actualisation | ✅ (4 puis 4) |
+| ?categorie=junior : 1 formation(s), chargement direct + actualisation | ✅ (1 puis 1) |
+| ?categorie=ia : 3 formation(s), chargement direct + actualisation | ✅ (3 puis 3) |
+| ?categorie=ia-metier : 3 formation(s), chargement direct + actualisation | ✅ (3 puis 3) |
+| ?categorie=parcours : 1 formation(s), chargement direct + actualisation | ✅ (1 puis 1) |
+| /formations : catalogue complet | ✅ (12) |
+| ?categorie=inconnue : filtre ignoré, tout le catalogue | ✅ 12 formations affichées — filtre « inconnue » non reconnu : tout le catalogue est affiché |
+| paramètres combinés ?categorie=ia&niveau=2 | ✅ (1) |
+| changement de filtre écrit ?categorie=innovation dans l’URL | ✅ /formations?categorie=innovation |
+| actualisation après changement de filtre | ✅  |
+| menu → IA + Métier (navigation interne) | ✅ (3) |
+| menu → Entrepreneuriat & innovation (2e navigation interne) | ✅ (4) |
+| bouton retour → accueil | ✅  |
+| bouton avant → catalogue filtré restauré | ✅ (4) |
+| menu Formations : aucune catégorie à 1 formation | ✅ /formations /formations?categorie=ia /formations?categorie=ia-metier /formations/nova-digital-master-program /formations?categorie=innovation /formations/ia-junior-academy |
+| aucune erreur JavaScript | ✅  |
+
+## Erreur 404 sur `/formations/?categorie=parcours`
+
+- **Cause** : la configuration `trailingSlash: false` (`src/config.yaml`, `vercel.json`). En local, `astro preview` (et `astro dev`) répondent **404 à `/formations/`** (avec barre finale) et **200 à `/formations`** — comportement reproductible, quel que soit le paramètre.
+- **Pourquoi « ça marchait au 2e essai »** : un serveur statique Python de test tournait en même temps sur le même port ; il acceptait la barre finale (et redirigeait même `/formations` vers `/formations/`). Les requêtes tombaient tantôt sur l'un, tantôt sur l'autre. **Incident du serveur local, pas du site.**
+- **Le site** : tous ses liens internes utilisent `/formations?categorie=…` **sans barre finale** (vérifié dans l'inventaire), et le filtre est appliqué côté navigateur à partir de l'URL : il fonctionne sur tout hébergement statique.
+- **Vercel** : `vercel.json` (`trailingSlash: false`, `cleanUrls: true`) fait rediriger `/formations/` vers `/formations` ; selon la documentation de Vercel, la chaîne de requête est conservée lors de cette redirection. **Non vérifié en production** (aucune URL déployée disponible) : à tester une fois en ligne avec `https://<domaine>/formations/?categorie=ia`.
+
+## Correction annexe
+
+Le script de filtres du catalogue ne s'exécutait qu'au premier chargement : après une navigation interne (View Transitions) vers le catalogue déjà visité, le filtre de l'URL pouvait ne pas être appliqué. Il est désormais relancé à chaque affichage de la page (`astro:page-load`), écrit le filtre choisi dans l'URL (sans nouvelle entrée d'historique, paramètres conservés) et signale une catégorie inconnue sans masquer le catalogue.
+
+## Validation finale (18 octobre 2026)
+
+### URL de production
+
+Aucune URL de production vérifiable : le projet n'est lié à aucun projet Vercel (pas de dossier `.vercel`), le dépôt distant est encore celui du template AstroWind, et le domaine configuré `www.novaconsort.com` sert toujours **l'ancien site Wix** (en-têtes `x-wix-request-id`, Cloudflare ; `/formations` y répond 404). **Vercel n'est donc pas validé.**
+
+### Tests locaux (`astro preview`, build de production, navigateur Edge automatisé)
+
+| URL | HTTP initial | Destination finale | Filtre attendu | Attendu | Obtenu | Après actualisation | Résultat |
+|---|---|---|---|---|---|---|---|
+| `/formations` | 200 | `/formations` | aucun | 12 | 12 | 12 | ✅ |
+| `/formations?categorie=ia` | 200 | `/formations?categorie=ia` | ia | 3 | 3 | 3 | ✅ |
+| `/formations?categorie=parcours` | 200 | `/formations?categorie=parcours` | parcours | 1 | 1 | 1 | ✅ |
+| `/formations/?categorie=ia` | 404 | — | ia | 3 | — | — | ⚠️ attendu en local (`trailingSlash: false`) ; en production, la redirection `/formations/` → `/formations` de `vercel.json` doit conserver `?categorie=ia` : **à vérifier sur Vercel** |
+| `/formations?categorie=ia&niveau=2` | 200 | `/formations?categorie=ia&niveau=2` | ia + niveau 2 | 1 | 1 | 1 | ✅ |
+
+Navigation (catalogue → sélection « IA + Métier » → actualisation → menu « Entrepreneuriat & innovation » → retour → avant) : URL et formations affichées restent synchronisées (3, 3, 4, 3, 4) ✅.
+Bande défilante : les 11 mots-clés ouvrent la fiche attendue ✅ (les liens « Inscriptions ouvertes » mènent à l'ancre `#inscription` de l'accueil, comme prévu).
+Erreurs JavaScript : aucune. Aucune correction de code n'a été nécessaire.
+
+### À tester après déploiement
+
+Remplacer `<domaine>` par l'URL Vercel : `curl -I "https://<domaine>/formations/?categorie=ia"` doit répondre **308** vers `/formations?categorie=ia` (paramètre conservé), puis la page doit afficher 3 formations ; refaire les 5 URL ci-dessus.

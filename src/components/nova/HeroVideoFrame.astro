@@ -1,0 +1,99 @@
+---
+/**
+ * Vidéo d'IA du hero (cadre 4/5 à la place de la photo) : scène 3D (réseau neuronal) rendue hors ligne,
+ * source dans tools/hero-video/ (palette bleue, `SCENE_QUERY="pal=blue&cx=0.5&unit=0.25&shade=0"`).
+ * - L'image d'affiche (première image de la vidéo) s'affiche tout de suite ; le texte du hero est du HTML réel.
+ * - La lecture démarre 2,5 s après le chargement de la page, seulement sans mouvement réduit ni économie de données ;
+ *   pause hors écran et onglet inactif. Décoratif : aria-hidden.
+ */
+---
+
+<div class="hero-vframe relative isolate overflow-hidden bg-navy" aria-hidden="true">
+  <img class="hero-vframe__poster" src="/media/hero-ia-poster.webp" alt="" width="640" height="800" fetchpriority="high" decoding="async" />
+  <video class="hero-vframe__media" muted loop playsinline preload="none" disablepictureinpicture tabindex="-1" data-hero-video data-src="/media/hero-ia.mp4"></video>
+</div>
+
+<style>
+  .hero-vframe {
+    aspect-ratio: 4 / 5;
+    border-radius: 1.75rem 1.75rem 1.75rem 0.5rem;
+    box-shadow: 0 50px 90px -40px rgb(0 0 0 / 70%);
+  }
+  .hero-vframe::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(200deg, rgb(17 17 17 / 8%), rgb(17 17 17 / 40%) 90%);
+    pointer-events: none;
+  }
+  .hero-vframe__poster,
+  .hero-vframe__media {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .hero-vframe__media {
+    opacity: 0;
+    transition: opacity 0.8s ease;
+  }
+  .hero-vframe__media.is-playing {
+    opacity: 1;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-vframe__media {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const cleanups: Array<() => void> = [];
+
+  const setup = (video: HTMLVideoElement) => {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const saveData = (navigator as any).connection?.saveData === true;
+    if (reduce || saveData) return; // image fixe seulement
+
+    let onScreen = true;
+    let loaded = false;
+    const play = () => {
+      if (!onScreen || document.hidden) return;
+      if (!loaded) {
+        loaded = true;
+        video.src = video.dataset.src || '';
+      }
+      video.play().then(() => video.classList.add('is-playing')).catch(() => {});
+    };
+    const pause = () => video.pause();
+
+    const io = new IntersectionObserver(
+      ([e]) => {
+        onScreen = e.isIntersecting;
+        onScreen ? play() : pause();
+      },
+      { threshold: 0.05 }
+    );
+    io.observe(video);
+    const onVis = () => (document.hidden ? pause() : play());
+    document.addEventListener('visibilitychange', onVis);
+
+    // démarrage différé : 2,5 s après le chargement, hors de la fenêtre où la page se construit (le poster reste affiché)
+    const start = () => setTimeout(play, 2500);
+    if (document.readyState === 'complete') start();
+    else window.addEventListener('load', start, { once: true });
+
+    cleanups.push(() => {
+      io.disconnect();
+      document.removeEventListener('visibilitychange', onVis);
+      video.pause();
+    });
+  };
+
+  const init = () => document.querySelectorAll<HTMLVideoElement>('[data-hero-video]').forEach(setup);
+  document.addEventListener('astro:page-load', init);
+  document.addEventListener('astro:before-swap', () => {
+    while (cleanups.length) cleanups.pop()!();
+  });
+</script>

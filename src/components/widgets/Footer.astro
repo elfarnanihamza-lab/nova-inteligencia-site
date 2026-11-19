@@ -1,0 +1,238 @@
+---
+import { Icon } from 'astro-icon/components';
+import { getHomePermalink } from '~/utils/permalinks';
+import Logo from '~/components/Logo.astro';
+import { SITE_CONFIG, FOOTER_VARIANT } from '~/site.config';
+
+// Démo sans webhook : la newsletter n'envoie rien (aucune requête, aucune ouverture de messagerie).
+const nlDisabled = SITE_CONFIG.form.disabled;
+import { ph, visible } from '~/utils/placeholders';
+
+interface Link {
+  text?: string;
+  href?: string;
+  ariaLabel?: string;
+  icon?: string;
+}
+
+interface Links {
+  title?: string;
+  links: Array<Link>;
+}
+
+export interface Props {
+  links: Array<Links>;
+  secondaryLinks: Array<Link>;
+  socialLinks: Array<Link>;
+  footNote?: string;
+  theme?: string;
+}
+
+const { socialLinks = [], secondaryLinks = [], links = [], footNote = '' } = Astro.props;
+const c = SITE_CONFIG.contact;
+const variant = FOOTER_VARIANT;
+---
+
+<footer class:list={['nova-footer cv-auto relative overflow-hidden text-[#e5e5df] not-prose', `footer-${variant}`]}>
+  <!-- Ligne lumineuse animée -->
+  <div class="footer-line absolute inset-x-0 top-0 h-px" aria-hidden="true"></div>
+  <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+    <div class="halo -bottom-48 left-[10%] h-[30rem] w-[40rem]" style="--halo:#b8cc1a2e;animation-duration:24s"></div>
+    <div class="bg-dots absolute inset-0 opacity-25"></div>
+  </div>
+
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6">
+    <!-- Newsletter -->
+    <div class="grid items-center gap-6 border-b border-white/10 py-12 md:py-14 lg:grid-cols-2 lg:gap-12">
+      <div>
+        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-[#e4f84a]">Newsletter</p>
+        <p class="mt-3 text-2xl font-bold tracking-tight text-white md:text-[1.75rem]">
+          Les nouvelles sessions et ressources IA, dans votre boîte mail
+        </p>
+      </div>
+      <form class="newsletter-form" data-endpoint={SITE_CONFIG.form.endpoint} data-email={c.email} data-demo-disabled={nlDisabled ? '' : undefined} novalidate>
+        <div class="flex flex-col gap-3 sm:flex-row">
+          <label for="nl-email" class="sr-only">Votre adresse e-mail</label>
+          <input
+            id="nl-email"
+            name="email"
+            type="email"
+            required
+            maxlength="254"
+            autocomplete="email"
+            disabled={nlDisabled}
+            placeholder="vous@exemple.com"
+            class="min-w-0 flex-1 rounded-full border border-white/15 bg-white/[0.06] px-5 py-3.5 text-base text-white placeholder:text-[#9aa8c1] focus:border-[#111111] focus:outline-none focus:ring-4 focus:ring-[#111111]/25"
+            aria-describedby="nl-help"
+          />
+          <input type="text" name="website" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
+          <button type="submit" class="btn-primary shrink-0 disabled:cursor-not-allowed disabled:opacity-55" disabled={nlDisabled}>S'inscrire</button>
+        </div>
+        <p id="nl-help" class="mt-3 text-sm text-[#a8a8a0]" role="status" aria-live="polite">
+          {
+            nlDisabled ? (
+              <>Version de démonstration : l'inscription à la newsletter est désactivée.</>
+            ) : (
+              <>
+                Vos données restent confidentielles. <a href="/politique-de-confidentialite" class="flex min-h-11 w-fit items-center underline underline-offset-2 hover:text-white">Lire notre politique de confidentialité</a>
+              </>
+            )
+          }
+        </p>
+      </form>
+    </div>
+
+    <!-- Grille -->
+    <div class="grid grid-cols-2 gap-x-6 gap-y-10 py-14 md:grid-cols-4 lg:grid-cols-12 lg:py-16">
+      <div class="col-span-2 md:col-span-4 lg:col-span-4">
+        <a class="inline-block" href={getHomePermalink()}>
+          <Logo variant="light" full height={176} class="h-[150px] w-auto md:h-[176px]" loading="lazy" />
+        </a>
+        <p class="mt-6 max-w-sm leading-relaxed">{SITE_CONFIG.description}</p>
+        {
+          socialLinks.length > 0 && (
+            <div class="mt-7">
+              <p class="text-xs font-semibold uppercase tracking-[0.18em] text-white">Suivez-nous</p>
+              <ul class="mt-4 flex gap-2">
+                {socialLinks.map(({ ariaLabel, href, icon }) => (
+                  <li>
+                    <a
+                      class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-white/80 transition-colors hover:border-white/50 hover:text-white"
+                      aria-label={ariaLabel}
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {icon && <Icon name={icon} class="h-5 w-5" />}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )
+        }
+      </div>
+
+      {
+        links.map(({ title, links }) => (
+          <nav class="lg:col-span-2" aria-label={title}>
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-white">{title}</p>
+            <ul class="mt-3 text-[0.95rem]">
+              {links.map(({ text, href, ariaLabel }) => (
+                <li>
+                  <a class="inline-flex min-h-11 items-center transition-colors hover:text-white" href={href} aria-label={ariaLabel}>
+                    <Fragment set:html={text} />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        ))
+      }
+
+      <div class="col-span-2 md:col-span-1 lg:col-span-2">
+        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-white">Contact</p>
+        <address class="mt-5 space-y-3 text-[0.95rem] not-italic">
+          <p>{c.address.street}, {c.address.city}, {c.address.countryName}</p>
+          <p><a class="inline-flex min-h-11 items-center break-all transition-colors hover:text-white" href={`mailto:${c.email}`}>{c.email}</a></p>
+          {visible(c.phone) && <p set:html={ph(c.phone)} />}
+        </address>
+      </div>
+    </div>
+
+    <!-- Mentions -->
+    <div class="flex flex-col gap-4 border-t border-white/10 pt-7 pb-24 text-sm md:flex-row md:items-center md:justify-between">
+      <p><Fragment set:html={footNote} /> <span class="text-[#a8a8a0]">— {SITE_CONFIG.slogan}.</span></p>
+      <ul class="flex flex-wrap gap-x-6 gap-y-2">
+        {
+          secondaryLinks.map(({ text, href }) => (
+            <li>
+              <a class="inline-flex min-h-11 items-center transition-colors hover:text-white" href={href} set:html={text} />
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer-nuit {
+    background: linear-gradient(180deg, #000000 0%, #111111 55%, #111111 100%);
+  }
+  .footer-indigo {
+    background:
+      radial-gradient(70% 60% at 85% 0%, rgb(17 17 17 / 22%), transparent 70%),
+      linear-gradient(180deg, #111111 0%, #0d2450 60%, #10306c 100%);
+  }
+  .footer-line {
+    background: linear-gradient(90deg, transparent, rgb(17 17 17 / 75%) 30%, rgb(228 248 74 / 75%) 60%, rgb(243 107 18 / 80%) 85%, transparent);
+  }
+  .footer-line::after {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 0;
+    width: 30%;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #fff, transparent);
+    opacity: 0.75;
+    animation: footer-scan 6s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  }
+  @keyframes footer-scan {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(380%);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .footer-line::after {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const init = () => {
+    document.querySelectorAll<HTMLFormElement>('form.newsletter-form:not([data-ready])').forEach((form) => {
+      form.dataset.ready = '1';
+      const help = form.querySelector<HTMLElement>('#nl-help')!;
+      const input = form.querySelector<HTMLInputElement>('input[name="email"]')!;
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (form.hasAttribute('data-demo-disabled')) return;
+        const email = input.value.trim();
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+          input.setAttribute('aria-invalid', 'true');
+          help.textContent = 'Adresse e-mail invalide (ex. vous@exemple.com).';
+          input.focus();
+          return;
+        }
+        input.setAttribute('aria-invalid', 'false');
+        if ((form.querySelector('input[name="website"]') as HTMLInputElement).value) return;
+        const endpoint = form.dataset.endpoint;
+        if (endpoint) {
+          help.textContent = 'Inscription en cours…';
+          try {
+            const res = await fetch(endpoint, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+              body: JSON.stringify({ type: 'newsletter', email, page: location.href, date: new Date().toISOString(), source: 'site-nova' }),
+            });
+            if (!res.ok) throw new Error();
+            form.reset();
+            help.textContent = 'Merci ! Votre inscription est enregistrée.';
+          } catch {
+            help.textContent = "L'inscription a échoué. Réessayez dans un instant.";
+          }
+        } else {
+          location.href = `mailto:${form.dataset.email}?subject=${encodeURIComponent('Inscription à la newsletter')}&body=${encodeURIComponent('Merci de m’inscrire à la newsletter : ' + email)}`;
+          help.textContent = 'Votre messagerie s’ouvre pour confirmer l’inscription.';
+        }
+      });
+    });
+  };
+  document.addEventListener('astro:page-load', init);
+</script>

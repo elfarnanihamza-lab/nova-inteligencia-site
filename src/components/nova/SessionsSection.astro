@@ -1,0 +1,729 @@
+---
+/**
+ * Section « Prochaines sessions » de l'accueil.
+ * - Formations listées dans src/data/sessions.ts ; informations pratiques lues dans chaque fiche (source unique).
+ * - Aucune date, durée, modalité ou tarif inventé : un champ « [À COMPLÉTER] » n'est pas affiché, la date devient
+ *   « À confirmer » et la carte propose d'être informé (page contact, formation présélectionnée).
+ * - Chaque carte : grande photo, couleur d'accent propre à la formation (bordure, icônes, détails) ; l'orange Nova
+ *   reste la couleur des boutons.
+ * - Carrousel : défilement continu et lent par une seule boucle requestAnimationFrame (propriété `transform`).
+ *   Ordinateur : mouvement continu ; mobile (< 640 px) : une carte centrée à la fois, qui glisse toutes les 5 s.
+ *   Boucle sans saut : la série est recopiée en JavaScript ; les copies sont `inert` et masquées aux lecteurs d'écran.
+ *   Pause : survol, focus clavier, bouton, hors écran, onglet masqué. Balayage tactile horizontal (le défilement
+ *   vertical reste libre). Flèches discrètes. Sans JavaScript ou avec prefers-reduced-motion : liste défilable.
+ */
+import { getCollection } from 'astro:content';
+import { Icon } from 'astro-icon/components';
+import Photo from '~/components/nova/Photo.astro';
+import { ACCENTS, SESSIONS } from '~/data/sessions';
+import { formationHref } from '~/utils/formation-links';
+import { formatPrice, hasPh, priceKind } from '~/utils/placeholders';
+
+const all = await getCollection('formations', ({ data }) => !data.draft);
+const known = (v?: string) => (v && !hasPh(v) ? v : undefined);
+const cards = SESSIONS.map((s) => {
+  const f = all.find((e) => e.id === s.slug);
+  if (!f) throw new Error(`Prochaines sessions : formation introuvable « ${s.slug} » (src/data/sessions.ts)`);
+  const d = f.data;
+  const a = ACCENTS[s.accent];
+  return {
+    ...s,
+    // affichage : espaces insécables à l'intérieur des guillemets (« Métier » ne se coupe pas) ; donnée inchangée
+    title: d.title.replace(/« /g, '« ').replace(/ »/g, ' »'),
+    resume: d.resume,
+    href: formationHref(s.slug),
+    notify: `/contact?formation=${s.slug}`,
+    date: known(d.prochaineSession),
+    duree: known(d.duree),
+    format: known(d.modalites),
+    niveau: known(d.niveau),
+    // tarif affiché seulement s'il est gratuit ou confirmé en dirhams (jamais de montant en dollars)
+    free: priceKind(d.prix, d.devise) === 'free',
+    prix: priceKind(d.prix, d.devise) === 'paid' ? formatPrice(d.prix, d.devise) : undefined,
+    style: `--ac:${a.ac};--ink:${a.ink}`,
+  };
+});
+---
+
+<section class="sessions cv-auto relative overflow-hidden bg-offwhite" aria-labelledby="sessions-title">
+  <div class="sessions-bg pointer-events-none absolute inset-0" aria-hidden="true"></div>
+  <div class="relative mx-auto max-w-7xl px-4 pt-16 sm:px-6 md:pt-24 lg:pt-28">
+    <header class="mx-auto max-w-3xl text-center">
+      <p class="inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.2em] text-ink">
+        <span class="h-px w-8 bg-brand-gradient" aria-hidden="true"></span>
+        Prochaines sessions
+        <span class="h-px w-8 bg-brand-gradient" aria-hidden="true"></span>
+      </p>
+      <h2 id="sessions-title" class="mt-4 font-heading text-[2.1rem] font-bold leading-[1.08] tracking-[-0.03em] text-heading text-balance md:text-[3rem]">
+        Maîtrisez l'IA. <span class="text-gradient">Transformez votre métier.</span>
+      </h2>
+      <p class="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-muted">
+        Des formations concrètes pour intégrer l'intelligence artificielle dans votre activité et gagner en efficacité au quotidien.
+      </p>
+    </header>
+  </div>
+
+  <div class="sessions-stage relative mt-12 md:mt-14" data-sessions>
+    <div class="sessions-viewport" data-sessions-viewport tabindex="0" aria-label="Prochaines sessions : faites défiler horizontalement">
+      <ul class="sessions-track" role="list" data-sessions-track>
+        {
+          cards.map((c) => (
+            <li class="sessions-slide">
+              <article class="session-card" style={c.style} aria-labelledby={`session-${c.slug}`}>
+                <span class="session-topline" aria-hidden="true"></span>
+                <div class="session-media">
+                  <Photo
+                    name={c.photo}
+                    alt=""
+                    aspect="3/2"
+                    tint={false}
+                    widths={[400, 640, 800]}
+                    sizes="(min-width: 1024px) 400px, (min-width: 640px) 384px, 86vw"
+                    position={c.position}
+                    class="h-full w-full"
+                  />
+                  <span class="session-badge">
+                    <span class="session-badge-dot" aria-hidden="true"></span>
+                    {c.badge}
+                  </span>
+                  {c.free && <span class="session-free">Gratuit</span>}
+                  {c.date && (
+                    <span class="session-date">
+                      <Icon name="tabler:calendar-event" aria-hidden="true" />
+                      {c.date}
+                    </span>
+                  )}
+                </div>
+                <div class="session-body">
+                  <h3 id={`session-${c.slug}`} class="line-clamp-3 text-[1.2rem] font-bold leading-snug tracking-[-0.01em] text-heading [overflow-wrap:anywhere]" dir="auto" title={c.title}>
+                    {c.title}
+                  </h3>
+                  <p class="session-desc mt-2.5 text-[0.95rem] leading-relaxed text-muted [overflow-wrap:anywhere]" dir="auto">{c.resume}</p>
+                  <dl class="session-facts">
+                    <div>
+                      <dt>
+                        <Icon name="tabler:calendar-event" aria-hidden="true" />
+                        Prochaine session
+                      </dt>
+                      <dd class:list={[!c.date && 'is-pending']}>{c.date ?? 'À confirmer'}</dd>
+                    </div>
+                    {c.duree && (
+                      <div>
+                        <dt>
+                          <Icon name="tabler:clock-hour-4" aria-hidden="true" />
+                          Durée
+                        </dt>
+                        <dd>{c.duree}</dd>
+                      </div>
+                    )}
+                    {c.format && (
+                      <div>
+                        <dt>
+                          <Icon name="tabler:map-pin" aria-hidden="true" />
+                          Format
+                        </dt>
+                        <dd>{c.format}</dd>
+                      </div>
+                    )}
+                    {c.niveau && (
+                      <div>
+                        <dt>
+                          <Icon name="tabler:stairs-up" aria-hidden="true" />
+                          Niveau
+                        </dt>
+                        <dd>{c.niveau}</dd>
+                      </div>
+                    )}
+                    {c.prix && (
+                      <div>
+                        <dt>
+                          <Icon name="tabler:tag" aria-hidden="true" />
+                          Tarif
+                        </dt>
+                        <dd>{c.prix}</dd>
+                      </div>
+                    )}
+                  </dl>
+                  <div class="session-actions">
+                    <a class="btn-primary session-cta" href={c.href}>
+                      Découvrir la formation
+                      <Icon name="tabler:arrow-right" class="h-5 w-5" aria-hidden="true" />
+                      <span class="sr-only"> : {c.title}</span>
+                    </a>
+                    {!c.date && (
+                      <a class="session-notify" href={c.notify}>
+                        <Icon name="tabler:bell" aria-hidden="true" />
+                        Être informé de la prochaine session
+                        <span class="sr-only"> : {c.title}</span>
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </article>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div class="sessions-controls" hidden data-sessions-controls>
+      <button type="button" class="sessions-arrow" data-sessions-prev aria-label="Formation précédente">
+        <Icon name="tabler:chevron-left" aria-hidden="true" />
+      </button>
+      <button type="button" class="sessions-arrow" data-sessions-toggle aria-label="Mettre en pause le défilement des formations">
+        <Icon name="tabler:player-pause-filled" class="sessions-ico-pause" aria-hidden="true" />
+        <Icon name="tabler:player-play-filled" class="sessions-ico-play" aria-hidden="true" />
+      </button>
+      <button type="button" class="sessions-arrow" data-sessions-next aria-label="Formation suivante">
+        <Icon name="tabler:chevron-right" aria-hidden="true" />
+      </button>
+    </div>
+  </div>
+
+  <div class="relative mx-auto max-w-7xl px-4 pb-16 pt-6 sm:px-6 md:pb-24 lg:pb-28">
+    <p class="text-center text-base text-muted">Vous cherchez une autre formation&nbsp;?</p>
+    <p class="mt-1 flex flex-wrap items-center justify-center gap-x-6">
+      <a class="inline-flex min-h-11 items-center font-semibold text-ink underline underline-offset-4" href="/formations">Voir le catalogue complet</a>
+      <a class="inline-flex min-h-11 items-center font-semibold text-ink underline underline-offset-4" href="/contact">Être informé des prochaines sessions</a>
+    </p>
+  </div>
+</section>
+
+<style>
+  .sessions-bg {
+    background:
+      radial-gradient(40rem 22rem at 50% 0%, rgb(228 248 74 / 8%), transparent 70%),
+      linear-gradient(rgb(17 17 17 / 4.5%) 1px, transparent 1px) 0 0 / 44px 44px,
+      linear-gradient(90deg, rgb(17 17 17 / 4.5%) 1px, transparent 1px) 0 0 / 44px 44px;
+    -webkit-mask-image: linear-gradient(to bottom, #000, transparent 55%);
+    mask-image: linear-gradient(to bottom, #000, transparent 55%);
+  }
+
+  /* Liste défilable par défaut (sans JavaScript ou avec mouvement réduit) */
+  .sessions-viewport {
+    overscroll-behavior-x: contain;
+    position: relative;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    padding: 0.5rem 0 2rem;
+  }
+  .sessions-viewport::-webkit-scrollbar {
+    display: none;
+  }
+  .sessions-viewport:focus-visible {
+    outline: 3px solid rgb(17 17 17 / 35%);
+    outline-offset: -3px;
+  }
+  .sessions-track {
+    --gap: 1.5rem;
+    --card: min(86vw, 24rem);
+    display: flex;
+    gap: var(--gap);
+    width: max-content;
+    padding-inline: max(1rem, calc((100vw - 80rem) / 2 + 1.5rem));
+  }
+  .sessions-slide {
+    display: flex;
+    width: var(--card);
+    flex-shrink: 0;
+    scroll-snap-align: center;
+  }
+  @media (min-width: 1024px) {
+    .sessions-track {
+      --card: 24.5rem;
+      --gap: 1.75rem;
+    }
+  }
+  /* Défilement continu (JavaScript actif, mouvement autorisé) */
+  .sessions-stage.is-auto .sessions-viewport {
+    overflow: hidden;
+    scroll-snap-type: none;
+    touch-action: pan-y; /* le balayage horizontal est géré par le script, le défilement vertical reste natif */
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+  }
+  .sessions-stage.is-auto .sessions-track {
+    padding-inline: 0;
+    will-change: transform;
+  }
+  .sessions-stage.is-dragging .sessions-viewport {
+    cursor: grabbing;
+  }
+
+  /* Carte */
+  .session-card {
+    position: relative;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid #e3eaf5;
+    border-radius: 1.5rem;
+    background: #fff;
+    box-shadow: 0 1px 0 rgb(17 17 17 / 3%), 0 18px 40px -30px rgb(17 17 17 / 45%);
+    transition:
+      transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 0.45s ease,
+      border-color 0.35s ease;
+  }
+  .session-topline {
+    position: absolute;
+    inset: 0 0 auto 0;
+    z-index: 3;
+    height: 4px;
+    background: var(--ac);
+  }
+  .session-card:focus-within {
+    border-color: #d5e0f0;
+    box-shadow: 0 1px 0 rgb(17 17 17 / 3%), 0 34px 60px -34px rgb(17 17 17 / 42%);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+  .session-card:hover {
+    border-color: #d5e0f0;
+    box-shadow: 0 1px 0 rgb(17 17 17 / 3%), 0 34px 60px -34px rgb(17 17 17 / 42%);
+  }
+}
+  .session-media {
+    position: relative;
+    aspect-ratio: 3 / 2;
+    overflow: hidden;
+    background: #111111;
+  }
+  .session-media :global(.photo-frame) {
+    position: absolute;
+    inset: 0;
+  }
+  .session-media::after {
+    /* léger voile en bas de la photo : la lisibilité des pastilles ne dépend pas de la photo */
+    content: '';
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 38%;
+    background: linear-gradient(to top, rgb(5 19 56 / 38%), transparent);
+    pointer-events: none;
+  }
+  .session-badge {
+    position: absolute;
+    left: 1rem;
+    bottom: 1rem;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.38rem 0.8rem 0.38rem 0.65rem;
+    border-radius: 9999px;
+    background: #fff;
+    color: #111111;
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    box-shadow: 0 8px 18px -10px rgb(5 19 56 / 60%);
+  }
+  .session-badge-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+    background: var(--ac);
+  }
+  .session-free {
+    position: absolute;
+    right: 1rem;
+    top: 1.15rem;
+    z-index: 2;
+    padding: 0.35rem 0.75rem;
+    border-radius: 9999px;
+    background: #047857;
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .session-free ~ .session-date {
+    top: 3.2rem;
+  }
+  .session-date {
+    position: absolute;
+    right: 1rem;
+    top: 1.15rem;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.7rem;
+    border-radius: 9999px;
+    background: #111111;
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 700;
+  }
+  .session-date :global(svg) {
+    width: 0.9rem;
+    height: 0.9rem;
+  }
+  .session-body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: 1.35rem 1.4rem 1.5rem;
+  }
+  .session-desc {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+  }
+  .session-facts {
+    display: grid;
+    gap: 0.55rem;
+    margin-top: 1.1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #edf1f8;
+    font-size: 0.86rem;
+  }
+  .session-facts > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .session-facts dt {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    flex-shrink: 0;
+    color: var(--aw-color-text-muted);
+  }
+  .session-facts dt :global(svg) {
+    width: 1rem;
+    height: 1rem;
+    color: var(--ac);
+  }
+  .session-facts dd {
+    color: var(--aw-color-text-heading);
+    font-weight: 600;
+    text-align: right;
+  }
+  .session-facts dd.is-pending {
+    color: var(--ink);
+  }
+  .session-actions {
+    display: grid;
+    gap: 0.65rem;
+    margin-top: auto;
+    padding-top: 1.3rem;
+  }
+  .session-cta {
+    justify-content: center;
+    width: 100%;
+  }
+  .session-notify {
+    display: block;
+    min-height: 2.75rem;
+    padding: 0.62rem 0.75rem;
+    border-radius: 9999px;
+    color: var(--ink);
+    font-size: 0.88rem;
+    font-weight: 600;
+    text-align: center;
+    text-wrap: balance;
+    transition:
+      background-color 0.25s ease,
+      color 0.25s ease;
+  }
+  .session-notify :global(svg) {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    margin-right: 0.35rem;
+    vertical-align: -0.15em;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @media (hover: hover) and (pointer: fine) {
+  .session-notify:hover {
+    background: #f1f5fb;
+    color: #111111;
+  }
+}
+  @media (hover: hover) and (pointer: fine) {
+  .session-notify:hover :global(svg) {
+    transform: rotate(-14deg);
+  }
+}
+  .session-notify:active,
+  .sessions-arrow:active {
+    transform: scale(0.97);
+  }
+  .session-notify:focus-visible {
+    outline: 3px solid rgb(17 17 17 / 40%);
+    outline-offset: 2px;
+  }
+
+  /* Commandes discrètes : précédent, pause/reprise, suivant (affichées seulement avec JavaScript) */
+  .sessions-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: -0.25rem;
+  }
+  .sessions-controls[hidden] {
+    display: none;
+  }
+  .sessions-arrow {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1px solid #d6e3f4;
+    border-radius: 9999px;
+    background: #fff;
+    color: #111111;
+    transition:
+      transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 0.25s ease,
+      background-color 0.25s ease;
+  }
+  .sessions-arrow :global(svg) {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+  @media (hover: hover) and (pointer: fine) {
+  .sessions-arrow:hover {
+    transform: translateY(-2px);
+    border-color: #b8cc1a;
+    background: #f5fbff;
+  }
+}
+  .sessions-arrow:focus-visible {
+    outline: 3px solid rgb(17 17 17 / 40%);
+    outline-offset: 2px;
+  }
+  .sessions-arrow :global(.sessions-ico-play),
+  .is-user-paused .sessions-arrow :global(.sessions-ico-pause) {
+    display: none;
+  }
+  .is-user-paused .sessions-arrow :global(.sessions-ico-play) {
+    display: block;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .session-card,
+    .sessions-arrow,
+    .session-notify :global(svg) {
+      transition: none;
+    }
+    .session-card:hover,
+    .sessions-arrow:hover {
+      transform: none;
+    }
+    .session-card:hover .session-media :global(.photo-img),
+    .session-card:focus-within .session-media :global(.photo-img) {
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  const SPEED = 26; // px/s : lent et régulier (mode continu)
+  const HOLD = 5000; // ms d'affichage d'une carte avant la suivante (mode carte par carte, mobile)
+  const cleanups: Array<() => void> = [];
+  const ease = (p: number) => 1 - Math.pow(1 - p, 3);
+
+  const setup = (stage: HTMLElement) => {
+    const viewport = stage.querySelector<HTMLElement>('[data-sessions-viewport]')!;
+    const track = stage.querySelector<HTMLElement>('[data-sessions-track]')!;
+    const controls = stage.querySelector<HTMLElement>('[data-sessions-controls]')!;
+    const prev = stage.querySelector<HTMLButtonElement>('[data-sessions-prev]')!;
+    const next = stage.querySelector<HTMLButtonElement>('[data-sessions-next]')!;
+    const toggle = stage.querySelector<HTMLButtonElement>('[data-sessions-toggle]')!;
+    const originals = [...track.children] as HTMLElement[];
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Mouvement réduit : liste défilable, les flèches font défiler d'une carte, pas de mouvement automatique.
+    if (reduce) {
+      controls.hidden = false;
+      toggle.hidden = true;
+      const by = (dir: number) => viewport.scrollBy({ left: dir * (originals[0].offsetWidth + 24), behavior: 'auto' });
+      prev.addEventListener('click', () => by(-1));
+      next.addEventListener('click', () => by(1));
+      return;
+    }
+
+    stage.classList.add('is-auto');
+    controls.hidden = false;
+
+    // Copies pour une boucle continue : inertes et masquées aux technologies d'assistance.
+    let setW = 0, step = 0, center = 0, clones: HTMLElement[] = [];
+    let mode: 'flow' | 'step' = 'flow';
+    const measure = () => {
+      const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
+      step = originals[0].offsetWidth + gap;
+      setW = step * originals.length;
+      // mobile : une carte principale centrée, avec un aperçu des voisines
+      mode = viewport.clientWidth < 640 ? 'step' : 'flow';
+      center = mode === 'step' ? (viewport.clientWidth - originals[0].offsetWidth) / 2 : 0;
+      const need = Math.ceil((viewport.clientWidth + setW) / setW); // séries nécessaires pour toujours couvrir l'écran
+      const have = 1 + clones.length / originals.length;
+      for (let k = have; k < need; k++) {
+        for (const o of originals) {
+          const c = o.cloneNode(true) as HTMLElement;
+          c.setAttribute('aria-hidden', 'true');
+          c.setAttribute('inert', '');
+          c.dataset.clone = '';
+          track.appendChild(c);
+          clones.push(c);
+        }
+      }
+    };
+
+    let x = 0; // décalage courant (px), ramené dans [0, setW[
+    let hold = 0; // temps passé sur la carte courante (mode carte par carte)
+    let raf = 0, last = 0, running = false;
+    let userPaused = false, visible = false, focused = false;
+    let nudge: { from: number; to: number; t0: number } | null = null;
+    let drag: { id: number; x0: number; y0: number; start: number; active: boolean } | null = null;
+    let resumeAt = 0;
+    const canHover = window.matchMedia('(hover: hover)').matches;
+    const hovered = () => canHover && stage.matches(':hover');
+    const moving = () => !userPaused && !focused && !hovered() && !drag && performance.now() >= resumeAt;
+
+    const render = () => {
+      const v = (((x - center) % setW) + setW) % setW; // la boucle reste continue : les copies prennent le relais
+      track.style.transform = `translate3d(${-v}px, 0, 0)`;
+    };
+    const frame = (now: number) => {
+      raf = requestAnimationFrame(frame);
+      const dt = Math.min(0.05, (now - last) / 1000);
+      last = now;
+      if (nudge) {
+        const p = Math.min(1, (now - nudge.t0) / 420);
+        x = nudge.from + (nudge.to - nudge.from) * ease(p);
+        if (p >= 1) nudge = null;
+      } else if (moving()) {
+        if (mode === 'flow') x += SPEED * dt;
+        else if ((hold += dt * 1000) >= HOLD) {
+          hold = 0;
+          nudge = { from: x, to: (Math.floor(x / step + 0.001) + 1) * step, t0: now };
+        }
+      }
+      render();
+    };
+    const start = () => {
+      if (running || !visible || document.hidden) return;
+      running = true;
+      last = performance.now();
+      raf = requestAnimationFrame(frame);
+    };
+    const stop = () => {
+      running = false;
+      cancelAnimationFrame(raf);
+    };
+
+    // Flèches : glissement d'une carte (aligné sur la grille des cartes), puis reprise du défilement
+    const go = (dir: 1 | -1) => {
+      const base = nudge ? nudge.to : x;
+      const target = dir === 1 ? (Math.floor(base / step + 0.001) + 1) * step : (Math.ceil(base / step - 0.001) - 1) * step;
+      nudge = { from: x, to: target, t0: performance.now() };
+      hold = 0;
+      resumeAt = performance.now() + 2500;
+      start();
+    };
+    prev.addEventListener('click', () => go(-1));
+    next.addEventListener('click', () => go(1));
+    toggle.addEventListener('click', () => {
+      userPaused = !userPaused;
+      stage.classList.toggle('is-user-paused', userPaused);
+      toggle.setAttribute('aria-label', userPaused ? 'Reprendre le défilement des formations' : 'Mettre en pause le défilement des formations');
+    });
+    // le focus clavier n'est jamais déplacé ; le défilement s'arrête tant qu'il se trouve dans la zone
+    stage.addEventListener('focusin', () => (focused = true));
+    stage.addEventListener('focusout', (e) => {
+      if (!stage.contains(e.relatedTarget as Node)) focused = false;
+    });
+
+    // Balayage (doigt ou souris) : horizontal seulement, le défilement vertical de la page reste libre
+    viewport.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0) return;
+      drag = { id: e.pointerId, x0: e.clientX, y0: e.clientY, start: x, active: false };
+      nudge = null;
+    });
+    viewport.addEventListener('pointermove', (e) => {
+      if (!drag || e.pointerId !== drag.id) return;
+      const dx = e.clientX - drag.x0, dy = e.clientY - drag.y0;
+      if (!drag.active) {
+        if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 6) {
+          drag = null; // geste vertical : on laisse la page défiler
+          return;
+        }
+        if (Math.abs(dx) < 6) return;
+        drag.active = true;
+        stage.classList.add('is-dragging');
+        viewport.setPointerCapture(e.pointerId);
+      }
+      x = drag.start - dx;
+      render();
+    });
+    const endDrag = (e: PointerEvent) => {
+      if (!drag || e.pointerId !== drag.id) return;
+      if (drag.active) {
+        // accroche douce sur la carte la plus proche
+        nudge = { from: x, to: Math.round(x / step) * step, t0: performance.now() };
+        hold = 0;
+        resumeAt = performance.now() + 3000;
+      }
+      drag = null;
+      stage.classList.remove('is-dragging');
+    };
+    viewport.addEventListener('pointerup', endDrag);
+    viewport.addEventListener('pointercancel', endDrag);
+    // un glissement souris ne doit pas déclencher de clic, de sélection de texte ni de glisser-déposer d'image
+    viewport.addEventListener('dragstart', (e) => e.preventDefault());
+
+    const ro = new ResizeObserver(() => {
+      measure();
+      render();
+    });
+    ro.observe(viewport);
+    const io = new IntersectionObserver(
+      ([e]) => {
+        visible = e.isIntersecting;
+        visible ? start() : stop();
+      },
+      { threshold: 0.1 }
+    );
+    io.observe(viewport);
+    const onVis = () => (document.hidden ? stop() : start());
+    document.addEventListener('visibilitychange', onVis);
+
+    cleanups.push(() => {
+      stop();
+      ro.disconnect();
+      io.disconnect();
+      document.removeEventListener('visibilitychange', onVis);
+    });
+  };
+
+  // Initialisation seulement à l'approche de la section (aucun coût au chargement de la page)
+  const init = () => {
+    document.querySelectorAll<HTMLElement>('[data-sessions]:not([data-ready])').forEach((stage) => {
+      stage.dataset.ready = '1';
+      const near = new IntersectionObserver(
+        ([e]) => {
+          if (!e.isIntersecting) return;
+          near.disconnect();
+          setup(stage);
+        },
+        { rootMargin: '600px 0px' }
+      );
+      near.observe(stage);
+      cleanups.push(() => near.disconnect());
+    });
+  };
+  document.addEventListener('astro:page-load', init);
+  document.addEventListener('astro:before-swap', () => {
+    while (cleanups.length) cleanups.pop()!();
+  });
+</script>

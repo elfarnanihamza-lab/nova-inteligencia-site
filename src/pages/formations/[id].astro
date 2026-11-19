@@ -1,0 +1,210 @@
+---
+import { getCollection, render } from 'astro:content';
+import type { GetStaticPaths } from 'astro';
+
+import { Icon } from 'astro-icon/components';
+import Layout from '~/layouts/PageLayout.astro';
+import PageHero from '~/components/nova/PageHero.astro';
+import Section from '~/components/nova/Section.astro';
+import FormationCard from '~/components/nova/FormationCard.astro';
+import ContactForm from '~/components/nova/ContactForm.astro';
+import Photo from '~/components/nova/Photo.astro';
+import StructuredData from '~/components/common/StructuredData.astro';
+import { CATEGORIES, SITE_CONFIG, SHOW_PLACEHOLDERS, whatsappLink } from '~/site.config';
+import { ph, formatPrice, priceKind, hasPh, visible } from '~/utils/placeholders';
+import { courseSchema, breadcrumbSchema } from '~/utils/schema';
+
+export const getStaticPaths = (async () => {
+  const all = (await getCollection('formations', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
+  return all.map((entry) => ({ params: { id: entry.id }, props: { entry, all } }));
+}) satisfies GetStaticPaths;
+
+const { entry, all } = Astro.props;
+const d = entry.data;
+const { Content } = await render(entry);
+const url = `${SITE_CONFIG.url}/formations/${entry.id}`;
+const cat = CATEGORIES[d.categorie];
+const related = all.filter((f) => f.id !== entry.id && f.data.categorie === d.categorie).slice(0, 3);
+const fallback = all.filter((f) => f.id !== entry.id && !related.includes(f)).slice(0, 3 - related.length);
+const suggestions = [...related, ...fallback];
+const prixTxt = formatPrice(d.prix, d.devise);
+const kind = priceKind(d.prix, d.devise);
+const isFree = kind === 'free';
+const toValidate = (k: string) => SHOW_PLACEHOLDERS && d.aValider.includes(k);
+const badge = '<mark class="ph ml-2 align-middle text-xs">[Proposition – à valider]</mark>';
+
+// Photo illustrant la catégorie (photos libres de droits, voir src/assets/images/photos/CREDITS.md)
+const CATEGORY_PHOTO: Record<string, { name: string; alt: string }> = {
+  ia: { name: 'atelier-formation', alt: 'Des participants suivent un atelier de formation sur ordinateur portable devant un écran' },
+  'ia-metier': { name: 'professionnelle-sourire', alt: 'Une professionnelle souriante travaille sur son ordinateur portable' },
+  parcours: { name: 'espace-etude', alt: "Des apprenants travaillent sur leurs ordinateurs dans un espace d'étude lumineux" },
+  innovation: { name: 'brainstorm-notes', alt: 'Une équipe réfléchit ensemble avec des notes adhésives sur une paroi vitrée' },
+  junior: { name: 'atelier-junior', alt: 'Deux jeunes apprennent sur ordinateur, accompagnés par une formatrice' },
+};
+const photo = CATEGORY_PHOTO[d.categorie];
+
+const metadata = {
+  title: d.seoTitle ?? `${d.title} — formation à Casablanca`,
+  ignoreTitleTemplate: true,
+  description: d.seoDescription ?? d.resume,
+  openGraph: { images: [{ url: `~/assets/images/og/formation-${entry.id}.png`, width: 1200, height: 630 }] },
+};
+
+const hasBody = !!entry.body?.trim();
+
+const facts: Array<[string, string]> = [
+  ['Niveau', d.niveau],
+  ['Durée', d.duree],
+  ['Modalités', d.modalites],
+  ['Public', d.public],
+  ['Prérequis', d.prerequis],
+  ['Formateur', d.formateur],
+  ['Prochaine session', d.prochaineSession],
+];
+const objectifs = d.objectifs.filter((o) => visible(o));
+const programme = d.programme
+  .filter((m) => visible(m.titre))
+  .map((m) => ({ ...m, points: m.points?.filter((p) => visible(p)) }));
+const visibleFacts = facts.filter(([, v]) => visible(v));
+const waMsg = `Bonjour, je souhaite m'inscrire à la formation « ${d.title} ».`;
+const signup = `/contact?formation=${entry.id}#formulaire`;
+---
+
+<Layout metadata={metadata}>
+  <StructuredData
+    slot="head"
+    schema={[
+      courseSchema({
+        title: d.title,
+        description: d.resume.replace(/\[[^\]]*\]/g, '').trim(),
+        url,
+        prix: d.prix,
+        devise: d.devise,
+      }),
+      breadcrumbSchema([
+        { name: 'Accueil', url: SITE_CONFIG.url },
+        { name: 'Formations', url: `${SITE_CONFIG.url}/formations` },
+        { name: d.title, url },
+      ]),
+    ]}
+  />
+
+  <PageHero
+    tagline={cat.label}
+    title={d.title}
+    crumbs={[{ text: 'Formations', href: '/formations' }, { text: d.title }]}
+  />
+
+  <Section tone="soft" class="!pt-0">
+    <div class="-mt-2 grid gap-10 lg:grid-cols-3">
+      <div class="space-y-10 lg:col-span-2">
+        <div class="rounded-2xl border border-line bg-white p-6 md:p-8">
+          <h2 class="text-2xl font-bold text-heading">
+            Présentation<Fragment set:html={toValidate('resume') ? badge : ''} />
+          </h2>
+          <p class="mt-3 text-lg text-default" set:html={ph(d.resume)} />
+          {hasBody && <div class="prose mt-4 max-w-none"><Content /></div>}
+        </div>
+
+        {objectifs.length > 0 && (<div class="rounded-2xl border border-line bg-white p-6 md:p-8">
+          <h2 class="text-2xl font-bold text-heading">
+            Objectifs pédagogiques<Fragment set:html={toValidate('objectifs') ? badge : ''} />
+          </h2>
+          <ul class="mt-4 space-y-3">
+            {
+              objectifs.map((o) => (
+                <li class="flex gap-3">
+                  <span class="mt-1 text-secondary" aria-hidden="true">✓</span>
+                  <span set:html={ph(o)} />
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+
+        )}
+
+        {programme.length > 0 && (<div class="rounded-2xl border border-line bg-white p-6 md:p-8">
+          <h2 class="text-2xl font-bold text-heading">
+            Programme<Fragment set:html={toValidate('programme') ? badge : ''} />
+          </h2>
+          <ol class="mt-4 space-y-5">
+            {
+              programme.map((m, i) => (
+                <li class="flex gap-4">
+                  <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-white">
+                    {i + 1}
+                  </span>
+                  <div>
+                    <h3 class="font-semibold text-heading" set:html={ph(m.titre)} />
+                    {m.points && (
+                      <ul class="mt-1 list-disc space-y-1 pl-5 text-muted">
+                        {m.points.map((p) => <li set:html={ph(p)} />)}
+                      </ul>
+                    )}
+                  </div>
+                </li>
+              ))
+            }
+          </ol>
+        </div>)}
+
+        <div class="rounded-2xl border border-line bg-white p-6 md:p-8" id="inscription">
+          <h2 class="text-2xl font-bold text-heading">S'inscrire ou demander des informations</h2>
+          <p class="mt-2 mb-6 text-muted">Laissez-nous vos coordonnées : nous revenons vers vous rapidement avec les prochaines dates.</p>
+          <ContactForm formId="form-formation" formation={entry.id} buttonLabel={isFree ? "Demander mon inscription gratuite" : 'Demander mon inscription'} />
+        </div>
+      </div>
+
+      <aside class="lg:sticky lg:top-24 lg:self-start">
+        <div class="overflow-hidden rounded-2xl border border-line bg-white shadow-sm">
+          {photo && (
+            <Photo name={photo.name} alt={photo.alt} aspect="16/10" sizes="(min-width: 1024px) 400px, 100vw" widths={[400, 640, 800]} loading="eager" class="rounded-none" />
+          )}
+          <div class="p-6">
+          <p class="text-sm font-semibold uppercase tracking-wide text-muted">Tarif</p>
+          {
+            isFree ? (
+              <>
+                <p class="mt-1 inline-flex items-center gap-2 rounded-full bg-emerald-50 px-4 py-1.5 text-2xl font-bold uppercase tracking-wide text-emerald-800 ring-1 ring-emerald-200">
+                  <Icon name="tabler:gift" class="h-6 w-6" aria-hidden="true" />
+                  Gratuit
+                </p>
+                <p class="mt-2 text-sm text-muted">Formation gratuite : aucun paiement n'est demandé pour s'inscrire.</p>
+              </>
+            ) : (
+              <p class:list={['font-bold', kind === 'paid' ? 'text-4xl text-heading' : 'text-2xl text-heading']} set:html={ph(prixTxt)} />
+            )
+          }
+          {d.prixNote && <p class="mt-2 text-sm" set:html={ph(d.prixNote)} />}
+          <dl class="mt-6 space-y-4 border-t border-line pt-6 text-sm">
+            {
+              visibleFacts.map(([k, v]) => (
+                <div>
+                  <dt class="font-semibold text-heading">{k}</dt>
+                  <dd class:list={['mt-0.5', hasPh(v) ? '' : 'text-muted']} set:html={ph(v)} />
+                </div>
+              ))
+            }
+          </dl>
+          <div class="mt-6 grid gap-3">
+            <a href={signup} class="btn-primary">S'inscrire</a>
+            <a
+              href={whatsappLink(waMsg)}
+              class="btn"
+              {...SITE_CONFIG.contact.whatsapp ? { target: '_blank', rel: 'noopener noreferrer' } : {}}>{SITE_CONFIG.contact.whatsapp ? 'Poser une question sur WhatsApp' : 'Poser une question'}</a
+            >
+            {d.brochure && <a href={d.brochure} class="btn" download>Télécharger la brochure</a>}
+          </div>
+        </div>
+        </div>
+      </aside>
+    </div>
+  </Section>
+
+  <Section tagline="À découvrir aussi" title="Autres formations">
+    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {suggestions.map((f) => <FormationCard formation={f} />)}
+    </div>
+  </Section>
+</Layout>

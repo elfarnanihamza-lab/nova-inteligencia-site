@@ -1,0 +1,41 @@
+---
+import { Icon } from 'astro-icon/components';
+import Layout from '~/layouts/PageLayout.astro';
+import NeuralNetwork from '~/components/nova/NeuralNetwork.astro';
+import TechGrid from '~/components/nova/TechGrid.astro';
+
+const metadata = {
+  title: 'Page introuvable (erreur 404) | Nova Inteligencia Group',
+  ignoreTitleTemplate: true,
+  description: "Cette page n'existe pas ou a été déplacée. Retrouvez nos formations en intelligence artificielle à Casablanca depuis l'accueil.",
+  robots: { index: false, follow: true },
+};
+---
+
+<Layout metadata={metadata}>
+  <section class="relative isolate overflow-hidden bg-navy text-white">
+    <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+      <div class="halo -right-24 -top-32 h-[30rem] w-[30rem]" style="--halo:#b8cc1a59;"></div>
+      <div class="bg-dots absolute inset-0 opacity-40"></div>
+    </div>
+    <TechGrid opacity={0.5} />
+    <NeuralNetwork variant="subtle" />
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 py-24 md:py-32">
+      <p class="hero-in text-sm font-semibold uppercase tracking-[0.2em] text-[#e4f84a]">Erreur 404</p>
+      <h1 class="hero-in mt-4 max-w-3xl text-[2.6rem] font-bold leading-[1.05] tracking-[-0.035em] md:text-[4rem]" style="--d:100ms">
+        Cette page est <span class="text-gradient-light">introuvable</span>
+      </h1>
+      <p class="hero-in mt-6 max-w-xl text-lg leading-relaxed text-[#e5e5df]" style="--d:220ms">
+        Le lien est peut-être ancien ou la page a été déplacée. Nos formations, elles, sont toujours là.
+      </p>
+      <div class="hero-in mt-9 flex flex-wrap gap-3" style="--d:320ms">
+        <a href="/formations" class="btn-primary">
+          Voir les formations
+          <Icon name="tabler:arrow-right" class="h-5 w-5" aria-hidden="true" />
+        </a>
+        <a href="/" class="btn-ghost-light">Retour à l'accueil</a>
+        <a href="/contact" class="btn-ghost-light">Nous contacter</a>
+      </div>
+    </div>
+  </section>
+</Layout>

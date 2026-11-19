@@ -1,0 +1,49 @@
+---
+import Layout from '~/layouts/PageLayout.astro';
+import PageHero from '~/components/nova/PageHero.astro';
+import Section from '~/components/nova/Section.astro';
+import { SITE_CONFIG } from '~/site.config';
+import { ph, visible } from '~/utils/placeholders';
+
+const metadata = {
+  title: 'Mentions légales',
+  description: 'Mentions légales du site de Nova Inteligencia Group : éditeur, hébergeur et propriété intellectuelle.',
+  robots: { index: false, follow: true },
+};
+const l = SITE_CONFIG.legal;
+const c = SITE_CONFIG.contact;
+---
+
+<Layout metadata={metadata}>
+  <PageHero title="Mentions légales" crumbs={[{ text: 'Mentions légales' }]} />
+  <Section>
+    <div class="prose prose-lg mx-auto max-w-3xl">
+      <h2>Éditeur du site</h2>
+      <ul>
+        {visible(l.companyName) && <li>Raison sociale : <Fragment set:html={ph(l.companyName)} /></li>}
+        {visible(l.legalForm) && <li>Forme juridique : <Fragment set:html={ph(l.legalForm)} /></li>}
+        {visible(l.capital) && <li>Capital : <Fragment set:html={ph(l.capital)} /></li>}
+        {visible(l.ice) && <li>ICE : <Fragment set:html={ph(l.ice)} /></li>}
+        {visible(l.rc) && <li>Registre du commerce : <Fragment set:html={ph(l.rc)} /></li>}
+        {visible(l.if) && <li>Identifiant fiscal : <Fragment set:html={ph(l.if)} /></li>}
+        <li>Siège : {c.address.street}, {c.address.city}, {c.address.countryName}</li>
+        <li>E-mail : <a href={`mailto:${c.email}`}>{c.email}</a></li>
+        {visible(c.phone) && <li>Téléphone : <Fragment set:html={ph(c.phone)} /></li>}
+        {visible(l.publicationDirector) && <li>Directeur de la publication : <Fragment set:html={ph(l.publicationDirector)} /></li>}
+      </ul>
+      <h2>Hébergeur</h2>
+      {visible(l.host) ? <p>Hébergeur du site : <Fragment set:html={ph(l.host)} /></p> : <p>Informations disponibles sur demande.</p>}
+      <h2>Propriété intellectuelle</h2>
+      <p>
+        L'ensemble des contenus de ce site (textes, logos, images, programmes de formation) est la propriété de {l.companyName}
+        ou de ses partenaires. Toute reproduction sans autorisation écrite préalable est interdite.
+      </p>
+      <h2>Responsabilité</h2>
+      <p>
+        Les informations publiées sur ce site sont fournies à titre indicatif et peuvent être modifiées sans préavis
+        (programmes, tarifs, dates de sessions).
+      </p>
+      <p class="text-sm text-muted">Dernière mise à jour : {l.lastUpdate}.</p>
+    </div>
+  </Section>
+</Layout>

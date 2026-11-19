@@ -1,0 +1,33 @@
+---
+import { ph, hasPh, visible } from '~/utils/placeholders';
+import { faqSchema } from '~/utils/schema';
+import StructuredData from '~/components/common/StructuredData.astro';
+
+export interface Props {
+  items: Array<{ question: string; answer: string }>;
+}
+const { items } = Astro.props;
+const shown = items.filter((i) => visible(i.answer));
+// Seules les questions réellement renseignées alimentent les données structurées.
+const answered = items.filter((i) => !hasPh(i.answer));
+---
+
+{answered.length > 0 && <StructuredData schema={faqSchema(answered)} />}
+<div class="mx-auto max-w-3xl border-t border-line">
+  {
+    shown.map((item, i) => (
+      <details class="faq group border-b border-line" open={i === 0}>
+        <summary class="flex cursor-pointer list-none items-center justify-between gap-6 py-6 text-left text-lg font-semibold text-heading transition-colors hover:text-ink md:text-xl">
+          <span set:html={ph(item.question)} />
+          <span
+            class="faq-icon flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-line text-xl leading-none text-ink transition-colors group-hover:border-[#111111]"
+            aria-hidden="true"
+          >
+            +
+          </span>
+        </summary>
+        <p class="pb-7 pr-12 text-base leading-relaxed text-muted md:text-[1.05rem]" set:html={ph(item.answer)} />
+      </details>
+    ))
+  }
+</div>

@@ -1,0 +1,372 @@
+---
+import { getCollection } from 'astro:content';
+import { Icon } from 'astro-icon/components';
+
+import Layout from '~/layouts/PageLayout.astro';
+import Photo from '~/components/nova/Photo.astro';
+import CatalogueCard from '~/components/nova/CatalogueCard.astro';
+import Faq from '~/components/nova/Faq.astro';
+import ContactForm from '~/components/nova/ContactForm.astro';
+import LocationSection from '~/components/nova/LocationSection.astro';
+import { formationHref, categoryHref } from '~/utils/formation-links';
+import { priceKind } from '~/utils/placeholders';
+import { SITE_CONFIG, SPHERES, CATEGORIES } from '~/site.config';
+
+const metadata = {
+  title: "Nova Inteligencia Group | École d'intelligence artificielle à Casablanca",
+  ignoreTitleTemplate: true,
+  description:
+    "Nova Inteligencia Group, à Casablanca : programmes d'intelligence artificielle, d'automatisation et de métiers du digital, du premier prompt au projet professionnel.",
+  openGraph: { images: [{ url: '~/assets/images/og/accueil.png', width: 1200, height: 630 }] },
+};
+
+const all = (await getCollection('formations', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
+const spotlight = all.filter((f) => f.data.featured).slice(0, 6);
+const freeCount = all.filter((f) => priceKind(f.data.prix, f.data.devise) === 'free').length;
+const catLabel = (k: string) => CATEGORIES[k]?.label ?? k;
+const level = (f: (typeof all)[number]) => (f.data.niveau && !f.data.niveau.includes('COMPLÉTER') ? f.data.niveau.split('—')[0].trim() : '');
+
+const intentions = [
+  { n: '01', title: "Découvrir l'IA", text: 'Comprendre les outils, écrire de bons prompts.', href: formationHref('level-1-ai-foundations') },
+  { n: '02', title: 'Gagner du temps', text: 'Automatiser ses tâches, créer ses premiers agents.', href: formationHref('level-2-ai-productivity-automation') },
+  { n: '03', title: 'Appliquer à mon métier', text: 'Une série par fonction, du niveau 1 au niveau pro.', href: categoryHref('ia-metier') },
+  { n: '04', title: 'Lancer un projet', text: "De l'idée à la startup.", href: categoryHref('innovation') },
+  { n: '05', title: 'Pour un enfant', text: "Une première approche de l'IA, de 5 à 17 ans.", href: formationHref('ia-junior-academy') },
+];
+
+const spheres = SPHERES.filter((s) => s.verified && s.category).map((s, i) => ({
+  ...s,
+  href: categoryHref(s.category!),
+  photo: ['atelier-formation', 'atelier-marketing', 'brainstorm-notes'][i % 3],
+  alt: ["Des participants suivent un atelier de formation sur ordinateur portable devant un écran", "Un formateur anime un atelier marketing autour d'un tableau de notes adhésives", "Une équipe réfléchit ensemble avec des notes adhésives sur une paroi vitrée"][i % 3],
+}));
+
+const steps = [
+  { n: '01', t: 'Échange', d: 'Nous écoutons votre contexte, vos équipes, vos objectifs.' },
+  { n: '02', t: 'Conception', d: 'Un programme sur mesure, à partir de notre catalogue.' },
+  { n: '03', t: 'Pratique', d: 'Des cas réels liés à votre activité, avec vos outils.' },
+  { n: '04', t: 'Suivi', d: "Un point sur l'adoption et les prochaines étapes." },
+];
+
+const faq = [
+  {
+    question: 'Quelles formations en intelligence artificielle proposez-vous ?',
+    answer:
+      "Trois niveaux de formation en IA (fondations, productivité et automatisation, professionnel), une série « IA + Métier », le Nova Digital Master Program, des programmes d'entrepreneuriat et d'innovation, et une IA Junior Academy.",
+  },
+  {
+    question: 'Où se trouve Nova Inteligencia Group ?',
+    answer: `Nous sommes situés au ${SITE_CONFIG.contact.address.street}, ${SITE_CONFIG.contact.address.city}, ${SITE_CONFIG.contact.address.countryName}.`,
+  },
+  {
+    question: 'Combien coûte une formation ?',
+    answer: `${freeCount > 1 ? `${freeCount} programmes d'entrepreneuriat et d'innovation sont gratuits` : `${freeCount} programme d'entrepreneuriat et d'innovation est gratuit`}. Pour les autres, le tarif en dirhams (DH) vous est communiqué sur demande : écrivez-nous ou utilisez le formulaire.`,
+  },
+  {
+    question: 'Les formations conviennent-elles aux débutants ?',
+    answer: "Oui. Le niveau 1 (AI Foundations et Fondamentaux IA + Métier) donne les bases de l'intelligence artificielle et des outils essentiels.",
+  },
+  {
+    question: 'Obtient-on un certificat à la fin de la formation ?',
+    answer: 'Le Nova Digital Master Program donne lieu à un certificat. Pour les autres formations, contactez-nous pour connaître les modalités de certification.',
+  },
+  {
+    question: 'Proposez-vous des formations pour les entreprises ?',
+    answer: 'Oui, nous concevons des formations sur mesure pour les sociétés. Rendez-vous sur la page Entreprises ou contactez-nous.',
+  },
+];
+---
+
+<Layout metadata={metadata}>
+  <!-- 1. ACCUEIL : gros titre à gauche, mosaïque de blocs à droite -->
+  <section class="bg-white" aria-labelledby="hero-title">
+    <div class="mx-auto grid max-w-7xl gap-10 px-4 pb-14 pt-10 sm:px-6 md:pb-20 md:pt-16 lg:grid-cols-12 lg:gap-12">
+      <div class="lg:col-span-7">
+        <p class="hero-fade inline-block bg-[#e4f84a] px-2 py-1 text-xs font-bold uppercase tracking-[0.14em] text-[#111111]">École d'IA · Casablanca</p>
+        <h1 id="hero-title" class="hero-in mt-6 font-heading text-[2.9rem] font-bold leading-[1.08] tracking-[-0.04em] text-[#111111] text-balance sm:text-7xl lg:text-[5.4rem]">
+          Apprenez l'IA.<br /><span class="mt-1 inline-block bg-[#e4f84a] px-2 leading-[1.05]">Tout de suite.</span>
+        </h1>
+        <p class="hero-in mt-7 max-w-lg text-lg leading-relaxed text-[#333333] text-pretty" style="--d:60ms">
+          {all.length} programmes, du premier prompt au projet professionnel : intelligence artificielle, automatisation, métiers du digital. À Casablanca, pour particuliers et entreprises.
+        </p>
+        <div class="hero-in mt-8 flex flex-wrap items-center gap-4" style="--d:120ms">
+          <a href="/formations" class="btn-primary">
+            Voir les programmes
+            <Icon name="tabler:arrow-right" class="h-5 w-5" aria-hidden="true" />
+          </a>
+          <a href="/contact" class="btn">Parler à un conseiller</a>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 lg:col-span-5">
+        <div class="flex min-h-40 flex-col justify-between rounded-md bg-[#e4f84a] p-5">
+          <span class="text-sm font-semibold text-[#111111]">Programmes</span>
+          <span class="font-heading text-6xl font-bold leading-none tracking-tight text-[#111111]">{all.length}</span>
+        </div>
+        <Photo name="atelier-formation" alt="Des participants suivent un atelier de formation sur ordinateur portable devant un écran" tint={false} loading="eager" aspect="1/1" widths={[320, 480, 640]} sizes="(min-width: 1024px) 220px, 45vw" position="55% 45%" class="!rounded-md" />
+        <Photo name="apprenant-portable" alt="Un apprenant travaille sur son ordinateur portable aux côtés d'autres participants" tint={false} loading="eager" aspect="1/1" widths={[320, 480, 640]} sizes="(min-width: 1024px) 220px, 45vw" position="35% 40%" class="!rounded-md" />
+        <div class="flex min-h-40 flex-col justify-between rounded-md bg-[#111111] p-5 text-white">
+          <span class="text-sm font-semibold text-[#e5e5df]">Niveaux de progression</span>
+          <span class="font-heading text-6xl font-bold leading-none tracking-tight text-[#e4f84a]">3</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 1 bis. PROGRAMMES À LA UNE : cartes avec photo, ombre citron au survol -->
+  <section id="a-la-une" class="cv-auto border-t border-[#111111] bg-[#f1f1ec] py-16 md:py-24" aria-labelledby="spot-title">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6">
+      <div class="flex flex-wrap items-end justify-between gap-6">
+        <div>
+          <p class="inline-block bg-[#e4f84a] px-2 py-1 text-xs font-bold uppercase tracking-[0.14em] text-[#111111]">À la une</p>
+          <h2 id="spot-title" class="mt-4 font-heading text-4xl font-bold leading-[1.02] tracking-[-0.03em] text-[#111111] text-balance md:text-6xl">Les programmes à ne pas manquer</h2>
+        </div>
+        <a href="/formations" class="btn">Tout le catalogue <Icon name="tabler:arrow-right" class="h-5 w-5" aria-hidden="true" /></a>
+      </div>
+      <ul class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3" role="list">
+        {spotlight.map((f, i) => <CatalogueCard formation={f} index={i} />)}
+      </ul>
+    </div>
+  </section>
+
+  <!-- 2. PROGRAMMES : index éditorial -->
+  <section id="programmes" class="cv-auto border-t border-[#111111] bg-white py-16 md:py-24" aria-labelledby="prog-title">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6">
+      <div class="flex flex-wrap items-end justify-between gap-6">
+        <div>
+          <p class="text-xs font-bold uppercase tracking-[0.14em] text-[#666660]">Index des programmes</p>
+          <h2 id="prog-title" class="mt-3 font-heading text-4xl font-bold leading-[1.02] tracking-[-0.03em] text-[#111111] text-balance md:text-6xl">Tout le catalogue, d'un coup d'œil</h2>
+        </div>
+        <a href="/formations" class="btn">Filtrer le catalogue <Icon name="tabler:arrow-right" class="h-5 w-5" aria-hidden="true" /></a>
+      </div>
+      <ol class="mt-12 border-t border-[#111111]" role="list">
+        {
+          all.map((f, i) => (
+            <li class="border-b border-[#d8d8d2]">
+              <a href={formationHref(f.id)} class="idx-row group grid grid-cols-[2.5rem_1fr_auto] items-center gap-3 py-5 sm:grid-cols-[3.5rem_1fr_14rem_8rem_auto] sm:gap-6">
+                <span class="font-heading text-sm font-bold text-[#666660]">{String(i + 1).padStart(2, '0')}</span>
+                <span class="font-heading text-lg font-bold leading-snug tracking-tight text-[#111111] sm:text-2xl">{f.data.title}</span>
+                <span class="hidden text-sm text-[#555555] sm:block">{catLabel(f.data.categorie)}</span>
+                <span class="hidden text-sm text-[#555555] sm:block">{level(f)}</span>
+                <span class="idx-arrow flex h-10 w-10 items-center justify-center rounded-md border border-[#111111]">
+                  <Icon name="tabler:arrow-up-right" class="h-5 w-5" aria-hidden="true" />
+                  <span class="sr-only">Voir : {f.data.title}</span>
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- 3. PAR OÙ COMMENCER -->
+  <section class="cv-auto bg-[#f1f1ec] py-16 md:py-24" aria-labelledby="start-title">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6">
+      <h2 id="start-title" class="max-w-3xl font-heading text-4xl font-bold leading-[1.02] tracking-[-0.03em] text-[#111111] text-balance md:text-6xl">Par où commencer ?</h2>
+      <ul class="mt-12 grid gap-px overflow-hidden rounded-md bg-[#111111] sm:grid-cols-2 lg:grid-cols-5" role="list">
+        {
+          intentions.map((it) => (
+            <li class="bg-white">
+              <a href={it.href} class="intent group flex h-full min-h-60 flex-col justify-between p-6">
+                <span class="font-heading text-sm font-bold text-[#666660]">{it.n}</span>
+                <span>
+                  <span class="block font-heading text-2xl font-bold leading-tight tracking-tight text-[#111111]">{it.title}</span>
+                  <span class="mt-2 block text-base leading-relaxed text-[#555555]">{it.text}</span>
+                  <span class="mt-4 inline-flex min-h-11 items-center gap-1.5 font-bold text-[#111111]">
+                    Voir <Icon name="tabler:arrow-right" class="h-4 w-4 transition-transform group-hover:translate-x-1" aria-hidden="true" />
+                  </span>
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- 4. MANIFESTE -->
+  <section class="cv-auto bg-[#111111] py-20 text-white md:py-28">
+    <div class="mx-auto max-w-6xl px-4 sm:px-6">
+      <p class="font-heading text-3xl font-bold leading-[1.1] tracking-[-0.03em] text-balance sm:text-5xl md:text-7xl">
+        On <span class="bg-[#e4f84a] px-2 text-[#111111] [box-decoration-break:clone]">pratique</span> plus qu'on ne regarde. On pose des questions. Chacun repart avec un outil qu'il sait utiliser.
+      </p>
+      <ul class="mt-14 grid gap-8 border-t border-white/25 pt-8 sm:grid-cols-3" role="list">
+        {
+          [
+            ['Exigence', "Des standards élevés et des résultats que l'on peut mesurer."],
+            ['IA responsable', "Éthique, sécurisée, transparente et centrée sur l'humain."],
+            ['Autonomie', 'Partager savoirs et outils pour rendre chacun autonome.'],
+          ].map(([t, d], i) => (
+            <li>
+              <span class="font-heading text-sm font-bold text-[#e4f84a]">0{i + 1}</span>
+              <p class="mt-2 font-heading text-xl font-bold">{t}</p>
+              <p class="mt-1 text-[#e5e5df]">{d}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- 5. TROIS UNIVERS -->
+  <section class="cv-auto bg-white py-16 md:py-24" aria-labelledby="spheres-title">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6">
+      <h2 id="spheres-title" class="max-w-3xl font-heading text-4xl font-bold leading-[1.02] tracking-[-0.03em] text-[#111111] text-balance md:text-6xl">Trois terrains pour avancer</h2>
+      <ul class="mt-12 grid gap-6 md:grid-cols-3" role="list">
+        {
+          spheres.map((s, i) => (
+            <li class="group">
+              <a href={s.href} class="block">
+                <Photo name={s.photo} alt={s.alt} tint={false} aspect="4/3" widths={[400, 640, 800]} sizes="(min-width: 768px) 380px, 92vw" class="!rounded-md" />
+                <span class="mt-5 flex items-baseline gap-3 border-t border-[#111111] pt-4">
+                  <span class="font-heading text-sm font-bold text-[#666660]">0{i + 1}</span>
+                  <span class="font-heading text-2xl font-bold tracking-tight text-[#111111]">{s.title}</span>
+                </span>
+                <span class="mt-2 block text-base leading-relaxed text-[#555555]">{s.text}</span>
+                <span class="mt-3 inline-flex min-h-11 items-center gap-1.5 font-bold text-[#111111] underline decoration-[#e4f84a] decoration-4 underline-offset-4">Explorer <Icon name="tabler:arrow-right" class="h-4 w-4 transition-transform group-hover:translate-x-1" aria-hidden="true" /></span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- 6. ENTREPRISES -->
+  <section class="cv-auto bg-[#e4f84a] py-16 md:py-24" aria-labelledby="corp-title">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6">
+      <div class="grid gap-8 lg:grid-cols-12 lg:items-end">
+        <div class="lg:col-span-8">
+          <p class="text-xs font-bold uppercase tracking-[0.14em] text-[#111111]">Entreprises</p>
+          <h2 id="corp-title" class="mt-3 font-heading text-4xl font-bold leading-[1.02] tracking-[-0.03em] text-[#111111] text-balance md:text-6xl">Formez vos équipes, à la mesure de votre activité</h2>
+        </div>
+        <div class="lg:col-span-4">
+          <a href="/entreprises" class="inline-flex min-h-12 items-center gap-2 rounded-md bg-[#111111] px-7 font-bold text-white transition hover:bg-white hover:text-[#111111]">
+            Parler de votre projet
+            <Icon name="tabler:arrow-right" class="h-5 w-5" aria-hidden="true" />
+          </a>
+        </div>
+      </div>
+      <ol class="mt-12 grid gap-6 border-t border-[#111111] pt-6 sm:grid-cols-2 lg:grid-cols-4" role="list">
+        {
+          steps.map((st) => (
+            <li>
+              <span class="font-heading text-sm font-bold text-[#111111]">{st.n}</span>
+              <p class="mt-2 font-heading text-2xl font-bold text-[#111111]">{st.t}</p>
+              <p class="mt-2 text-[#222222]">{st.d}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- 6 bis. SERVICE MARKETING DIGITAL pour les entreprises -->
+  <section class="cv-auto border-t border-[#111111] bg-[#111111] py-16 text-white md:py-24" aria-labelledby="mkt-title">
+    <div class="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-12 lg:items-center lg:gap-16">
+      <div class="lg:col-span-6">
+        <p class="inline-block bg-[#e4f84a] px-2 py-1 text-xs font-bold uppercase tracking-[0.14em] text-[#111111]">Nouveau service · Entreprises</p>
+        <h2 id="mkt-title" class="mt-5 font-heading text-4xl font-bold leading-[1.02] tracking-[-0.03em] text-balance md:text-6xl">Boostez vos ventes avec le <span class="text-[#e4f84a]">marketing digital</span></h2>
+        <p class="mt-5 max-w-xl text-lg leading-relaxed text-[#e5e5df]">Nova accompagne les entreprises : stratégie, publicité en ligne, référencement, réseaux sociaux, site qui convertit et relances automatisées.</p>
+        <div class="mt-8 flex flex-wrap gap-4">
+          <a href="/services-marketing" class="inline-flex min-h-12 items-center gap-2 rounded-md bg-[#e4f84a] px-7 font-bold text-[#111111] transition hover:bg-white">
+            Découvrir nos services
+            <Icon name="tabler:arrow-right" class="h-5 w-5" aria-hidden="true" />
+          </a>
+          <a href="/services-marketing#devis" class="inline-flex min-h-12 items-center rounded-md border border-white/60 px-7 font-bold text-white transition hover:border-[#e4f84a] hover:text-[#e4f84a]">Demander un devis</a>
+        </div>
+      </div>
+      <ul class="grid gap-px overflow-hidden rounded-md bg-white/25 sm:grid-cols-2 lg:col-span-6" role="list">
+        {
+          [
+            ['tabler:ad-2', 'Publicité en ligne', 'Meta, Google et TikTok Ads'],
+            ['tabler:search', 'Référencement', 'Être trouvé sur Google'],
+            ['tabler:brand-instagram', 'Réseaux sociaux', 'Contenus et calendrier'],
+            ['tabler:layout', 'Pages qui convertissent', 'Du clic à la demande'],
+            ['tabler:settings-automation', 'Relances automatisées', 'WhatsApp, e-mail, CRM'],
+            ['tabler:chart-bar', 'Suivi des résultats', 'Des indicateurs clairs'],
+          ].map(([i, t, d]) => (
+            <li class="bg-[#111111] p-6">
+              <Icon name={i} class="h-7 w-7 text-[#e4f84a]" aria-hidden="true" />
+              <p class="mt-4 font-heading text-xl font-bold">{t}</p>
+              <p class="mt-1 text-sm text-[#e5e5df]">{d}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- 7. QUESTIONS -->
+  <section class="cv-auto bg-white py-16 md:py-24" aria-labelledby="faq-title">
+    <div class="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-4">
+        <h2 id="faq-title" class="font-heading text-4xl font-bold leading-[1.02] tracking-[-0.03em] text-[#111111] text-balance md:text-5xl">Vos questions</h2>
+        <p class="mt-4 text-lg leading-relaxed text-[#333333]">Une autre ? <a href="/contact" class="font-bold text-[#111111] underline decoration-[#e4f84a] decoration-4 underline-offset-4">Écrivez-nous</a>.</p>
+      </div>
+      <div class="lg:col-span-8"><Faq items={faq} /></div>
+    </div>
+  </section>
+
+  <LocationSection />
+
+  <!-- 8. REJOINDRE -->
+  <section id="inscription" class="cv-auto scroll-mt-24 border-t border-[#111111] bg-[#f1f1ec] py-16 md:py-24" aria-labelledby="join-title">
+    <div class="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-5 lg:gap-16">
+      <div class="lg:col-span-2">
+        <h2 id="join-title" class="font-heading text-4xl font-bold leading-[1.02] tracking-[-0.03em] text-[#111111] text-balance md:text-5xl">Rejoindre Nova</h2>
+        <p class="mt-4 text-lg leading-relaxed text-[#333333]">Laissez-nous vos coordonnées et le programme qui vous intéresse : nous vous rappelons pour confirmer les dates, le format et le tarif.</p>
+        <ul class="mt-8 space-y-3 text-[#111111]">
+          <li class="flex items-center gap-3"><Icon name="tabler:square-check" class="h-5 w-5" aria-hidden="true" /> Sans engagement</li>
+          <li class="flex items-center gap-3"><Icon name="tabler:square-check" class="h-5 w-5" aria-hidden="true" /> Un programme choisi parmi {all.length} formations</li>
+          <li class="flex items-center gap-3"><Icon name="tabler:square-check" class="h-5 w-5" aria-hidden="true" /> Données traitées conformément à la loi 09-08</li>
+        </ul>
+      </div>
+      <div class="lg:col-span-3">
+        <div class="rounded-md border border-[#111111] bg-white p-6 md:p-9">
+          <ContactForm formId="form-accueil" compact buttonLabel="Réserver ma place" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    .idx-row,
+    .idx-arrow,
+    .intent {
+      transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.25s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .idx-row:hover {
+        background: #e4f84a;
+        padding-inline: 0.75rem;
+      }
+      .idx-row:hover .idx-arrow {
+        background: #111111;
+        color: #fff;
+      }
+      .intent:hover {
+        background: #e4f84a;
+      }
+    }
+    .idx-row:focus-visible,
+    .intent:focus-visible {
+      outline: 3px solid #111111;
+      outline-offset: -3px;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .idx-row,
+      .idx-arrow,
+      .intent {
+        transition: none;
+      }
+      .idx-row:hover {
+        padding-inline: 0;
+      }
+    }
+  </style>
+</Layout>

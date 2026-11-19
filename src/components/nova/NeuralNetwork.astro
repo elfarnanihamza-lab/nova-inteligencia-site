@@ -1,0 +1,311 @@
+---
+/**
+ * Réseau neuronal animé (Canvas 2D, sans dépendance).
+ * - nœuds lumineux bleu numérique / bleu lumineux, quelques rares nœuds orange, halos, profondeur (taille et parallaxe selon z)
+ * - connexions qui se dessinent à l'entrée puis s'illuminent lentement
+ * - particules qui circulent le long des connexions
+ * - légère réaction au curseur (pointeur fin uniquement)
+ * - (image fixe depuis l'audit d'animations : une seule image, sans boucle)
+ * - pause hors écran / onglet masqué ; image fixe si prefers-reduced-motion
+ */
+export interface Props {
+  /** Densité : `hero` (accueil) ou `subtle` (bandeaux des pages internes). */
+  variant?: 'hero' | 'subtle';
+  class?: string;
+}
+const { variant = 'hero', class: className = '' } = Astro.props;
+---
+
+<div class:list={['nn-wrap pointer-events-none absolute inset-0', `nn-${variant}`, className]} aria-hidden="true">
+  <canvas data-network={variant} class="absolute inset-0 h-full w-full"></canvas>
+</div>
+
+<style>
+  .nn-wrap {
+    -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 55%, transparent 100%);
+    mask-image: linear-gradient(180deg, #000 0%, #000 55%, transparent 100%);
+    opacity: 0.4;
+  }
+  @media (width >= 64rem) {
+    .nn-wrap {
+      -webkit-mask-image: linear-gradient(90deg, transparent 0%, transparent 38%, #000 60%, #000 100%);
+      mask-image: linear-gradient(90deg, transparent 0%, transparent 38%, #000 60%, #000 100%);
+      opacity: 1;
+    }
+    .nn-subtle {
+      opacity: 0.75;
+    }
+  }
+</style>
+
+<script>
+  type Node = { bx: number; by: number; z: number; ph: number; amp: number; sp: number; delay: number; x: number; y: number; hue: 0 | 1 | 2 };
+  type Edge = { a: number; b: number; ph: number; delay: number };
+  type Particle = { e: number; t: number; v: number; dir: 1 | -1 };
+
+  const BLUE = [7, 87, 200];
+  const VIOLET = [8, 169, 247]; // bleu lumineux (nom conservé)
+  const ORANGE = [243, 107, 18];
+  // Bleu dominant ; l'orange du logo n'apparaît que sur de rares nœuds (≈ 1 sur 12).
+  const hueOf = (r: number): 0 | 1 | 2 => (r > 0.92 ? 2 : r > 0.55 ? 1 : 0);
+
+  const mulberry = (seed: number) => () => {
+    seed |= 0;
+    seed = (seed + 0x6d2b79f5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+
+  const sprite = (rgb: number[]) => {
+    const c = document.createElement('canvas');
+    c.width = c.height = 64;
+    const g = c.getContext('2d')!;
+    const grd = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+    grd.addColorStop(0, `rgba(${rgb.join(',')},0.95)`);
+    grd.addColorStop(0.25, `rgba(${rgb.join(',')},0.45)`);
+    grd.addColorStop(1, `rgba(${rgb.join(',')},0)`);
+    g.fillStyle = grd;
+    g.fillRect(0, 0, 64, 64);
+    return c;
+  };
+
+  const cleanups: Array<() => void> = [];
+
+  function start(canvas: HTMLCanvasElement) {
+    if (canvas.dataset.ready) return;
+    canvas.dataset.ready = '1';
+    // Bandeaux des pages internes : pas d'animation sur petit écran (halos statiques seulement).
+    if (canvas.dataset.network === 'subtle' && window.innerWidth < 768) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    const variant = canvas.dataset.network;
+    // Décoration : image fixe (audit d'animations) — le réseau est dessiné une fois, sans boucle ni suivi de souris.
+    const reduce = true;
+    const finePointer = window.matchMedia('(pointer: fine)').matches;
+    const sprites = [sprite(BLUE), sprite(VIOLET), sprite(ORANGE)];
+
+    let W = 0, H = 0, dpr = 1;
+    let nodes: Node[] = [];
+    let edges: Edge[] = [];
+    let particles: Particle[] = [];
+    let adj: number[][] = [];
+    let raf = 0;
+    let running = false;
+    let t0 = performance.now();
+    const mouse = { x: 0, y: 0, tx: 0, ty: 0, active: false };
+
+    // Taille fournie par le ResizeObserver (aucune mise en page forcée, contrairement à getBoundingClientRect).
+    const build = (size: { width: number; height: number }) => {
+      W = Math.max(1, size.width);
+      H = Math.max(1, size.height);
+      const mobile = W < 1024;
+      dpr = Math.min(window.devicePixelRatio || 1, mobile ? 1.5 : 2);
+      canvas.width = Math.round(W * dpr);
+      canvas.height = Math.round(H * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      const rnd = mulberry(variant === 'hero' ? 7 : 19);
+      const count = variant === 'hero' ? (mobile ? 18 : 34) : mobile ? 10 : 20;
+      const x0 = mobile ? 0.04 : 0.56, x1 = 0.97, y0 = 0.08, y1 = 0.92;
+      const minD = (mobile ? 0.16 : 0.1) * Math.min(W, H > 0 ? H : W);
+      nodes = [];
+      let guard = 0;
+      while (nodes.length < count && guard++ < 4000) {
+        const bx = (x0 + rnd() * (x1 - x0)) * W;
+        const by = (y0 + rnd() * (y1 - y0)) * H;
+        if (nodes.some((n) => Math.hypot(n.bx - bx, n.by - by) < minD)) continue;
+        const z = 0.45 + rnd() * 0.55;
+        nodes.push({ bx, by, z, ph: rnd() * Math.PI * 2, amp: 5 + rnd() * 12, sp: 0.18 + rnd() * 0.22, delay: 0, x: bx, y: by, hue: hueOf(rnd()) });
+      }
+      // ordre d'apparition : depuis le centre de la composition
+      const cx = ((x0 + x1) / 2) * W, cy = H / 2;
+      [...nodes]
+        .map((n, i) => ({ i, d: Math.hypot(n.bx - cx, n.by - cy) }))
+        .sort((a, b) => a.d - b.d)
+        .forEach((o, k) => (nodes[o.i].delay = 250 + k * 45));
+
+      // graphe stable : 2 à 3 plus proches voisins
+      const seen = new Set<string>();
+      edges = [];
+      adj = nodes.map(() => []);
+      nodes.forEach((n, i) => {
+        const near = nodes
+          .map((m, j) => ({ j, d: Math.hypot(m.bx - n.bx, m.by - n.by) }))
+          .filter((o) => o.j !== i)
+          .sort((a, b) => a.d - b.d)
+          .slice(0, rnd() > 0.5 ? 3 : 2);
+        for (const { j } of near) {
+          const key = i < j ? `${i}-${j}` : `${j}-${i}`;
+          if (seen.has(key)) continue;
+          seen.add(key);
+          edges.push({ a: i, b: j, ph: rnd() * Math.PI * 2, delay: Math.max(nodes[i].delay, nodes[j].delay) + 120 });
+          adj[i].push(edges.length - 1);
+          adj[j].push(edges.length - 1);
+        }
+      });
+      const pc = variant === 'hero' ? (mobile ? 5 : 11) : mobile ? 3 : 6;
+      particles = Array.from({ length: pc }, () => ({ e: Math.floor(rnd() * edges.length), t: rnd(), v: 0.12 + rnd() * 0.2, dir: rnd() > 0.5 ? 1 : -1 }));
+    };
+
+    const ease = (p: number) => 1 - Math.pow(1 - Math.min(1, Math.max(0, p)), 3);
+
+    const frame = (now: number, dt: number) => {
+      const el = now - t0;
+      const t = now / 1000;
+      mouse.x += (mouse.tx - mouse.x) * 0.05;
+      mouse.y += (mouse.ty - mouse.y) * 0.05;
+      ctx.clearRect(0, 0, W, H);
+
+      for (const n of nodes) {
+        const par = 18 * n.z;
+        n.x = n.bx + Math.sin(t * n.sp + n.ph) * n.amp + mouse.x * par;
+        n.y = n.by + Math.cos(t * n.sp * 0.8 + n.ph * 1.3) * n.amp * 0.8 + mouse.y * par;
+      }
+
+      // connexions
+      ctx.lineWidth = 1;
+      for (const e of edges) {
+        const p = ease((el - e.delay) / 900);
+        if (p <= 0) continue;
+        const A = nodes[e.a], B = nodes[e.b];
+        const glow = 0.5 + 0.5 * Math.sin(t * 0.55 + e.ph);
+        const depth = (A.z + B.z) / 2;
+        const alpha = (0.1 + glow * 0.3) * depth;
+        const c = A.hue === 1 || B.hue === 1 ? VIOLET : BLUE;
+        ctx.strokeStyle = `rgba(${c[0] + 40},${c[1] + 50},${Math.min(255, c[2] + 10)},${alpha})`;
+        ctx.beginPath();
+        ctx.moveTo(A.x, A.y);
+        ctx.lineTo(A.x + (B.x - A.x) * p, A.y + (B.y - A.y) * p);
+        ctx.stroke();
+      }
+
+      // particules
+      if (el > 1200) {
+        for (const pt of particles) {
+          const e = edges[pt.e];
+          if (!e) continue;
+          pt.t += pt.v * dt * pt.dir;
+          if (pt.t > 1 || pt.t < 0) {
+            const at = pt.t > 1 ? e.b : e.a;
+            const opts = adj[at].filter((k) => k !== pt.e);
+            pt.e = opts.length ? opts[Math.floor(Math.random() * opts.length)] : pt.e;
+            const ne = edges[pt.e];
+            pt.dir = ne.a === at ? 1 : -1;
+            pt.t = pt.dir === 1 ? 0 : 1;
+          }
+          const A = nodes[edges[pt.e].a], B = nodes[edges[pt.e].b];
+          const x = A.x + (B.x - A.x) * pt.t, y = A.y + (B.y - A.y) * pt.t;
+          ctx.globalAlpha = 0.9;
+          ctx.drawImage(sprites[1], x - 9, y - 9, 18, 18);
+          ctx.fillStyle = 'rgba(255,255,255,0.95)';
+          ctx.beginPath();
+          ctx.arc(x, y, 1.3, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.globalAlpha = 1;
+        }
+      }
+
+      // nœuds
+      for (const n of nodes) {
+        const p = ease((el - n.delay) / 700);
+        if (p <= 0) continue;
+        let boost = 0;
+        if (mouse.active) {
+          const d = Math.hypot(n.x - (mouse.tx * 0.5 + 0.5) * W, n.y - (mouse.ty * 0.5 + 0.5) * H);
+          boost = Math.max(0, 1 - d / 220) * 0.6;
+        }
+        const pulse = 0.75 + 0.25 * Math.sin(t * 1.1 + n.ph);
+        const r = (2 + n.z * 3.2) * (0.6 + 0.4 * p);
+        const halo = r * (5.5 + boost * 4) * pulse;
+        ctx.globalAlpha = p * (0.55 + 0.35 * n.z + boost * 0.3);
+        ctx.drawImage(sprites[n.hue], n.x - halo, n.y - halo, halo * 2, halo * 2);
+        ctx.globalAlpha = p;
+        ctx.fillStyle = n.hue === 2 ? 'rgba(255,222,190,0.95)' : n.hue ? 'rgba(205,240,255,0.95)' : 'rgba(205,225,255,0.95)';
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, r * 0.55, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalAlpha = 1;
+      }
+    };
+
+    // Appareils modestes / mobiles : 30 images par seconde suffisent pour un mouvement lent.
+    const lowPower = W < 1024 || (navigator.hardwareConcurrency || 8) <= 4;
+    const minFrame = lowPower ? 1000 / 30 : 0;
+    let last = performance.now();
+    const loop = (now: number) => {
+      raf = requestAnimationFrame(loop);
+      if (now - last < minFrame - 1) return;
+      const dt = Math.min(0.05, (now - last) / 1000);
+      last = now;
+      frame(now, dt);
+    };
+    const play = () => {
+      if (running || reduce) return;
+      running = true;
+      last = performance.now();
+      raf = requestAnimationFrame(loop);
+    };
+    const pause = () => {
+      running = false;
+      cancelAnimationFrame(raf);
+    };
+
+    let first = true;
+    // Le premier rappel du ResizeObserver (juste après l'observation) construit le réseau et dessine la première image.
+    const ro = new ResizeObserver(([entry]) => {
+      if (first) {
+        first = false;
+        t0 = reduce ? -1e6 : performance.now(); // reduce : tout est déjà apparu (image fixe) ; sinon l'apparition démarre ici
+      }
+      build(entry.contentRect);
+      if (!running) frame(performance.now(), 0);
+    });
+    ro.observe(canvas);
+    const io = new IntersectionObserver(([e]) => (e.isIntersecting && !document.hidden ? play() : pause()));
+    io.observe(canvas);
+    const onVis = () => (document.hidden ? pause() : play());
+    document.addEventListener('visibilitychange', onVis);
+
+    const host = canvas.closest('section') ?? canvas.parentElement!;
+    const onMove = (ev: PointerEvent) => {
+      const r = canvas.getBoundingClientRect();
+      mouse.tx = ((ev.clientX - r.left) / r.width) * 2 - 1;
+      mouse.ty = ((ev.clientY - r.top) / r.height) * 2 - 1;
+      mouse.active = true;
+    };
+    const onLeave = () => {
+      mouse.tx = 0;
+      mouse.ty = 0;
+      mouse.active = false;
+    };
+    if (finePointer && !reduce) {
+      host.addEventListener('pointermove', onMove);
+      host.addEventListener('pointerleave', onLeave);
+    }
+
+    cleanups.push(() => {
+      pause();
+      ro.disconnect();
+      io.disconnect();
+      document.removeEventListener('visibilitychange', onVis);
+      host.removeEventListener('pointermove', onMove);
+      host.removeEventListener('pointerleave', onLeave);
+    });
+  }
+
+  // Démarrage différé (après le chargement, pendant un temps mort du navigateur) :
+  // l'animation ne retarde jamais l'affichage ni l'interactivité de la page.
+  const boot = () => document.querySelectorAll<HTMLCanvasElement>('canvas[data-network]').forEach(start);
+  const schedule = () => {
+    if ('requestIdleCallback' in window) window.requestIdleCallback(boot, { timeout: 1500 });
+    setTimeout(boot, 1600); // filet de sécurité (navigateurs sans temps mort) ; boot est idempotent
+  };
+  document.addEventListener('astro:page-load', () => {
+    if (document.readyState === 'complete') schedule();
+    else window.addEventListener('load', schedule, { once: true });
+  });
+  document.addEventListener('astro:before-swap', () => {
+    while (cleanups.length) cleanups.pop()!();
+  });
+</script>

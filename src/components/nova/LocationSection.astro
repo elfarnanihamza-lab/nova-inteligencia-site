@@ -1,0 +1,417 @@
+---
+/**
+ * Section « Nous trouver » de l'accueil : coordonnées en cartes interactives et carte Google Maps intégrée.
+ * - Apparition en cascade au défilement, une seule fois (système [data-reveal] de Motion.astro) :
+ *   libellé → titre → introduction → carte Adresse → carte E-mail → carte géographique → boutons.
+ * - La carte reste l'iframe Google Maps réelle, chargée en différé par LazyMap (une seule fois).
+ * - Adresse, e-mail et liens proviennent de SITE_CONFIG (aucune valeur saisie ici).
+ * - prefers-reduced-motion : tout est affiché directement, sans mouvement.
+ */
+import { Icon } from 'astro-icon/components';
+import LazyMap from '~/components/nova/LazyMap.astro';
+import { SITE_CONFIG } from '~/site.config';
+import { ph, visible } from '~/utils/placeholders';
+
+const c = SITE_CONFIG.contact;
+const fullAddress = `${c.address.street}, ${c.address.city}, ${c.address.countryName}`;
+// affichage seulement : le dernier numéro reste attaché au mot qui le précède (« Suite 5 »), la donnée n'est pas modifiée
+const streetDisplay = c.address.street.replace(/\s(\d+)$/, '\u00a0$1');
+const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(fullAddress)}`;
+const openUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress)}`;
+const extra = [
+  visible(c.phone) && { icon: 'tabler:phone', label: 'Téléphone', html: ph(c.phone) },
+  visible(c.hours) && { icon: 'tabler:clock', label: 'Horaires', html: ph(c.hours) },
+].filter(Boolean) as Array<{ icon: string; label: string; html: string }>;
+---
+
+<section class="locate cv-auto relative overflow-hidden bg-white" aria-labelledby="locate-title">
+  <div class="locate-halo pointer-events-none absolute" aria-hidden="true"></div>
+  <div class="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 md:py-24 lg:py-28">
+    <div class="grid gap-10 lg:grid-cols-12 lg:items-center lg:gap-14">
+      <!-- Coordonnées -->
+      <div class="lg:col-span-5">
+        <p class="mb-4 inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.2em] text-ink">
+          <span class="h-px w-8 bg-brand-gradient" aria-hidden="true"></span>
+          Nous trouver
+        </p>
+        <h2 id="locate-title" class="font-heading text-[2rem] font-bold leading-[1.1] tracking-[-0.025em] text-heading text-balance md:text-[2.75rem]">
+          Au cœur de Casablanca
+        </h2>
+        <p class="mt-4 max-w-md text-lg leading-relaxed text-muted">
+          Rencontrons-nous pour construire ensemble vos compétences de demain.
+        </p>
+
+        <ul class="mt-9 grid gap-4" role="list">
+          <li>
+            <div class="locate-card">
+            <span class="locate-icon locate-icon--pin" aria-hidden="true"><Icon name="tabler:map-pin" /></span>
+            <span class="min-w-0">
+              <span class="locate-label">Adresse</span>
+              <address class="mt-1.5 not-italic leading-relaxed text-heading">
+                {streetDisplay}<br />{c.address.city}, {c.address.countryName}
+              </address>
+            </span>
+            </div>
+          </li>
+          <li>
+            <div class="locate-card">
+            <span class="locate-icon locate-icon--mail" aria-hidden="true"><Icon name="tabler:mail" /></span>
+            <span class="min-w-0">
+              <span class="locate-label">E-mail</span>
+              <a class="locate-mail mt-1.5 inline-flex min-h-11 items-center" href={`mailto:${c.email}`}>{c.email}</a>
+            </span>
+            </div>
+          </li>
+          {
+            extra.map((e, i) => (
+              <li>
+                <div class="locate-card">
+                <span class="locate-icon" aria-hidden="true">
+                  <Icon name={e.icon} />
+                </span>
+                <span class="min-w-0">
+                  <span class="locate-label">{e.label}</span>
+                  <span class="mt-1.5 block text-heading" set:html={e.html} />
+                </span>
+                </div>
+              </li>
+            ))
+          }
+        </ul>
+
+        <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+          <a class="btn-primary locate-route justify-center" href={directionsUrl} target="_blank" rel="noopener noreferrer">
+            <Icon name="tabler:navigation" class="h-5 w-5" aria-hidden="true" />
+            Itinéraire
+            <span class="sr-only">(Google Maps, nouvel onglet)</span>
+          </a>
+          <a class="locate-secondary justify-center" href="/contact">
+            Nous contacter
+            <Icon name="tabler:arrow-right" class="h-5 w-5" aria-hidden="true" />
+          </a>
+        </div>
+      </div>
+
+      <!-- Carte géographique -->
+      <div class="locate-map lg:col-span-7">
+        <div class="locate-frame">
+          <div class="locate-bar">
+            <span class="locate-badge">
+              <span class="locate-dot" aria-hidden="true"></span>
+              Siège de {SITE_CONFIG.name}
+            </span>
+            <a class="locate-open" href={openUrl} target="_blank" rel="noopener noreferrer">
+              <Icon name="tabler:external-link" class="h-4 w-4" aria-hidden="true" />
+              Ouvrir dans Google Maps
+              <span class="sr-only">(nouvel onglet)</span>
+            </a>
+          </div>
+          <LazyMap class="locate-lazymap !rounded-none !border-0" height={440} />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Halo bleu très léger derrière la carte */
+  .locate-halo {
+    right: -12rem;
+    top: 10%;
+    width: 46rem;
+    height: 46rem;
+    border-radius: 9999px;
+    background: radial-gradient(closest-side, rgb(228 248 74 / 9%), rgb(17 17 17 / 4%) 55%, transparent 75%);
+  }
+
+  /* Cartes de coordonnées */
+  .locate-card {
+    position: relative;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    padding: 1.25rem 1.35rem;
+    border: 1px solid #e3eaf5;
+    border-radius: 1.1rem;
+    background: #fff;
+    box-shadow: 0 1px 0 rgb(17 17 17 / 3%), 0 14px 32px -26px rgb(17 17 17 / 40%);
+    transition:
+      transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 0.35s ease,
+      border-color 0.35s ease;
+  }
+  .locate-card::before {
+    /* petite ligne d'accent qui se déploie au survol */
+    content: '';
+    position: absolute;
+    left: -1px;
+    top: 1.3rem;
+    width: 2px;
+    height: 1.6rem;
+    border-radius: 2px;
+    background: linear-gradient(180deg, #b8cc1a, #111111);
+    transform: scaleY(0.3);
+    transform-origin: top;
+    opacity: 0;
+    transition:
+      transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 0.3s ease;
+  }
+  @media (hover: hover) and (pointer: fine) {
+  .locate-card:hover {
+    border-color: #cfe3fb;
+    box-shadow: 0 1px 0 rgb(17 17 17 / 3%), 0 22px 40px -26px rgb(17 17 17 / 45%);
+  }
+}
+  @media (hover: hover) and (pointer: fine) {
+  .locate-card:hover::before {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+  .locate-label {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--aw-color-text-muted);
+  }
+  .locate-icon {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 2.9rem;
+    height: 2.9rem;
+    border-radius: 0.85rem;
+    background: linear-gradient(135deg, #111111, #b8cc1a);
+    color: #fff;
+    box-shadow: 0 10px 22px -12px rgb(17 17 17 / 70%);
+    transition: transform 0.2s var(--ease-out);
+  }
+  .locate-icon :global(svg) {
+    width: 1.3rem;
+    height: 1.3rem;
+    transition: transform 0.2s var(--ease-out);
+  }
+  .locate-mail {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    overflow-wrap: anywhere;
+    color: var(--aw-color-text-heading);
+    font-weight: 500;
+    background: linear-gradient(90deg, #111111, #b8cc1a) 0 100% / 0% 1.5px no-repeat;
+    transition:
+      color 0.25s ease,
+      background-size 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .locate-mail:focus-visible {
+    color: #111111;
+    background-size: 100% 1.5px;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+  .locate-card:hover .locate-mail {
+    color: #111111;
+    background-size: 100% 1.5px;
+  }
+}
+
+  /* Boutons */
+  .locate-route :global(svg) {
+    transition: transform 0.2s var(--ease-out);
+  }
+  .locate-route:focus-visible :global(svg) {
+    transform: translate(2px, -2px) rotate(12deg);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+  .locate-route:hover :global(svg) {
+    transform: translate(2px, -2px) rotate(12deg);
+  }
+}
+  .locate-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 3rem;
+    padding: 0.8rem 1.6rem;
+    border: 1px solid #bfe0fb;
+    border-radius: 9999px;
+    background: #fff;
+    color: #111111;
+    font-weight: 600;
+    transition:
+      transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 0.3s ease,
+      background-color 0.3s ease,
+      box-shadow 0.3s ease;
+  }
+  .locate-secondary :global(svg) {
+    transition: transform 0.2s var(--ease-out);
+  }
+  @media (hover: hover) and (pointer: fine) {
+  .locate-secondary:hover {
+    border-color: #b8cc1a;
+    background: #f5fbff;
+    box-shadow: 0 12px 24px -16px rgb(17 17 17 / 45%);
+  }
+}
+  @media (hover: hover) and (pointer: fine) {
+  .locate-secondary:hover :global(svg) {
+    transform: translateX(3px);
+  }
+}
+  .locate-secondary:active {
+    transform: translateY(0) scale(0.97);
+  }
+  .locate-secondary:focus-visible {
+    outline: 3px solid rgb(17 17 17 / 40%);
+    outline-offset: 3px;
+  }
+
+  /* Carte géographique : cadre, profondeur au survol, apparition avec légère mise à l'échelle */
+  :global(.js) .locate-map[data-reveal] {
+    transform: translate3d(0, 18px, 0) scale(0.965);
+    transition:
+      opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+  :global(.js) .locate-map[data-reveal].is-revealed {
+    transform: none;
+  }
+  .locate-frame {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #dfe8f5;
+    border-radius: 1.75rem;
+    background: #fff;
+    box-shadow:
+      0 1px 0 rgb(17 17 17 / 4%),
+      0 40px 80px -52px rgb(17 17 17 / 55%);
+    transition:
+      transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 0.5s ease;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .locate-frame:hover {
+      box-shadow:
+        0 1px 0 rgb(17 17 17 / 4%),
+        0 52px 90px -50px rgb(17 17 17 / 55%);
+    }
+  }
+  .locate-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.85rem 1rem 0.85rem 1.1rem;
+    border-bottom: 1px solid #e8eef7;
+    background: linear-gradient(180deg, #fff, #f8fbff);
+  }
+  .locate-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.38rem 0.8rem 0.38rem 0.65rem;
+    border: 1px solid #d6e8fb;
+    border-radius: 9999px;
+    background: #fff;
+    color: #111111;
+    font-size: 0.8rem;
+    font-weight: 600;
+    box-shadow: 0 6px 16px -12px rgb(17 17 17 / 50%);
+  }
+  .locate-dot {
+    position: relative;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+    background: #b8cc1a;
+  }
+  .locate-dot::after {
+    /* une onde unique à l'apparition (pas d'animation permanente) */
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 9999px;
+    border: 2px solid rgb(228 248 74 / 55%);
+    opacity: 0;
+  }
+  .locate-open {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-height: 2.75rem;
+    padding: 0.45rem 0.95rem;
+    border-radius: 9999px;
+    background: #111111;
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition:
+      background-color 0.25s ease,
+      transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @media (hover: hover) and (pointer: fine) {
+  .locate-open:hover {
+    background: #111111;
+  }
+}
+  .locate-open:active {
+    transform: scale(0.97);
+  }
+  .locate-open:focus-visible {
+    outline: 3px solid rgb(17 17 17 / 40%);
+    outline-offset: 2px;
+  }
+  @media (max-width: 1023px) {
+    .locate-frame :global(.locate-lazymap) {
+      height: 320px !important;
+    }
+  }
+  @media (max-width: 639px) {
+    .locate-frame :global(.locate-lazymap) {
+      height: 280px !important;
+    }
+    .locate-bar {
+      padding: 0.75rem;
+    }
+    .locate-open,
+    .locate-badge {
+      font-size: 0.78rem;
+    }
+    .locate-route,
+    .locate-secondary {
+      width: 100%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .locate-card,
+    .locate-card::before,
+    .locate-icon,
+    .locate-icon :global(svg),
+    .locate-mail,
+    .locate-secondary,
+    .locate-frame,
+    .locate-open,
+    .locate-route :global(svg) {
+      transition: none;
+    }
+    .is-revealed .locate-dot::after {
+      animation: none;
+    }
+    .locate-frame:hover,
+    .locate-card:hover,
+    .locate-secondary:hover {
+      transform: none;
+    }
+    :global(.js) .locate-map[data-reveal] {
+      transform: none;
+    }
+  }
+</style>
