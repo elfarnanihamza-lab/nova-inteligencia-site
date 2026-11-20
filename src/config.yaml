@@ -11,7 +11,7 @@ metadata:
   title:
     default: Nova Inteligencia Group — Formation intelligence artificielle à Casablanca
     template: '%s | Nova Inteligencia Group'
-  description: "Centre de formation en intelligence artificielle à Casablanca, Maroc : formations IA, ChatGPT, automatisation et stratégie digitale pour professionnels et entreprises."
+  description: 'Centre de formation en intelligence artificielle à Casablanca, Maroc : formations IA, ChatGPT, automatisation et stratégie digitale pour professionnels et entreprises.'
   robots:
     index: true
     follow: true

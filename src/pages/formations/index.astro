@@ -3,7 +3,6 @@ import { getCollection } from 'astro:content';
 
 import Layout from '~/layouts/PageLayout.astro';
 import PageHero from '~/components/nova/PageHero.astro';
-import Section from '~/components/nova/Section.astro';
 import CatalogueCard from '~/components/nova/CatalogueCard.astro';
 import StructuredData from '~/components/common/StructuredData.astro';
 import { CATEGORIES, SITE_CONFIG } from '~/site.config';
@@ -26,13 +25,41 @@ const formations = (await getCollection('formations', ({ data }) => !data.draft)
 );
 // Guide « Comment choisir » : chaque situation renvoie à une formation (ou une catégorie) existante du catalogue.
 const guide = [
-  { situation: "Vous débutez avec l'IA", answer: 'Level 1 – AI Foundations', href: formationHref('level-1-ai-foundations') },
-  { situation: 'Vous voulez gagner du temps et automatiser vos tâches', answer: 'Level 2 – AI Productivity & Automation', href: formationHref('level-2-ai-productivity-automation') },
-  { situation: 'Vous visez des workflows et des agents IA professionnels', answer: 'Level 3 – AI Professional & Workflows', href: formationHref('level-3-ai-professional-workflows') },
-  { situation: "Vous voulez appliquer l'IA à votre métier", answer: 'Le cursus IA + Métier (3 niveaux)', href: categoryHref('ia-metier') },
-  { situation: 'Vous préparez une carrière dans le digital', answer: 'Nova Digital Master Program', href: formationHref('nova-digital-master-program') },
-  { situation: 'Vous portez un projet ou une startup', answer: 'Nos programmes gratuits en entrepreneuriat', href: categoryHref('innovation') },
-  { situation: 'Pour un enfant ou un adolescent (5–17 ans)', answer: 'IA Junior Academy', href: formationHref('ia-junior-academy') },
+  {
+    situation: "Vous débutez avec l'IA",
+    answer: 'Level 1 – AI Foundations',
+    href: formationHref('level-1-ai-foundations'),
+  },
+  {
+    situation: 'Vous voulez gagner du temps et automatiser vos tâches',
+    answer: 'Level 2 – AI Productivity & Automation',
+    href: formationHref('level-2-ai-productivity-automation'),
+  },
+  {
+    situation: 'Vous visez des workflows et des agents IA professionnels',
+    answer: 'Level 3 – AI Professional & Workflows',
+    href: formationHref('level-3-ai-professional-workflows'),
+  },
+  {
+    situation: "Vous voulez appliquer l'IA à votre métier",
+    answer: 'Le cursus IA + Métier (3 niveaux)',
+    href: categoryHref('ia-metier'),
+  },
+  {
+    situation: 'Vous préparez une carrière dans le digital',
+    answer: 'Nova Digital Master Program',
+    href: formationHref('nova-digital-master-program'),
+  },
+  {
+    situation: 'Vous portez un projet ou une startup',
+    answer: 'Nos programmes gratuits en entrepreneuriat',
+    href: categoryHref('innovation'),
+  },
+  {
+    situation: 'Pour un enfant ou un adolescent (5–17 ans)',
+    answer: 'IA Junior Academy',
+    href: formationHref('ia-junior-academy'),
+  },
 ];
 const count = (cat: string) => formations.filter((f) => f.data.categorie === cat).length;
 const freeTotal = formations.filter((f) => priceKind(f.data.prix, f.data.devise) === 'free').length;
@@ -54,7 +81,7 @@ const freeTotal = formations.filter((f) => priceKind(f.data.prix, f.data.devise)
   />
 
   <section class="cat-page relative isolate overflow-hidden bg-[#f1f1ec] text-[#111111]">
-        <div class="cat-wide relative mx-auto max-w-7xl px-4 pb-16 pt-2 sm:px-6 md:pb-24">
+    <div class="cat-wide relative mx-auto max-w-7xl px-4 pb-16 pt-2 sm:px-6 md:pb-24">
       <!-- Filtres : vrais boutons (aria-pressed), pilotés par l'URL -->
       <form id="filtres" class="cat-filters" aria-label="Filtrer les formations" onsubmit="return false">
         <div class="cat-group" role="group" aria-label="Catégorie" data-group="categorie">
@@ -108,7 +135,10 @@ const freeTotal = formations.filter((f) => priceKind(f.data.prix, f.data.devise)
       <!-- Comment choisir -->
       <div class="mt-20">
         <h2 class="font-heading text-2xl font-bold tracking-tight md:text-3xl">Comment choisir votre formation ?</h2>
-        <p class="mt-2 max-w-2xl text-[#555555]">Partez de votre situation : chaque niveau s'appuie sur le précédent, et un conseiller peut vous orienter si vous hésitez.</p>
+        <p class="mt-2 max-w-2xl text-[#555555]">
+          Partez de votre situation : chaque niveau s'appuie sur le précédent, et un conseiller peut vous orienter si
+          vous hésitez.
+        </p>
         <ul class="mt-8 grid gap-4 md:grid-cols-2" role="list">
           {
             guide.map((g) => (
@@ -118,7 +148,11 @@ const freeTotal = formations.filter((f) => priceKind(f.data.prix, f.data.devise)
                     <span class="block text-sm text-[#666660]">{g.situation}</span>
                     <span class="mt-1 block font-semibold">{g.answer}</span>
                   </span>
-                  <Icon name="tabler:arrow-right" class="h-5 w-5 shrink-0 text-[#111111] transition-transform group-hover:translate-x-1" aria-hidden="true" />
+                  <Icon
+                    name="tabler:arrow-right"
+                    class="h-5 w-5 shrink-0 text-[#111111] transition-transform group-hover:translate-x-1"
+                    aria-hidden="true"
+                  />
                 </a>
               </li>
             ))
@@ -177,7 +211,10 @@ const freeTotal = formations.filter((f) => priceKind(f.data.prix, f.data.devise)
     font-size: 0.82rem;
     font-weight: 700;
     color: #333333;
-    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease,
+      border-color 0.2s ease;
   }
   .cat-chip :global(svg) {
     width: 1rem;
@@ -256,7 +293,9 @@ const freeTotal = formations.filter((f) => priceKind(f.data.prix, f.data.devise)
     background: #fff;
     padding: 1rem 1.25rem;
     color: #111111;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
   }
   .cat-guide:focus-visible {
     outline: 3px solid #111111;
@@ -288,7 +327,9 @@ const freeTotal = formations.filter((f) => priceKind(f.data.prix, f.data.devise)
     const form = document.getElementById('filtres');
     if (!form || form.dataset.ready) return;
     form.dataset.ready = '1';
-    const groups = Object.fromEntries(GROUPS.map((g) => [g, form.querySelector<HTMLElement>(`[data-group="${g}"]`)!])) as Record<Group, HTMLElement>;
+    const groups = Object.fromEntries(
+      GROUPS.map((g) => [g, form.querySelector<HTMLElement>(`[data-group="${g}"]`)!])
+    ) as Record<Group, HTMLElement>;
     const buttons = (g: Group) => [...groups[g].querySelectorAll<HTMLButtonElement>('button[data-value]')];
     const state: Record<Group, string> = { categorie: '', niveau: '', tarif: '' };
     const cards = [...document.querySelectorAll<HTMLElement>('.cat-card')];
@@ -326,7 +367,9 @@ const freeTotal = formations.filter((f) => priceKind(f.data.prix, f.data.devise)
         }
         void was;
       });
-      GROUPS.forEach((g) => buttons(g).forEach((b) => b.setAttribute('aria-pressed', String((b.dataset.value ?? '') === state[g]))));
+      GROUPS.forEach((g) =>
+        buttons(g).forEach((b) => b.setAttribute('aria-pressed', String((b.dataset.value ?? '') === state[g])))
+      );
       compteur.textContent = n + (n > 1 ? ' formations affichées' : ' formation affichée') + notice;
       vide.hidden = n > 0;
       reinit.hidden = !GROUPS.some((g) => state[g]);

@@ -27,8 +27,12 @@ const items = visibleTestimonials.filter((t) => t.quote?.trim() && t.name?.trim(
 
 // Initiales : premier et dernier mot, premier graphème de chacun (les emoji et les écritures non latines ne sont jamais coupés
 // en deux) ; mots sans lettre (emoji, ponctuation) ignorés ; sans initiale possible, une icône de personne.
-const segmenter = typeof Intl !== 'undefined' && 'Segmenter' in Intl ? new Intl.Segmenter(undefined, { granularity: 'grapheme' }) : null;
-const firstGlyph = (w: string) => (segmenter ? ([...segmenter.segment(w)][0]?.segment ?? '') : (Array.from(w)[0] ?? ''));
+const segmenter =
+  typeof Intl !== 'undefined' && 'Segmenter' in Intl
+    ? new Intl.Segmenter(undefined, { granularity: 'grapheme' })
+    : null;
+const firstGlyph = (w: string) =>
+  segmenter ? ([...segmenter.segment(w)][0]?.segment ?? '') : (Array.from(w)[0] ?? '');
 const initials = (name: string) => {
   const words = name
     .trim()
@@ -88,22 +92,38 @@ const hasDemo = items.some((t) => t.demo);
                     {t.rating && (
                       <p class="tm-stars" role="img" aria-label={`Note : ${t.rating} sur 5`}>
                         {[1, 2, 3, 4, 5].map((n) => (
-                          <Icon name="tabler:star-filled" class:list={['h-4 w-4', n > t.rating! && 'is-off']} aria-hidden="true" />
+                          <Icon
+                            name="tabler:star-filled"
+                            class:list={['h-4 w-4', n > t.rating! && 'is-off']}
+                            aria-hidden="true"
+                          />
                         ))}
                       </p>
                     )}
                   </div>
-                  <blockquote class="tm-text" dir="auto">« {t.quote} »</blockquote>
+                  <blockquote class="tm-text" dir="auto">
+                    « {t.quote} »
+                  </blockquote>
                   <figcaption class="tm-author">
                     {t.photo ? (
-                      <img src={t.photo} alt="" width="48" height="48" loading="lazy" decoding="async" class="tm-photo h-12 w-12 shrink-0 rounded-full object-cover" />
+                      <img
+                        src={t.photo}
+                        alt=""
+                        width="48"
+                        height="48"
+                        loading="lazy"
+                        decoding="async"
+                        class="tm-photo h-12 w-12 shrink-0 rounded-full object-cover"
+                      />
                     ) : (
                       <span class="tm-avatar" aria-hidden="true">
                         {initials(t.name) || <Icon name="tabler:user" class="h-5 w-5" />}
                       </span>
                     )}
                     <span class="min-w-0">
-                      <span class="block font-semibold text-white [overflow-wrap:anywhere]" dir="auto">{t.name}</span>
+                      <span class="block font-semibold text-white [overflow-wrap:anywhere]" dir="auto">
+                        {t.name}
+                      </span>
                       {(t.role || t.company) && (
                         <span class="block text-sm text-[#a8a8a0] [overflow-wrap:anywhere]" dir="auto">
                           {t.role}
@@ -111,7 +131,14 @@ const hasDemo = items.some((t) => t.demo);
                           {t.company}
                         </span>
                       )}
-                      {t.formation && <span class="mt-0.5 block text-xs font-medium leading-snug text-[#e4f84a] [overflow-wrap:anywhere]" dir="auto">{t.formation}</span>}
+                      {t.formation && (
+                        <span
+                          class="mt-0.5 block text-xs font-medium leading-snug text-[#e4f84a] [overflow-wrap:anywhere]"
+                          dir="auto"
+                        >
+                          {t.formation}
+                        </span>
+                      )}
                     </span>
                   </figcaption>
                 </figure>
@@ -261,7 +288,13 @@ const hasDemo = items.some((t) => t.demo);
     inset: -1px;
     padding: 1px;
     border-radius: inherit;
-    background: linear-gradient(140deg, rgb(228 248 74 / 80%), rgb(228 248 74 / 0%) 38%, rgb(17 17 17 / 0%) 62%, rgb(228 248 74 / 55%));
+    background: linear-gradient(
+      140deg,
+      rgb(228 248 74 / 80%),
+      rgb(228 248 74 / 0%) 38%,
+      rgb(17 17 17 / 0%) 62%,
+      rgb(228 248 74 / 55%)
+    );
     -webkit-mask:
       linear-gradient(#000 0 0) content-box,
       linear-gradient(#000 0 0);
@@ -483,11 +516,11 @@ const hasDemo = items.some((t) => t.demo);
     display: block;
   }
   @media (hover: hover) and (pointer: fine) {
-  .tm-pause:hover {
-    border-color: #e4f84a;
-    background: rgb(228 248 74 / 20%);
+    .tm-pause:hover {
+      border-color: #e4f84a;
+      background: rgb(228 248 74 / 20%);
+    }
   }
-}
   .tm-pause:active {
     transform: translateX(-50%) scale(0.92);
   }
@@ -538,7 +571,8 @@ const hasDemo = items.some((t) => t.demo);
     prev.hidden = false;
     next.hidden = false;
     if (reduce) {
-      const by = (dir: number) => viewport.scrollBy({ left: dir * (originals[0].getBoundingClientRect().width + 24), behavior: 'auto' });
+      const by = (dir: number) =>
+        viewport.scrollBy({ left: dir * (originals[0].getBoundingClientRect().width + 24), behavior: 'auto' });
       prev.addEventListener('click', () => by(-1));
       next.addEventListener('click', () => by(1));
       return;
@@ -548,7 +582,10 @@ const hasDemo = items.some((t) => t.demo);
     toggle.hidden = false;
 
     // Copies pour une boucle continue : inertes et masquées aux technologies d'assistance.
-    let setW = 0, step = 0, center = 0, clones: HTMLElement[] = [];
+    let setW = 0,
+      step = 0,
+      center = 0;
+    const clones: HTMLElement[] = [];
     let mode: 'flow' | 'step' = 'flow';
     const measure = () => {
       const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
@@ -574,8 +611,12 @@ const hasDemo = items.some((t) => t.demo);
 
     let x = 0; // décalage courant (px), ramené dans [0, setW[
     let hold = 0; // temps passé sur la carte courante (mode carte par carte)
-    let raf = 0, last = 0, running = false;
-    let userPaused = false, visible = false, focused = false;
+    let raf = 0,
+      last = 0,
+      running = false;
+    let userPaused = false,
+      visible = false,
+      focused = false;
     let nudge: { from: number; to: number; t0: number } | null = null;
     let drag: { id: number; x0: number; y0: number; start: number; active: boolean } | null = null;
     let resumeAt = 0;
@@ -618,7 +659,8 @@ const hasDemo = items.some((t) => t.demo);
     // Flèches : glissement jusqu'à la carte précédente/suivante, dans les deux modes (continu et carte par carte)
     const go = (dir: 1 | -1) => {
       const base = nudge ? nudge.to : x;
-      const target = dir === 1 ? (Math.floor(base / step + 0.001) + 1) * step : (Math.ceil(base / step - 0.001) - 1) * step;
+      const target =
+        dir === 1 ? (Math.floor(base / step + 0.001) + 1) * step : (Math.ceil(base / step - 0.001) - 1) * step;
       nudge = { from: x, to: target, t0: performance.now() };
       hold = 0;
       resumeAt = performance.now() + 2500;
@@ -630,7 +672,10 @@ const hasDemo = items.some((t) => t.demo);
       userPaused = !userPaused;
       stage.classList.toggle('is-user-paused', userPaused);
       toggle.setAttribute('aria-pressed', String(userPaused));
-      toggle.setAttribute('aria-label', userPaused ? 'Reprendre le défilement des témoignages' : 'Mettre en pause le défilement des témoignages');
+      toggle.setAttribute(
+        'aria-label',
+        userPaused ? 'Reprendre le défilement des témoignages' : 'Mettre en pause le défilement des témoignages'
+      );
       // « Reprendre » est une demande explicite : elle l'emporte sur la pause liée au focus clavier
       if (!userPaused) focused = false;
     });
@@ -652,7 +697,8 @@ const hasDemo = items.some((t) => t.demo);
     });
     viewport.addEventListener('pointermove', (e) => {
       if (!drag || e.pointerId !== drag.id) return;
-      const dx = e.clientX - drag.x0, dy = e.clientY - drag.y0;
+      const dx = e.clientX - drag.x0,
+        dy = e.clientY - drag.y0;
       if (!drag.active) {
         if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 6) {
           drag = null; // geste vertical : on laisse la page défiler
@@ -690,7 +736,8 @@ const hasDemo = items.some((t) => t.demo);
     const io = new IntersectionObserver(
       ([e]) => {
         visible = e.isIntersecting;
-        visible ? start() : stop();
+        if (visible) start();
+        else stop();
       },
       { threshold: 0.2 }
     );

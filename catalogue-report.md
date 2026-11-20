@@ -18,16 +18,16 @@ Après correction (lien étiré en CSS propre, `z-index` au-dessus du contenu) :
 
 ## 3. Liens et boutons testés (44 contrôles, tous OK)
 
-| Contrôle | Résultat |
-|---|---|
-| 12 cartes : lien réel `<a href="/formations/…">`, route existante, HTTP 200, un seul lien par carte | 12/12 |
-| Clic souris au centre de la carte et sur le bouton « Découvrir » (cartes testées en lot) | OK |
-| Liens du catalogue hors cartes (accueil, filtres, entreprises, à propos, blog, contact, mentions, confidentialité) | HTTP 200 |
-| `href="#"`, liens vides, liens imbriqués dans le catalogue | aucun |
-| 12 fiches : liens internes (17 par fiche), formulaire d'inscription présent, bouton « S'inscrire » → `/contact?formation=<slug>#formulaire` (route et ancre existantes) | 12/12 |
-| Clavier : Tab atteint la carte avec contour de focus, Entrée ouvre la fiche, Tab + Espace active un filtre | OK |
-| Filtres au clic : catégorie, niveau, tarif, combinaisons, combinaison vide + réinitialisation, URL partagée, filtre inconnu ignoré | OK |
-| Erreurs JavaScript console | aucune |
+| Contrôle                                                                                                                                                                | Résultat |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
+| 12 cartes : lien réel `<a href="/formations/…">`, route existante, HTTP 200, un seul lien par carte                                                                     | 12/12    |
+| Clic souris au centre de la carte et sur le bouton « Découvrir » (cartes testées en lot)                                                                                | OK       |
+| Liens du catalogue hors cartes (accueil, filtres, entreprises, à propos, blog, contact, mentions, confidentialité)                                                      | HTTP 200 |
+| `href="#"`, liens vides, liens imbriqués dans le catalogue                                                                                                              | aucun    |
+| 12 fiches : liens internes (17 par fiche), formulaire d'inscription présent, bouton « S'inscrire » → `/contact?formation=<slug>#formulaire` (route et ancre existantes) | 12/12    |
+| Clavier : Tab atteint la carte avec contour de focus, Entrée ouvre la fiche, Tab + Espace active un filtre                                                              | OK       |
+| Filtres au clic : catégorie, niveau, tarif, combinaisons, combinaison vide + réinitialisation, URL partagée, filtre inconnu ignoré                                      | OK       |
+| Erreurs JavaScript console                                                                                                                                              | aucune   |
 
 Limite : l'ouverture dans un nouvel onglet est garantie par le lien natif (vérifié : `<a href>` sans gestionnaire de clic ni `target`), mais le navigateur sans interface utilisé pour les tests n'ouvre pas réellement d'onglet ; à vérifier à la main (Ctrl+clic ou clic molette).
 

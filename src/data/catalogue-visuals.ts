@@ -44,7 +44,8 @@ const style = (k: SessionAccent) => {
   return `--ac:${a.ac};--ink:${a.ink};--line:${line}`;
 };
 export const accentStyle = (cat: string) => style(CATEGORY_ACCENT[cat as CategoryKey] ?? 'bleu');
-export const formationAccentStyle = (slug: string, cat: string) => style(FORMATION_ACCENT[slug] ?? CATEGORY_ACCENT[cat as CategoryKey] ?? 'bleu');
+export const formationAccentStyle = (slug: string, cat: string) =>
+  style(FORMATION_ACCENT[slug] ?? CATEGORY_ACCENT[cat as CategoryKey] ?? 'bleu');
 
 /** Photo et cadrage (object-position) de chaque formation. */
 export const PHOTOS: Record<string, { name: string; position: string }> = {

@@ -28,17 +28,27 @@ const preview = !configured && DEMO_MODE;
       <span class="wa-orb" aria-hidden="true">
         <Icon name="tabler:brand-whatsapp" />
       </span>
-      <span class="wa-label" aria-hidden="true">Écrire sur WhatsApp</span>
+      <span class="wa-label" aria-hidden="true">
+        Écrire sur WhatsApp
+      </span>
     </a>
   )
 }
 {
   preview && (
-    <span class="wa-fab is-disabled" role="img" aria-label="WhatsApp : numéro à configurer" title="Numéro WhatsApp à configurer dans src/site.config.ts" data-wa>
+    <span
+      class="wa-fab is-disabled"
+      role="img"
+      aria-label="WhatsApp : numéro à configurer"
+      title="Numéro WhatsApp à configurer dans src/site.config.ts"
+      data-wa
+    >
       <span class="wa-orb" aria-hidden="true">
         <Icon name="tabler:brand-whatsapp" />
       </span>
-      <span class="wa-label" aria-hidden="true">Numéro à configurer</span>
+      <span class="wa-label" aria-hidden="true">
+        Numéro à configurer
+      </span>
     </span>
   )
 }
@@ -179,7 +189,8 @@ const preview = !configured && DEMO_MODE;
 
 <script>
   // Sur écran tactile, le bouton s'efface pendant la saisie pour ne jamais masquer un champ ou un bouton d'envoi.
-  const isField = (el: EventTarget | null) => el instanceof HTMLElement && el.matches('input:not([type="checkbox"]):not([type="radio"]), textarea, select');
+  const isField = (el: EventTarget | null) =>
+    el instanceof HTMLElement && el.matches('input:not([type="checkbox"]):not([type="radio"]), textarea, select');
   document.addEventListener('focusin', (e) => {
     if (isField(e.target)) document.body.classList.add('is-typing');
   });

@@ -34,7 +34,10 @@ const extra = [
           <span class="h-px w-8 bg-brand-gradient" aria-hidden="true"></span>
           Nous trouver
         </p>
-        <h2 id="locate-title" class="font-heading text-[2rem] font-bold leading-[1.1] tracking-[-0.025em] text-heading text-balance md:text-[2.75rem]">
+        <h2
+          id="locate-title"
+          class="font-heading text-[2rem] font-bold leading-[1.1] tracking-[-0.025em] text-heading text-balance md:text-[2.75rem]"
+        >
           Au cœur de Casablanca
         </h2>
         <p class="mt-4 max-w-md text-lg leading-relaxed text-muted">
@@ -44,35 +47,35 @@ const extra = [
         <ul class="mt-9 grid gap-4" role="list">
           <li>
             <div class="locate-card">
-            <span class="locate-icon locate-icon--pin" aria-hidden="true"><Icon name="tabler:map-pin" /></span>
-            <span class="min-w-0">
-              <span class="locate-label">Adresse</span>
-              <address class="mt-1.5 not-italic leading-relaxed text-heading">
-                {streetDisplay}<br />{c.address.city}, {c.address.countryName}
-              </address>
-            </span>
+              <span class="locate-icon locate-icon--pin" aria-hidden="true"><Icon name="tabler:map-pin" /></span>
+              <span class="min-w-0">
+                <span class="locate-label">Adresse</span>
+                <address class="mt-1.5 not-italic leading-relaxed text-heading">
+                  {streetDisplay}<br />{c.address.city}, {c.address.countryName}
+                </address>
+              </span>
             </div>
           </li>
           <li>
             <div class="locate-card">
-            <span class="locate-icon locate-icon--mail" aria-hidden="true"><Icon name="tabler:mail" /></span>
-            <span class="min-w-0">
-              <span class="locate-label">E-mail</span>
-              <a class="locate-mail mt-1.5 inline-flex min-h-11 items-center" href={`mailto:${c.email}`}>{c.email}</a>
-            </span>
+              <span class="locate-icon locate-icon--mail" aria-hidden="true"><Icon name="tabler:mail" /></span>
+              <span class="min-w-0">
+                <span class="locate-label">E-mail</span>
+                <a class="locate-mail mt-1.5 inline-flex min-h-11 items-center" href={`mailto:${c.email}`}>{c.email}</a>
+              </span>
             </div>
           </li>
           {
-            extra.map((e, i) => (
+            extra.map((e) => (
               <li>
                 <div class="locate-card">
-                <span class="locate-icon" aria-hidden="true">
-                  <Icon name={e.icon} />
-                </span>
-                <span class="min-w-0">
-                  <span class="locate-label">{e.label}</span>
-                  <span class="mt-1.5 block text-heading" set:html={e.html} />
-                </span>
+                  <span class="locate-icon" aria-hidden="true">
+                    <Icon name={e.icon} />
+                  </span>
+                  <span class="min-w-0">
+                    <span class="locate-label">{e.label}</span>
+                    <span class="mt-1.5 block text-heading" set:html={e.html} />
+                  </span>
                 </div>
               </li>
             ))
@@ -80,7 +83,12 @@ const extra = [
         </ul>
 
         <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-          <a class="btn-primary locate-route justify-center" href={directionsUrl} target="_blank" rel="noopener noreferrer">
+          <a
+            class="btn-primary locate-route justify-center"
+            href={directionsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <Icon name="tabler:navigation" class="h-5 w-5" aria-hidden="true" />
             Itinéraire
             <span class="sr-only">(Google Maps, nouvel onglet)</span>
@@ -134,7 +142,9 @@ const extra = [
     border: 1px solid #e3eaf5;
     border-radius: 1.1rem;
     background: #fff;
-    box-shadow: 0 1px 0 rgb(17 17 17 / 3%), 0 14px 32px -26px rgb(17 17 17 / 40%);
+    box-shadow:
+      0 1px 0 rgb(17 17 17 / 3%),
+      0 14px 32px -26px rgb(17 17 17 / 40%);
     transition:
       transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
       box-shadow 0.35s ease,
@@ -158,17 +168,19 @@ const extra = [
       opacity 0.3s ease;
   }
   @media (hover: hover) and (pointer: fine) {
-  .locate-card:hover {
-    border-color: #cfe3fb;
-    box-shadow: 0 1px 0 rgb(17 17 17 / 3%), 0 22px 40px -26px rgb(17 17 17 / 45%);
+    .locate-card:hover {
+      border-color: #cfe3fb;
+      box-shadow:
+        0 1px 0 rgb(17 17 17 / 3%),
+        0 22px 40px -26px rgb(17 17 17 / 45%);
+    }
   }
-}
   @media (hover: hover) and (pointer: fine) {
-  .locate-card:hover::before {
-    transform: scaleY(1);
-    opacity: 1;
+    .locate-card:hover::before {
+      transform: scaleY(1);
+      opacity: 1;
+    }
   }
-}
   .locate-label {
     display: block;
     font-size: 0.72rem;
@@ -212,11 +224,11 @@ const extra = [
   }
 
   @media (hover: hover) and (pointer: fine) {
-  .locate-card:hover .locate-mail {
-    color: #111111;
-    background-size: 100% 1.5px;
+    .locate-card:hover .locate-mail {
+      color: #111111;
+      background-size: 100% 1.5px;
+    }
   }
-}
 
   /* Boutons */
   .locate-route :global(svg) {
@@ -227,10 +239,10 @@ const extra = [
   }
 
   @media (hover: hover) and (pointer: fine) {
-  .locate-route:hover :global(svg) {
-    transform: translate(2px, -2px) rotate(12deg);
+    .locate-route:hover :global(svg) {
+      transform: translate(2px, -2px) rotate(12deg);
+    }
   }
-}
   .locate-secondary {
     display: inline-flex;
     align-items: center;
@@ -252,17 +264,17 @@ const extra = [
     transition: transform 0.2s var(--ease-out);
   }
   @media (hover: hover) and (pointer: fine) {
-  .locate-secondary:hover {
-    border-color: #b8cc1a;
-    background: #f5fbff;
-    box-shadow: 0 12px 24px -16px rgb(17 17 17 / 45%);
+    .locate-secondary:hover {
+      border-color: #b8cc1a;
+      background: #f5fbff;
+      box-shadow: 0 12px 24px -16px rgb(17 17 17 / 45%);
+    }
   }
-}
   @media (hover: hover) and (pointer: fine) {
-  .locate-secondary:hover :global(svg) {
-    transform: translateX(3px);
+    .locate-secondary:hover :global(svg) {
+      transform: translateX(3px);
+    }
   }
-}
   .locate-secondary:active {
     transform: translateY(0) scale(0.97);
   }
@@ -357,10 +369,10 @@ const extra = [
       transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   }
   @media (hover: hover) and (pointer: fine) {
-  .locate-open:hover {
-    background: #111111;
+    .locate-open:hover {
+      background: #111111;
+    }
   }
-}
   .locate-open:active {
     transform: scale(0.97);
   }

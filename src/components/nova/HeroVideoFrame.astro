@@ -9,8 +9,25 @@
 ---
 
 <div class="hero-vframe relative isolate overflow-hidden bg-navy" aria-hidden="true">
-  <img class="hero-vframe__poster" src="/media/hero-ia-poster.webp" alt="" width="640" height="800" fetchpriority="high" decoding="async" />
-  <video class="hero-vframe__media" muted loop playsinline preload="none" disablepictureinpicture tabindex="-1" data-hero-video data-src="/media/hero-ia.mp4"></video>
+  <img
+    class="hero-vframe__poster"
+    src="/media/hero-ia-poster.webp"
+    alt=""
+    width="640"
+    height="800"
+    fetchpriority="high"
+    decoding="async"
+  />
+  <video
+    class="hero-vframe__media"
+    muted
+    loop
+    playsinline
+    preload="none"
+    disablepictureinpicture
+    tabindex="-1"
+    data-hero-video
+    data-src="/media/hero-ia.mp4"></video>
 </div>
 
 <style>
@@ -53,7 +70,7 @@
 
   const setup = (video: HTMLVideoElement) => {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const saveData = (navigator as any).connection?.saveData === true;
+    const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData === true;
     if (reduce || saveData) return; // image fixe seulement
 
     let onScreen = true;
@@ -64,14 +81,18 @@
         loaded = true;
         video.src = video.dataset.src || '';
       }
-      video.play().then(() => video.classList.add('is-playing')).catch(() => {});
+      video
+        .play()
+        .then(() => video.classList.add('is-playing'))
+        .catch(() => {});
     };
     const pause = () => video.pause();
 
     const io = new IntersectionObserver(
       ([e]) => {
         onScreen = e.isIntersecting;
-        onScreen ? play() : pause();
+        if (onScreen) play();
+        else pause();
       },
       { threshold: 0.05 }
     );

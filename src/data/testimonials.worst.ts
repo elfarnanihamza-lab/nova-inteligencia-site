@@ -23,11 +23,17 @@ export const worstCase: Testimonial[] = [
     name: 'نور الهدى بن عبد الرحمن',
     role: 'مديرة مشاريع',
     company: 'مجموعة الدار البيضاء للخدمات',
-    quote: 'ساعدتني الدورة على فهم أدوات الذكاء الاصطناعي واستخدامها في عملي اليومي بثقة أكبر، وأصبحت أنجز مهامي في وقت أقل.',
+    quote:
+      'ساعدتني الدورة على فهم أدوات الذكاء الاصطناعي واستخدامها في عملي اليومي بثقة أكبر، وأصبحت أنجز مهامي في وقت أقل.',
     rating: 4,
     demo: true,
   },
-  { name: '🚀 Karim', role: 'Fondateur 🎓', quote: "Super formation 👏👏 j'ai appris à automatiser mes devis en une après-midi 🔥", demo: true },
+  {
+    name: '🚀 Karim',
+    role: 'Fondateur 🎓',
+    quote: "Super formation 👏👏 j'ai appris à automatiser mes devis en une après-midi 🔥",
+    demo: true,
+  },
   { name: '', quote: '', demo: true },
   {
     name: '李明',
@@ -46,11 +52,16 @@ export const worstCase: Testimonial[] = [
   {
     name: 'Samir Taïbi',
     role: 'Responsable digital',
-    quote: 'Tout est détaillé ici : https://www.exemple-de-longue-adresse-de-formation.com/avis/formation-ia-niveau-3-automatisation-workflows?source=newsletter&campagne=printemps-2026',
+    quote:
+      'Tout est détaillé ici : https://www.exemple-de-longue-adresse-de-formation.com/avis/formation-ia-niveau-3-automatisation-workflows?source=newsletter&campagne=printemps-2026',
     demo: true,
   },
 ];
 
 export const oneCase: Testimonial[] = [worstCase[0]];
-export const manyCase: Testimonial[] = Array.from({ length: 12 }, (_, i) => ({ ...worstCase[(i + 1) % worstCase.length], name: `${worstCase[(i + 1) % worstCase.length].name || 'Anonyme'}`.trim() || 'Anonyme', demo: true }));
+export const manyCase: Testimonial[] = Array.from({ length: 12 }, (_, i) => ({
+  ...worstCase[(i + 1) % worstCase.length],
+  name: `${worstCase[(i + 1) % worstCase.length].name || 'Anonyme'}`.trim() || 'Anonyme',
+  demo: true,
+}));
 export const emptyCase: Testimonial[] = [];

@@ -7,7 +7,8 @@ import { ph, visible } from '~/utils/placeholders';
 
 const metadata = {
   title: 'Politique de confidentialité',
-  description: 'Politique de confidentialité de Nova Inteligencia Group : données collectées, finalités, durée de conservation et droits.',
+  description:
+    'Politique de confidentialité de Nova Inteligencia Group : données collectées, finalités, durée de conservation et droits.',
   robots: { index: false, follow: true },
 };
 const c = SITE_CONFIG.contact;
@@ -17,24 +18,53 @@ const c = SITE_CONFIG.contact;
   <PageHero title="Politique de confidentialité" crumbs={[{ text: 'Politique de confidentialité' }]} />
   <Section>
     <div class="prose prose-lg mx-auto max-w-3xl">
-      {visible('[Proposition – à valider]') && <p set:html={ph('[Proposition – à valider par un juriste] Texte type à adapter à votre situation réelle et à la loi marocaine n° 09-08 (CNDP).')} />}
+      {
+        visible('[Proposition – à valider]') && (
+          <p
+            set:html={ph(
+              '[Proposition – à valider par un juriste] Texte type à adapter à votre situation réelle et à la loi marocaine n° 09-08 (CNDP).'
+            )}
+          />
+        )
+      }
       <h2>Responsable du traitement</h2>
-      <p>{SITE_CONFIG.legal.companyName}, {c.address.street}, {c.address.city}, {c.address.countryName} — <a href={`mailto:${c.email}`}>{c.email}</a>.</p>
+      <p>
+        {SITE_CONFIG.legal.companyName}, {c.address.street}, {c.address.city}, {c.address.countryName} — <a
+          href={`mailto:${c.email}`}>{c.email}</a
+        >.
+      </p>
       <h2>Données collectées</h2>
       <p>
-        Via les formulaires du site : nom, prénom, adresse e-mail, téléphone, entreprise, formation concernée et message.
+        Via les formulaires du site : nom, prénom, adresse e-mail, téléphone, entreprise, formation concernée et
+        message.
       </p>
       <h2>Finalités</h2>
       <p>Répondre à vos demandes d'information, traiter vos inscriptions et établir des devis pour les entreprises.</p>
-      {visible('[À COMPLÉTER]') && (<><h2>Durée de conservation</h2>
-      <p set:html={ph('Durée de conservation des données : [À COMPLÉTER]')} /></>)}
+      {
+        visible('[À COMPLÉTER]') && (
+          <>
+            <h2>Durée de conservation</h2>
+            <p set:html={ph('Durée de conservation des données : [À COMPLÉTER]')} />
+          </>
+        )
+      }
       <h2>Vos droits</h2>
       <p>
         Vous disposez d'un droit d'accès, de rectification et d'opposition sur vos données. Pour l'exercer, écrivez à
         <a href={`mailto:${c.email}`}>{c.email}</a>.
       </p>
-      {visible('[À COMPLÉTER]') && (<><h2>Cookies et mesure d'audience</h2>
-      <p set:html={ph("Outils de mesure d'audience et cookies utilisés : [À COMPLÉTER] (le site n'en utilise aucun par défaut).")} /></>)}
+      {
+        visible('[À COMPLÉTER]') && (
+          <>
+            <h2>Cookies et mesure d'audience</h2>
+            <p
+              set:html={ph(
+                "Outils de mesure d'audience et cookies utilisés : [À COMPLÉTER] (le site n'en utilise aucun par défaut)."
+              )}
+            />
+          </>
+        )
+      }
     </div>
   </Section>
 </Layout>

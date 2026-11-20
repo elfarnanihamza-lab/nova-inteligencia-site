@@ -13,37 +13,102 @@ const metadata = {
   title: 'Marketing digital pour entreprises à Casablanca | Nova',
   ignoreTitleTemplate: true,
   description:
-    "Nova accompagne les entreprises en marketing digital : stratégie, publicité en ligne, référencement, réseaux sociaux, site qui convertit et automatisation, pour développer vos ventes.",
+    'Nova accompagne les entreprises en marketing digital : stratégie, publicité en ligne, référencement, réseaux sociaux, site qui convertit et automatisation, pour développer vos ventes.',
   openGraph: { images: [{ url: '~/assets/images/og/entreprises.png', width: 1200, height: 630 }] },
 };
 
 const services = [
-  { icon: 'tabler:compass', t: 'Stratégie et audit digital', d: "Un état des lieux de votre présence en ligne, des objectifs clairs et des priorités classées par impact." },
-  { icon: 'tabler:ad-2', t: 'Publicité en ligne', d: 'Campagnes Meta Ads, Google Ads et TikTok Ads, ciblées sur vos clients, avec un suivi des conversions.' },
-  { icon: 'tabler:search', t: 'Référencement (SEO)', d: 'Être trouvé sur Google quand vos clients vous cherchent, y compris pour les recherches locales.' },
-  { icon: 'tabler:brand-instagram', t: 'Réseaux sociaux et contenu', d: "Un calendrier éditorial tenable, des contenus et des visuels produits plus vite grâce à l'IA." },
-  { icon: 'tabler:layout', t: 'Site et pages de conversion', d: 'Des pages claires, rapides sur mobile, pensées pour transformer une visite en demande ou en vente.' },
-  { icon: 'tabler:settings-automation', t: 'Automatisation et relances', d: 'WhatsApp, e-mail, CRM : répondre vite et relancer chaque contact, sans rien oublier.' },
+  {
+    icon: 'tabler:compass',
+    t: 'Stratégie et audit digital',
+    d: 'Un état des lieux de votre présence en ligne, des objectifs clairs et des priorités classées par impact.',
+  },
+  {
+    icon: 'tabler:ad-2',
+    t: 'Publicité en ligne',
+    d: 'Campagnes Meta Ads, Google Ads et TikTok Ads, ciblées sur vos clients, avec un suivi des conversions.',
+  },
+  {
+    icon: 'tabler:search',
+    t: 'Référencement (SEO)',
+    d: 'Être trouvé sur Google quand vos clients vous cherchent, y compris pour les recherches locales.',
+  },
+  {
+    icon: 'tabler:brand-instagram',
+    t: 'Réseaux sociaux et contenu',
+    d: "Un calendrier éditorial tenable, des contenus et des visuels produits plus vite grâce à l'IA.",
+  },
+  {
+    icon: 'tabler:layout',
+    t: 'Site et pages de conversion',
+    d: 'Des pages claires, rapides sur mobile, pensées pour transformer une visite en demande ou en vente.',
+  },
+  {
+    icon: 'tabler:settings-automation',
+    t: 'Automatisation et relances',
+    d: 'WhatsApp, e-mail, CRM : répondre vite et relancer chaque contact, sans rien oublier.',
+  },
 ];
 const steps = [
   { n: '01', t: 'Comprendre', d: 'Votre offre, vos clients, vos objectifs de vente et votre budget.' },
   { n: '02', t: 'Construire', d: "Un plan d'action : les bons canaux, les bons messages, un calendrier." },
   { n: '03', t: 'Lancer', d: 'Campagnes, contenus et pages mis en ligne, avec le suivi en place.' },
-  { n: '04', t: 'Mesurer et ajuster', d: "Les indicateurs que nous avons choisis ensemble, lus régulièrement pour améliorer." },
+  {
+    n: '04',
+    t: 'Mesurer et ajuster',
+    d: 'Les indicateurs que nous avons choisis ensemble, lus régulièrement pour améliorer.',
+  },
 ];
-const audiences = ['Commerces et PME', 'E-commerce', 'Cabinets et professions libérales', 'Restauration et hôtellerie', 'Immobilier', 'Écoles et centres de formation'];
+const audiences = [
+  'Commerces et PME',
+  'E-commerce',
+  'Cabinets et professions libérales',
+  'Restauration et hôtellerie',
+  'Immobilier',
+  'Écoles et centres de formation',
+];
 const why = [
-  { icon: 'tabler:sparkles', t: "L'IA au service du marketing", d: "Nous formons à l'IA : nous l'utilisons pour produire, analyser et automatiser plus vite." },
-  { icon: 'tabler:school', t: 'Vos équipes deviennent autonomes', d: "Nous pouvons former vos collaborateurs, pour que vous gardiez la main sur vos outils." },
-  { icon: 'tabler:chart-bar', t: 'Un pilotage par les chiffres', d: 'Des indicateurs simples, choisis avec vous, plutôt que des promesses.' },
+  {
+    icon: 'tabler:sparkles',
+    t: "L'IA au service du marketing",
+    d: "Nous formons à l'IA : nous l'utilisons pour produire, analyser et automatiser plus vite.",
+  },
+  {
+    icon: 'tabler:school',
+    t: 'Vos équipes deviennent autonomes',
+    d: 'Nous pouvons former vos collaborateurs, pour que vous gardiez la main sur vos outils.',
+  },
+  {
+    icon: 'tabler:chart-bar',
+    t: 'Un pilotage par les chiffres',
+    d: 'Des indicateurs simples, choisis avec vous, plutôt que des promesses.',
+  },
 ];
 const faq = [
-  { question: 'Combien coûte un accompagnement marketing digital ?', answer: "Le tarif dépend de vos objectifs et des canaux utilisés. Après un premier échange, nous vous envoyons un devis en dirhams (DH), sans engagement." },
-  { question: 'Quels canaux utilisez-vous ?', answer: "Selon votre activité : publicité sur Meta, Google ou TikTok, référencement, réseaux sociaux, e-mail et WhatsApp. Nous ne gardons que ceux qui servent vos objectifs." },
-  { question: 'En combien de temps verra-t-on des résultats ?', answer: "Cela dépend du canal et de votre offre : la publicité donne des premiers signaux assez vite, le référencement demande plusieurs mois. Nous fixons ensemble des objectifs réalistes ; aucun résultat n'est garanti à l'avance." },
-  { question: 'Pouvez-vous former notre équipe plutôt que faire à notre place ?', answer: "Oui. Nos programmes de formation (IA, automatisation, marketing digital) permettent à vos équipes de prendre en main leurs outils. Les deux démarches se combinent." },
+  {
+    question: 'Combien coûte un accompagnement marketing digital ?',
+    answer:
+      'Le tarif dépend de vos objectifs et des canaux utilisés. Après un premier échange, nous vous envoyons un devis en dirhams (DH), sans engagement.',
+  },
+  {
+    question: 'Quels canaux utilisez-vous ?',
+    answer:
+      'Selon votre activité : publicité sur Meta, Google ou TikTok, référencement, réseaux sociaux, e-mail et WhatsApp. Nous ne gardons que ceux qui servent vos objectifs.',
+  },
+  {
+    question: 'En combien de temps verra-t-on des résultats ?',
+    answer:
+      "Cela dépend du canal et de votre offre : la publicité donne des premiers signaux assez vite, le référencement demande plusieurs mois. Nous fixons ensemble des objectifs réalistes ; aucun résultat n'est garanti à l'avance.",
+  },
+  {
+    question: 'Pouvez-vous former notre équipe plutôt que faire à notre place ?',
+    answer:
+      'Oui. Nos programmes de formation (IA, automatisation, marketing digital) permettent à vos équipes de prendre en main leurs outils. Les deux démarches se combinent.',
+  },
 ];
-const wa = whatsappLink("Bonjour, je souhaite en savoir plus sur votre accompagnement en marketing digital pour mon entreprise.");
+const wa = whatsappLink(
+  'Bonjour, je souhaite en savoir plus sur votre accompagnement en marketing digital pour mon entreprise.'
+);
 ---
 
 <Layout metadata={metadata}>
@@ -65,14 +130,21 @@ const wa = whatsappLink("Bonjour, je souhaite en savoir plus sur votre accompagn
         Demander un devis
         <Icon name="tabler:arrow-right" class="h-5 w-5" aria-hidden="true" />
       </a>
-      <a href={wa} class="btn" {...SITE_CONFIG.contact.whatsapp ? { target: '_blank', rel: 'noopener noreferrer' } : {}}>Écrire sur WhatsApp</a>
+      <a href={wa} class="btn" {...SITE_CONFIG.contact.whatsapp ? { target: '_blank', rel: 'noopener noreferrer' } : {}}
+        >Écrire sur WhatsApp</a
+      >
     </div>
   </PageHero>
 
   <!-- Services -->
   <section class="cv-auto bg-white py-16 md:py-24" aria-labelledby="serv-title">
     <div class="mx-auto max-w-7xl px-4 sm:px-6">
-      <h2 id="serv-title" class="max-w-3xl font-heading text-4xl font-bold leading-[1.02] tracking-[-0.03em] text-[#111111] text-balance md:text-6xl">Ce que nous faisons pour votre entreprise</h2>
+      <h2
+        id="serv-title"
+        class="max-w-3xl font-heading text-4xl font-bold leading-[1.02] tracking-[-0.03em] text-[#111111] text-balance md:text-6xl"
+      >
+        Ce que nous faisons pour votre entreprise
+      </h2>
       <ul class="mt-12 grid gap-px overflow-hidden rounded-md bg-[#111111] sm:grid-cols-2 lg:grid-cols-3" role="list">
         {
           services.map((s, i) => (
@@ -95,7 +167,12 @@ const wa = whatsappLink("Bonjour, je souhaite en savoir plus sur votre accompagn
   <!-- Méthode -->
   <section class="cv-auto bg-[#111111] py-16 text-white md:py-24" aria-labelledby="meth-title">
     <div class="mx-auto max-w-7xl px-4 sm:px-6">
-      <h2 id="meth-title" class="max-w-3xl font-heading text-4xl font-bold leading-[1.02] tracking-[-0.03em] text-balance md:text-6xl">Une méthode simple, en quatre temps</h2>
+      <h2
+        id="meth-title"
+        class="max-w-3xl font-heading text-4xl font-bold leading-[1.02] tracking-[-0.03em] text-balance md:text-6xl"
+      >
+        Une méthode simple, en quatre temps
+      </h2>
       <ol class="mt-12 grid gap-8 border-t border-white/25 pt-8 sm:grid-cols-2 lg:grid-cols-4" role="list">
         {
           steps.map((st) => (
@@ -114,14 +191,37 @@ const wa = whatsappLink("Bonjour, je souhaite en savoir plus sur votre accompagn
   <section class="cv-auto bg-[#f1f1ec] py-16 md:py-24" aria-labelledby="why-title">
     <div class="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-12 lg:gap-16">
       <div class="lg:col-span-5">
-        <h2 id="why-title" class="font-heading text-4xl font-bold leading-[1.02] tracking-[-0.03em] text-[#111111] text-balance md:text-5xl">Pour quelles entreprises ?</h2>
+        <h2
+          id="why-title"
+          class="font-heading text-4xl font-bold leading-[1.02] tracking-[-0.03em] text-[#111111] text-balance md:text-5xl"
+        >
+          Pour quelles entreprises ?
+        </h2>
         <ul class="mt-6 flex flex-wrap gap-2" role="list">
-          {audiences.map((a) => <li class="rounded-md border border-[#111111] bg-white px-4 py-2 text-sm font-semibold text-[#111111]">{a}</li>)}
+          {
+            audiences.map((a) => (
+              <li class="rounded-md border border-[#111111] bg-white px-4 py-2 text-sm font-semibold text-[#111111]">
+                {a}
+              </li>
+            ))
+          }
         </ul>
-        <Photo name="atelier-marketing" alt="Un formateur anime un atelier marketing autour d'un tableau de notes adhésives" tint={false} aspect="4/3" widths={[400, 640, 800]} sizes="(min-width: 1024px) 480px, 92vw" class="mt-8 !rounded-md" />
+        <Photo
+          name="atelier-marketing"
+          alt="Un formateur anime un atelier marketing autour d'un tableau de notes adhésives"
+          tint={false}
+          aspect="4/3"
+          widths={[400, 640, 800]}
+          sizes="(min-width: 1024px) 480px, 92vw"
+          class="mt-8 !rounded-md"
+        />
       </div>
       <div class="lg:col-span-7">
-        <h2 class="font-heading text-4xl font-bold leading-[1.02] tracking-[-0.03em] text-[#111111] text-balance md:text-5xl">Pourquoi Nova</h2>
+        <h2
+          class="font-heading text-4xl font-bold leading-[1.02] tracking-[-0.03em] text-[#111111] text-balance md:text-5xl"
+        >
+          Pourquoi Nova
+        </h2>
         <ul class="mt-8 border-t border-[#111111]" role="list">
           {
             why.map((w) => (
@@ -137,7 +237,10 @@ const wa = whatsappLink("Bonjour, je souhaite en savoir plus sur votre accompagn
             ))
           }
         </ul>
-        <p class="mt-6 text-sm leading-relaxed text-[#555555]">Nous fixons ensemble des objectifs réalistes. Aucun résultat n'est garanti à l'avance : il dépend de votre offre, de votre marché et de votre budget.</p>
+        <p class="mt-6 text-sm leading-relaxed text-[#555555]">
+          Nous fixons ensemble des objectifs réalistes. Aucun résultat n'est garanti à l'avance : il dépend de votre
+          offre, de votre marché et de votre budget.
+        </p>
       </div>
     </div>
   </section>
@@ -146,22 +249,44 @@ const wa = whatsappLink("Bonjour, je souhaite en savoir plus sur votre accompagn
   <section class="cv-auto bg-white py-16 md:py-24" aria-labelledby="faq-title">
     <div class="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-12 lg:gap-16">
       <div class="lg:col-span-4">
-        <h2 id="faq-title" class="font-heading text-4xl font-bold leading-[1.02] tracking-[-0.03em] text-[#111111] text-balance md:text-5xl">Vos questions</h2>
+        <h2
+          id="faq-title"
+          class="font-heading text-4xl font-bold leading-[1.02] tracking-[-0.03em] text-[#111111] text-balance md:text-5xl"
+        >
+          Vos questions
+        </h2>
       </div>
       <div class="lg:col-span-8"><Faq items={faq} /></div>
     </div>
   </section>
 
   <!-- Devis -->
-  <section id="devis" class="cv-auto scroll-mt-24 border-t border-[#111111] bg-[#e4f84a] py-16 md:py-24" aria-labelledby="devis-title">
+  <section
+    id="devis"
+    class="cv-auto scroll-mt-24 border-t border-[#111111] bg-[#e4f84a] py-16 md:py-24"
+    aria-labelledby="devis-title"
+  >
     <div class="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-5 lg:gap-16">
       <div class="lg:col-span-2">
-        <h2 id="devis-title" class="font-heading text-4xl font-bold leading-[1.02] tracking-[-0.03em] text-[#111111] text-balance md:text-5xl">Parlons de vos ventes</h2>
-        <p class="mt-4 text-lg leading-relaxed text-[#222222]">Décrivez votre activité et votre objectif : nous vous rappelons pour cadrer un accompagnement et vous envoyer un devis.</p>
+        <h2
+          id="devis-title"
+          class="font-heading text-4xl font-bold leading-[1.02] tracking-[-0.03em] text-[#111111] text-balance md:text-5xl"
+        >
+          Parlons de vos ventes
+        </h2>
+        <p class="mt-4 text-lg leading-relaxed text-[#222222]">
+          Décrivez votre activité et votre objectif : nous vous rappelons pour cadrer un accompagnement et vous envoyer
+          un devis.
+        </p>
       </div>
       <div class="lg:col-span-3">
         <div class="rounded-md border border-[#111111] bg-white p-6 md:p-9">
-          <ContactForm formId="form-marketing" profil="entreprise" formation="service-marketing" buttonLabel="Demander un devis" />
+          <ContactForm
+            formId="form-marketing"
+            profil="entreprise"
+            formation="service-marketing"
+            buttonLabel="Demander un devis"
+          />
         </div>
       </div>
     </div>

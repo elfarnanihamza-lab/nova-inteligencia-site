@@ -20,7 +20,10 @@ const miniFaces = [1, 2, 3, 4, 5, 6];
 ---
 
 <section class="page-hero relative isolate overflow-hidden border-b border-[#111111] bg-white text-[#111111]">
-  <div class="hero3d pointer-events-none absolute right-0 top-0 -z-10 h-full w-1/3 bg-[#e4f84a] max-md:w-3" aria-hidden="true">
+  <div
+    class="hero3d pointer-events-none absolute right-0 top-0 -z-10 h-full w-1/3 bg-[#e4f84a] max-md:w-3"
+    aria-hidden="true"
+  >
     <div class="hero3d-stage">
       <div class="hero3d-ring"></div>
       <div class="hero3d-scene">
@@ -29,12 +32,12 @@ const miniFaces = [1, 2, 3, 4, 5, 6];
         </div>
         <div class="h3-orbit h3-o1">
           <div class="h3-cube h3-mini">
-            {miniFaces.map((i) => <span class={`h3-face h3-f${i}`}></span>)}
+            {miniFaces.map((i) => <span class={`h3-face h3-f${i}`} />)}
           </div>
         </div>
         <div class="h3-orbit h3-o2">
           <div class="h3-cube h3-mini h3-mini-dark">
-            {miniFaces.map((i) => <span class={`h3-face h3-f${i}`}></span>)}
+            {miniFaces.map((i) => <span class={`h3-face h3-f${i}`} />)}
           </div>
         </div>
       </div>
@@ -46,19 +49,26 @@ const miniFaces = [1, 2, 3, 4, 5, 6];
         <nav aria-label="Fil d'Ariane" class="hero-in mb-6 text-sm text-[#666660]">
           <ol class="flex flex-wrap items-center gap-2">
             <li>
-              <a class="inline-flex min-h-11 items-center transition-colors hover:text-[#111111]" href={getHomePermalink()}>
+              <a
+                class="inline-flex min-h-11 items-center transition-colors hover:text-[#111111]"
+                href={getHomePermalink()}
+              >
                 Accueil
               </a>
             </li>
             {crumbs.map((c) => (
               <li class="flex items-center gap-2">
-                <span aria-hidden="true" class="text-[#c9c9c2]">/</span>
+                <span aria-hidden="true" class="text-[#c9c9c2]">
+                  /
+                </span>
                 {c.href ? (
                   <a class="inline-flex min-h-11 items-center transition-colors hover:text-[#111111]" href={c.href}>
                     {c.text}
                   </a>
                 ) : (
-                  <span aria-current="page" class="font-semibold text-[#111111]">{c.text}</span>
+                  <span aria-current="page" class="font-semibold text-[#111111]">
+                    {c.text}
+                  </span>
                 )}
               </li>
             ))}
@@ -68,7 +78,10 @@ const miniFaces = [1, 2, 3, 4, 5, 6];
     }
     {
       tagline && (
-        <p class="hero-in mb-4 inline-block bg-[#e4f84a] px-2 py-1 text-xs font-bold uppercase tracking-[0.14em] text-[#111111]" style="--d:60ms">
+        <p
+          class="hero-in mb-4 inline-block bg-[#e4f84a] px-2 py-1 text-xs font-bold uppercase tracking-[0.14em] text-[#111111]"
+          style="--d:60ms"
+        >
           {tagline}
         </p>
       )
@@ -80,7 +93,11 @@ const miniFaces = [1, 2, 3, 4, 5, 6];
     />
     {
       subtitle && (
-        <p class="hero-in mt-6 max-w-2xl text-lg leading-relaxed text-[#333333] md:text-xl" style="--d:240ms" set:html={ph(subtitle)} />
+        <p
+          class="hero-in mt-6 max-w-2xl text-lg leading-relaxed text-[#333333] md:text-xl"
+          style="--d:240ms"
+          set:html={ph(subtitle)}
+        />
       )
     }
     <div class="hero-in" style="--d:340ms"><slot /></div>
@@ -131,19 +148,35 @@ const miniFaces = [1, 2, 3, 4, 5, 6];
     font-size: 3.4rem;
     letter-spacing: -0.04em;
   }
-  .h3-big .h3-f1 { transform: translateZ(5.5rem); }
-  .h3-big .h3-f2 { transform: rotateY(90deg) translateZ(5.5rem); }
-  .h3-big .h3-f3 { transform: rotateY(180deg) translateZ(5.5rem); }
-  .h3-big .h3-f4 { transform: rotateY(-90deg) translateZ(5.5rem); }
-  .h3-big .h3-f5 { transform: rotateX(90deg) translateZ(5.5rem); }
-  .h3-big .h3-f6 { transform: rotateX(-90deg) translateZ(5.5rem); }
+  .h3-big .h3-f1 {
+    transform: translateZ(5.5rem);
+  }
+  .h3-big .h3-f2 {
+    transform: rotateY(90deg) translateZ(5.5rem);
+  }
+  .h3-big .h3-f3 {
+    transform: rotateY(180deg) translateZ(5.5rem);
+  }
+  .h3-big .h3-f4 {
+    transform: rotateY(-90deg) translateZ(5.5rem);
+  }
+  .h3-big .h3-f5 {
+    transform: rotateX(90deg) translateZ(5.5rem);
+  }
+  .h3-big .h3-f6 {
+    transform: rotateX(-90deg) translateZ(5.5rem);
+  }
   .h3-orbit {
     position: absolute;
     inset: 0;
     transform-style: preserve-3d;
   }
-  .h3-o1 { animation: h3-orbit 9s linear infinite; }
-  .h3-o2 { animation: h3-orbit 14s linear infinite reverse; }
+  .h3-o1 {
+    animation: h3-orbit 9s linear infinite;
+  }
+  .h3-o2 {
+    animation: h3-orbit 14s linear infinite reverse;
+  }
   .h3-mini {
     inset: auto;
     left: 50%;
@@ -153,15 +186,33 @@ const miniFaces = [1, 2, 3, 4, 5, 6];
     margin: -1.3rem 0 0 -1.3rem;
     transform: translateX(9rem);
   }
-  .h3-o2 .h3-mini { transform: translateX(-8rem) translateY(2.6rem); }
-  .h3-mini .h3-face { background: #ffffff; }
-  .h3-mini-dark .h3-face { background: #111111; }
-  .h3-mini .h3-f1 { transform: translateZ(1.3rem); }
-  .h3-mini .h3-f2 { transform: rotateY(90deg) translateZ(1.3rem); }
-  .h3-mini .h3-f3 { transform: rotateY(180deg) translateZ(1.3rem); }
-  .h3-mini .h3-f4 { transform: rotateY(-90deg) translateZ(1.3rem); }
-  .h3-mini .h3-f5 { transform: rotateX(90deg) translateZ(1.3rem); }
-  .h3-mini .h3-f6 { transform: rotateX(-90deg) translateZ(1.3rem); }
+  .h3-o2 .h3-mini {
+    transform: translateX(-8rem) translateY(2.6rem);
+  }
+  .h3-mini .h3-face {
+    background: #ffffff;
+  }
+  .h3-mini-dark .h3-face {
+    background: #111111;
+  }
+  .h3-mini .h3-f1 {
+    transform: translateZ(1.3rem);
+  }
+  .h3-mini .h3-f2 {
+    transform: rotateY(90deg) translateZ(1.3rem);
+  }
+  .h3-mini .h3-f3 {
+    transform: rotateY(180deg) translateZ(1.3rem);
+  }
+  .h3-mini .h3-f4 {
+    transform: rotateY(-90deg) translateZ(1.3rem);
+  }
+  .h3-mini .h3-f5 {
+    transform: rotateX(90deg) translateZ(1.3rem);
+  }
+  .h3-mini .h3-f6 {
+    transform: rotateX(-90deg) translateZ(1.3rem);
+  }
   .hero3d-ring {
     position: absolute;
     inset: -3.5rem;
@@ -171,20 +222,37 @@ const miniFaces = [1, 2, 3, 4, 5, 6];
     animation: h3-ring 12s linear infinite;
   }
   @keyframes h3-spin {
-    from { transform: rotateX(-24deg) rotateY(0deg); }
-    to { transform: rotateX(-24deg) rotateY(360deg); }
+    from {
+      transform: rotateX(-24deg) rotateY(0deg);
+    }
+    to {
+      transform: rotateX(-24deg) rotateY(360deg);
+    }
   }
   @keyframes h3-orbit {
-    from { transform: rotateY(0deg); }
-    to { transform: rotateY(360deg); }
+    from {
+      transform: rotateY(0deg);
+    }
+    to {
+      transform: rotateY(360deg);
+    }
   }
   @keyframes h3-ring {
-    from { transform: rotateX(72deg) rotateZ(0deg); }
-    to { transform: rotateX(72deg) rotateZ(360deg); }
+    from {
+      transform: rotateX(72deg) rotateZ(0deg);
+    }
+    to {
+      transform: rotateX(72deg) rotateZ(360deg);
+    }
   }
   @keyframes h3-float {
-    0%, 100% { translate: 0 -0.6rem; }
-    50% { translate: 0 0.6rem; }
+    0%,
+    100% {
+      translate: 0 -0.6rem;
+    }
+    50% {
+      translate: 0 0.6rem;
+    }
   }
   @media (prefers-reduced-motion: reduce) {
     .hero3d-stage,

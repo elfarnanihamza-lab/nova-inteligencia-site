@@ -6,7 +6,7 @@ category: Intelligence artificielle
 tags: [intelligence artificielle, formation IA, compétences]
 author: Mounir Moutaib
 draft: false
-image: "~/assets/images/og/blog-maitrisez-l-intelligence-artificielle.png"
+image: '~/assets/images/og/blog-maitrisez-l-intelligence-artificielle.png'
 imageAlt: "Illustration de l'article : Maîtriser l'intelligence artificielle : par où commencer ?"
 metadata:
   title: "Maîtriser l'intelligence artificielle : par où commencer ?"

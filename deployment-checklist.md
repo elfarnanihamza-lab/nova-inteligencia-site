@@ -25,13 +25,13 @@ BASE="https://votre-demo.vercel.app"
 
 Pour chaque ligne : code HTTP initial, redirection éventuelle (et paramètres conservés), nombre de formations affichées, comportement après actualisation (F5), puis navigation retour/avant.
 
-| # | URL | HTTP attendu | Redirection attendue | Filtre actif attendu | Résultats attendus | Après F5 | Retour / avant | Résultat |
-|---|---|---|---|---|---|---|---|---|
-| 1 | `/formations` | 200 | aucune | aucun | 12 | identique | OK | ☐ |
-| 2 | `/formations?categorie=ia` | 200 | aucune | Intelligence artificielle | 3 | identique | OK | ☐ |
-| 3 | `/formations?categorie=parcours` | 200 | aucune | Parcours digital | 1 | identique | OK | ☐ |
-| 4 | `/formations/?categorie=ia` | 308 (ou 301) puis 200 | vers `/formations?categorie=ia` **avec le paramètre conservé** | Intelligence artificielle | 3 | identique | OK | ☐ |
-| 5 | `/formations?categorie=ia&niveau=2` | 200 | aucune | IA + niveau 2 | 1 | identique | OK | ☐ |
+| #   | URL                                 | HTTP attendu          | Redirection attendue                                           | Filtre actif attendu      | Résultats attendus | Après F5  | Retour / avant | Résultat |
+| --- | ----------------------------------- | --------------------- | -------------------------------------------------------------- | ------------------------- | ------------------ | --------- | -------------- | -------- |
+| 1   | `/formations`                       | 200                   | aucune                                                         | aucun                     | 12                 | identique | OK             | ☐        |
+| 2   | `/formations?categorie=ia`          | 200                   | aucune                                                         | Intelligence artificielle | 3                  | identique | OK             | ☐        |
+| 3   | `/formations?categorie=parcours`    | 200                   | aucune                                                         | Parcours digital          | 1                  | identique | OK             | ☐        |
+| 4   | `/formations/?categorie=ia`         | 308 (ou 301) puis 200 | vers `/formations?categorie=ia` **avec le paramètre conservé** | Intelligence artificielle | 3                  | identique | OK             | ☐        |
+| 5   | `/formations?categorie=ia&niveau=2` | 200                   | aucune                                                         | IA + niveau 2             | 1                  | identique | OK             | ☐        |
 
 Commandes (code HTTP, redirections, adresse finale) :
 
@@ -82,7 +82,7 @@ curl -s -o /dev/null -w "%{http_code}\n" "$BASE/sitemap-0.xml"       # attendu :
 - [ ] `robots.txt` n'interdit rien (les moteurs doivent pouvoir lire la directive `noindex`) et ne cite aucun sitemap.
 - [ ] Aucun sitemap publié (`/sitemap-index.xml` et `/sitemap-0.xml` : 404).
 - [ ] Les liens canoniques et les URL des images de partage (`og:image`) pointent vers **l'URL de démo**, pas vers `novaconsort.com` :
-  `curl -s "$BASE/" | grep -oE '(rel="canonical"|property="og:image"|property="og:url")[^>]*'`
+      `curl -s "$BASE/" | grep -oE '(rel="canonical"|property="og:image"|property="og:url")[^>]*'`
 - [ ] Les données structurées (`application/ld+json`) citent l'URL de démo et un logo accessible (`$BASE/logo.png` répond 200, type `image/png`).
 - [ ] Rappel : le mode démo **n'est pas une protection d'accès**. Si le contenu est confidentiel, vérifier la protection du déploiement (Vercel → Settings → Deployment Protection) et tester dans une fenêtre de navigation privée.
 
@@ -98,9 +98,9 @@ curl -s -o /dev/null -w "%{http_code}\n" "$BASE/sitemap-0.xml"       # attendu :
 
 - [ ] Le bouton flottant est visible (ordinateur et mobile), fond bleu nuit, libellé au survol sur ordinateur.
 - [ ] Le lien est `https://wa.me/212667944611?text=…` (message pré-rempli) et s'ouvre dans un nouvel onglet :
-  `curl -s "$BASE/" | grep -oE 'https://wa\.me/[0-9]+[^"]*' | sort -u`
+      `curl -s "$BASE/" | grep -oE 'https://wa\.me/[0-9]+[^"]*' | sort -u`
 - [ ] Un seul numéro apparaît dans tout le site (aucun numéro dupliqué ou factice) :
-  `for p in / /contact /entreprises /a-propos; do curl -s "$BASE$p" | grep -oE 'wa\.me/[0-9]+' ; done | sort | uniq -c`
+      `for p in / /contact /entreprises /a-propos; do curl -s "$BASE$p" | grep -oE 'wa\.me/[0-9]+' ; done | sort | uniq -c`
 - [ ] Le bouton se masque pendant la saisie dans un champ sur mobile, et pendant l'ouverture du menu mobile.
 
 ## 6. Logo, favicon et images de partage
@@ -131,10 +131,10 @@ curl -s -o /dev/null -w "%{http_code}\n" "$BASE/sitemap-0.xml"       # attendu :
 
 Lancer sur https://pagespeed.web.dev/ (mobile **et** ordinateur), au moins deux fois par page, et noter la médiane.
 
-| Page | Mobile : Perf. | Mobile : LCP | Mobile : CLS | Ordinateur : Perf. | Accessibilité | Bonnes pratiques | SEO |
-|---|---|---|---|---|---|---|---|
-| `/` | ____ | ____ | ____ | ____ | ____ | ____ | ____ |
-| `/formations` | ____ | ____ | ____ | ____ | ____ | ____ | ____ |
+| Page          | Mobile : Perf. | Mobile : LCP | Mobile : CLS | Ordinateur : Perf. | Accessibilité | Bonnes pratiques | SEO  |
+| ------------- | -------------- | ------------ | ------------ | ------------------ | ------------- | ---------------- | ---- |
+| `/`           | ____           | ____         | ____         | ____               | ____          | ____             | ____ |
+| `/formations` | ____           | ____         | ____         | ____               | ____          | ____             | ____ |
 
 - [ ] Objectif indicatif : performance mobile ≥ 90 (selon la variabilité de la mesure), accessibilité 100.
 - [ ] Le score « SEO » peut afficher un avertissement « La page est bloquée pour l'indexation » : **c'est attendu en démo** (noindex).

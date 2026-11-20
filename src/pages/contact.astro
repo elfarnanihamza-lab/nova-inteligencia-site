@@ -57,25 +57,39 @@ const c = SITE_CONFIG.contact;
               <Icon name="tabler:mail" class="mt-0.5 h-5 w-5 shrink-0 text-secondary" />
               <a class="inline-flex min-h-11 items-center hover:underline" href={`mailto:${c.email}`}>{c.email}</a>
             </li>
-            {visible(c.phone) && (<li class="flex gap-3">
-              <Icon name="tabler:phone" class="mt-0.5 h-5 w-5 shrink-0 text-secondary" />
-              <span set:html={ph(c.phone)} />
-            </li>)}
-            {visible(c.hours) && (<li class="flex gap-3">
-              <Icon name="tabler:clock" class="mt-0.5 h-5 w-5 shrink-0 text-secondary" />
-              <span set:html={ph(`Horaires : ${c.hours}`)} />
-            </li>)}
+            {
+              visible(c.phone) && (
+                <li class="flex gap-3">
+                  <Icon name="tabler:phone" class="mt-0.5 h-5 w-5 shrink-0 text-secondary" />
+                  <span set:html={ph(c.phone)} />
+                </li>
+              )
+            }
+            {
+              visible(c.hours) && (
+                <li class="flex gap-3">
+                  <Icon name="tabler:clock" class="mt-0.5 h-5 w-5 shrink-0 text-secondary" />
+                  <span set:html={ph(`Horaires : ${c.hours}`)} />
+                </li>
+              )
+            }
           </ul>
-          {c.whatsapp && (
-          <a
-            href={whatsappLink()}
-            class="btn-whatsapp mt-6 w-full"
-            {...c.whatsapp ? { target: '_blank', rel: 'noopener noreferrer' } : {}}
-          >
-            <Icon name="tabler:brand-whatsapp" class="mr-2 h-5 w-5" /> Discuter sur WhatsApp
-          </a>
-          )}
-          {!c.whatsapp && visible('[À COMPLÉTER]') && <p class="mt-2 text-sm" set:html={ph('Numéro WhatsApp : [À COMPLÉTER]')} />}
+          {
+            c.whatsapp && (
+              <a
+                href={whatsappLink()}
+                class="btn-whatsapp mt-6 w-full"
+                {...(c.whatsapp ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+              >
+                <Icon name="tabler:brand-whatsapp" class="mr-2 h-5 w-5" /> Discuter sur WhatsApp
+              </a>
+            )
+          }
+          {
+            !c.whatsapp && visible('[À COMPLÉTER]') && (
+              <p class="mt-2 text-sm" set:html={ph('Numéro WhatsApp : [À COMPLÉTER]')} />
+            )
+          }
         </div>
 
         <LazyMap height={340} />

@@ -28,62 +28,68 @@ const levelLabel = lvl ? d.niveau.split('—')[1]?.trim() : undefined;
   data-reveal
   style={`--reveal-delay:${(index % 3) * 40}ms`}
 >
-<article
-  class="group relative transition-[border-color,box-shadow] duration-150 ease-out flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-white p-6 shadow-[0_1px_2px_rgb(11_31_58/4%),0_12px_32px_-20px_rgb(11_31_58/18%)] hover:border-[#cfd9ec] hover:shadow-[0_28px_56px_-28px_rgb(45_107_255/40%)] md:p-7"
->
-  <span
-    class="absolute inset-x-0 top-0 h-[3px] origin-left scale-x-0 bg-brand-gradient transition-transform duration-200 group-hover:scale-x-100"
-    aria-hidden="true"></span>
+  <article
+    class="group relative transition-[border-color,box-shadow] duration-150 ease-out flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-white p-6 shadow-[0_1px_2px_rgb(11_31_58/4%),0_12px_32px_-20px_rgb(11_31_58/18%)] hover:border-[#cfd9ec] hover:shadow-[0_28px_56px_-28px_rgb(45_107_255/40%)] md:p-7"
+  >
+    <span
+      class="absolute inset-x-0 top-0 h-[3px] origin-left scale-x-0 bg-brand-gradient transition-transform duration-200 group-hover:scale-x-100"
+      aria-hidden="true"></span>
 
-  <div class="flex items-start justify-between gap-4">
-    <p class="inline-flex items-center gap-2 text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-ink">
-      <Icon name={cat.icon} class="h-4 w-4" aria-hidden="true" />
-      {cat.label}
-    </p>
-    {
-      lvl ? (
-        <div class="flex shrink-0 items-center gap-2" title={d.niveau}>
-          <span class="text-xs font-semibold text-heading">Niveau {lvl}</span>
-          <span class="flex gap-1" aria-hidden="true">
-            {[1, 2, 3].map((n) => (
-              <span class:list={['h-1.5 w-4 rounded-full', n <= lvl ? 'bg-brand-gradient' : 'bg-line']} />
-            ))}
-          </span>
-        </div>
-      ) : (
-        visible(d.niveau) && <span class="shrink-0 text-xs font-semibold text-muted" set:html={ph(d.niveau)} />
-      )
-    }
-  </div>
-
-  <h3 class="mt-6 text-[1.3rem] font-semibold leading-snug tracking-tight text-heading">
-    <a href={href} class="after:absolute after:inset-0 focus-visible:outline-none">{d.title}</a>
-  </h3>
-  {levelLabel && <p class="mt-1 text-sm font-medium text-muted">{levelLabel}</p>}
-  <p class="mt-4 flex-1 text-[0.95rem] leading-relaxed text-muted line-clamp-3" set:html={ph(d.resume)} />
-
-  <div class="mt-7 flex items-end justify-between border-t border-line pt-5">
-    <div>
-      <p class="text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-muted">Tarif</p>
+    <div class="flex items-start justify-between gap-4">
+      <p class="inline-flex items-center gap-2 text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-ink">
+        <Icon name={cat.icon} class="h-4 w-4" aria-hidden="true" />
+        {cat.label}
+      </p>
       {
-        free ? (
-          <p class="mt-1">
-            <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-sm font-bold uppercase tracking-wide text-emerald-800 ring-1 ring-emerald-200">
-              <Icon name="tabler:gift" class="h-4 w-4" aria-hidden="true" />
-              Gratuit
+        lvl ? (
+          <div class="flex shrink-0 items-center gap-2" title={d.niveau}>
+            <span class="text-xs font-semibold text-heading">Niveau {lvl}</span>
+            <span class="flex gap-1" aria-hidden="true">
+              {[1, 2, 3].map((n) => (
+                <span class:list={['h-1.5 w-4 rounded-full', n <= lvl ? 'bg-brand-gradient' : 'bg-line']} />
+              ))}
             </span>
-          </p>
+          </div>
         ) : (
-          visible(price) && (
-            <p class:list={['mt-0.5', kind === 'paid' ? 'text-xl font-bold text-heading' : 'text-base font-semibold text-muted']} set:html={ph(price)} />
-          )
+          visible(d.niveau) && <span class="shrink-0 text-xs font-semibold text-muted" set:html={ph(d.niveau)} />
         )
       }
     </div>
-    <span class="arrow-link inline-flex items-center gap-1.5 text-sm font-semibold text-ink">
-      Voir la formation
-      <Icon name="tabler:arrow-right" class="h-4 w-4" aria-hidden="true" />
-    </span>
-  </div>
-</article>
+
+    <h3 class="mt-6 text-[1.3rem] font-semibold leading-snug tracking-tight text-heading">
+      <a href={href} class="after:absolute after:inset-0 focus-visible:outline-none">{d.title}</a>
+    </h3>
+    {levelLabel && <p class="mt-1 text-sm font-medium text-muted">{levelLabel}</p>}
+    <p class="mt-4 flex-1 text-[0.95rem] leading-relaxed text-muted line-clamp-3" set:html={ph(d.resume)} />
+
+    <div class="mt-7 flex items-end justify-between border-t border-line pt-5">
+      <div>
+        <p class="text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-muted">Tarif</p>
+        {
+          free ? (
+            <p class="mt-1">
+              <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-sm font-bold uppercase tracking-wide text-emerald-800 ring-1 ring-emerald-200">
+                <Icon name="tabler:gift" class="h-4 w-4" aria-hidden="true" />
+                Gratuit
+              </span>
+            </p>
+          ) : (
+            visible(price) && (
+              <p
+                class:list={[
+                  'mt-0.5',
+                  kind === 'paid' ? 'text-xl font-bold text-heading' : 'text-base font-semibold text-muted',
+                ]}
+                set:html={ph(price)}
+              />
+            )
+          )
+        }
+      </div>
+      <span class="arrow-link inline-flex items-center gap-1.5 text-sm font-semibold text-ink">
+        Voir la formation
+        <Icon name="tabler:arrow-right" class="h-4 w-4" aria-hidden="true" />
+      </span>
+    </div>
+  </article>
 </div>

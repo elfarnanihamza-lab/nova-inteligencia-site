@@ -39,7 +39,18 @@ const { variant = 'hero', class: className = '' } = Astro.props;
 </style>
 
 <script>
-  type Node = { bx: number; by: number; z: number; ph: number; amp: number; sp: number; delay: number; x: number; y: number; hue: 0 | 1 | 2 };
+  type Node = {
+    bx: number;
+    by: number;
+    z: number;
+    ph: number;
+    amp: number;
+    sp: number;
+    delay: number;
+    x: number;
+    y: number;
+    hue: 0 | 1 | 2;
+  };
   type Edge = { a: number; b: number; ph: number; delay: number };
   type Particle = { e: number; t: number; v: number; dir: 1 | -1 };
 
@@ -85,7 +96,9 @@ const { variant = 'hero', class: className = '' } = Astro.props;
     const finePointer = window.matchMedia('(pointer: fine)').matches;
     const sprites = [sprite(BLUE), sprite(VIOLET), sprite(ORANGE)];
 
-    let W = 0, H = 0, dpr = 1;
+    let W = 0,
+      H = 0,
+      dpr = 1;
     let nodes: Node[] = [];
     let edges: Edge[] = [];
     let particles: Particle[] = [];
@@ -107,7 +120,10 @@ const { variant = 'hero', class: className = '' } = Astro.props;
 
       const rnd = mulberry(variant === 'hero' ? 7 : 19);
       const count = variant === 'hero' ? (mobile ? 18 : 34) : mobile ? 10 : 20;
-      const x0 = mobile ? 0.04 : 0.56, x1 = 0.97, y0 = 0.08, y1 = 0.92;
+      const x0 = mobile ? 0.04 : 0.56,
+        x1 = 0.97,
+        y0 = 0.08,
+        y1 = 0.92;
       const minD = (mobile ? 0.16 : 0.1) * Math.min(W, H > 0 ? H : W);
       nodes = [];
       let guard = 0;
@@ -116,10 +132,22 @@ const { variant = 'hero', class: className = '' } = Astro.props;
         const by = (y0 + rnd() * (y1 - y0)) * H;
         if (nodes.some((n) => Math.hypot(n.bx - bx, n.by - by) < minD)) continue;
         const z = 0.45 + rnd() * 0.55;
-        nodes.push({ bx, by, z, ph: rnd() * Math.PI * 2, amp: 5 + rnd() * 12, sp: 0.18 + rnd() * 0.22, delay: 0, x: bx, y: by, hue: hueOf(rnd()) });
+        nodes.push({
+          bx,
+          by,
+          z,
+          ph: rnd() * Math.PI * 2,
+          amp: 5 + rnd() * 12,
+          sp: 0.18 + rnd() * 0.22,
+          delay: 0,
+          x: bx,
+          y: by,
+          hue: hueOf(rnd()),
+        });
       }
       // ordre d'apparition : depuis le centre de la composition
-      const cx = ((x0 + x1) / 2) * W, cy = H / 2;
+      const cx = ((x0 + x1) / 2) * W,
+        cy = H / 2;
       [...nodes]
         .map((n, i) => ({ i, d: Math.hypot(n.bx - cx, n.by - cy) }))
         .sort((a, b) => a.d - b.d)
@@ -145,7 +173,12 @@ const { variant = 'hero', class: className = '' } = Astro.props;
         }
       });
       const pc = variant === 'hero' ? (mobile ? 5 : 11) : mobile ? 3 : 6;
-      particles = Array.from({ length: pc }, () => ({ e: Math.floor(rnd() * edges.length), t: rnd(), v: 0.12 + rnd() * 0.2, dir: rnd() > 0.5 ? 1 : -1 }));
+      particles = Array.from({ length: pc }, () => ({
+        e: Math.floor(rnd() * edges.length),
+        t: rnd(),
+        v: 0.12 + rnd() * 0.2,
+        dir: rnd() > 0.5 ? 1 : -1,
+      }));
     };
 
     const ease = (p: number) => 1 - Math.pow(1 - Math.min(1, Math.max(0, p)), 3);
@@ -168,7 +201,8 @@ const { variant = 'hero', class: className = '' } = Astro.props;
       for (const e of edges) {
         const p = ease((el - e.delay) / 900);
         if (p <= 0) continue;
-        const A = nodes[e.a], B = nodes[e.b];
+        const A = nodes[e.a],
+          B = nodes[e.b];
         const glow = 0.5 + 0.5 * Math.sin(t * 0.55 + e.ph);
         const depth = (A.z + B.z) / 2;
         const alpha = (0.1 + glow * 0.3) * depth;
@@ -194,8 +228,10 @@ const { variant = 'hero', class: className = '' } = Astro.props;
             pt.dir = ne.a === at ? 1 : -1;
             pt.t = pt.dir === 1 ? 0 : 1;
           }
-          const A = nodes[edges[pt.e].a], B = nodes[edges[pt.e].b];
-          const x = A.x + (B.x - A.x) * pt.t, y = A.y + (B.y - A.y) * pt.t;
+          const A = nodes[edges[pt.e].a],
+            B = nodes[edges[pt.e].b];
+          const x = A.x + (B.x - A.x) * pt.t,
+            y = A.y + (B.y - A.y) * pt.t;
           ctx.globalAlpha = 0.9;
           ctx.drawImage(sprites[1], x - 9, y - 9, 18, 18);
           ctx.fillStyle = 'rgba(255,255,255,0.95)';
@@ -221,7 +257,8 @@ const { variant = 'hero', class: className = '' } = Astro.props;
         ctx.globalAlpha = p * (0.55 + 0.35 * n.z + boost * 0.3);
         ctx.drawImage(sprites[n.hue], n.x - halo, n.y - halo, halo * 2, halo * 2);
         ctx.globalAlpha = p;
-        ctx.fillStyle = n.hue === 2 ? 'rgba(255,222,190,0.95)' : n.hue ? 'rgba(205,240,255,0.95)' : 'rgba(205,225,255,0.95)';
+        ctx.fillStyle =
+          n.hue === 2 ? 'rgba(255,222,190,0.95)' : n.hue ? 'rgba(205,240,255,0.95)' : 'rgba(205,225,255,0.95)';
         ctx.beginPath();
         ctx.arc(n.x, n.y, r * 0.55, 0, Math.PI * 2);
         ctx.fill();

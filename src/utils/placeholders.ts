@@ -11,7 +11,12 @@ export const hasPh = (value?: string | null) => !!value && /\[(?:À COMPLÉTER|P
 export const clean = (value?: string | number | null): string => {
   if (value === undefined || value === null) return '';
   const s = String(value);
-  return SHOW_PLACEHOLDERS ? s : s.replace(PH_SENTENCE, '').replace(/\s*:\s*$/, '').trim();
+  return SHOW_PLACEHOLDERS
+    ? s
+    : s
+        .replace(PH_SENTENCE, '')
+        .replace(/\s*:\s*$/, '')
+        .trim();
 };
 
 /** true si la valeur doit être affichée (renseignée, ou mode « manques visibles »). */

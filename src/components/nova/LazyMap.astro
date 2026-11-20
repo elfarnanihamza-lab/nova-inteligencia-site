@@ -32,7 +32,8 @@ const src = `https://www.google.com/maps?q=${query}&z=16&output=embed`;
       </defs>
       <rect width="600" height="420" fill="#111111"></rect>
       <g stroke="#e4f84a" stroke-opacity="0.12" stroke-width="1">
-        <path d="M0 60H600M0 140H600M0 230H600M0 320H600M0 390H600M70 0V420M170 0V420M290 0V420M410 0V420M520 0V420"></path>
+        <path d="M0 60H600M0 140H600M0 230H600M0 320H600M0 390H600M70 0V420M170 0V420M290 0V420M410 0V420M520 0V420"
+        ></path>
       </g>
       <g stroke="#e4f84a" stroke-opacity="0.28" stroke-width="7" fill="none" stroke-linecap="round">
         <path d="M-20 300 C 140 260, 240 230, 300 210 S 480 140, 640 100"></path>
@@ -47,7 +48,9 @@ const src = `https://www.google.com/maps?q=${query}&z=16&output=embed`;
       <circle cx="300" cy="205" r="9" fill="#111111" stroke="#fff" stroke-width="3"></circle>
     </svg>
   </div>
-  <div class="map-cta absolute inset-x-0 bottom-0 flex flex-wrap items-center justify-between gap-3 bg-gradient-to-t from-[#111111] to-transparent p-5 pt-16">
+  <div
+    class="map-cta absolute inset-x-0 bottom-0 flex flex-wrap items-center justify-between gap-3 bg-gradient-to-t from-[#111111] to-transparent p-5 pt-16"
+  >
     <p class="flex items-center gap-2 text-sm font-medium text-white">
       <Icon name="tabler:map-pin-filled" class="h-5 w-5 text-[#e4f84a]" aria-hidden="true" />
       {a.street}, {a.city}

@@ -1,209 +1,338 @@
 <!doctype html>
 <html lang="fr">
-<head>
-<meta charset="utf-8">
-<title>Nova – scène 3D du hero (source de la vidéo)</title>
-<style>html,body{margin:0;background:#0b211d}canvas{display:block}</style>
-</head>
-<body>
-<canvas id="c"></canvas>
-<script>
-/*
- * Scène 3D du hero, rendue image par image sur un canvas 2D (aucune bibliothèque), puis enregistrée en vidéo
- * par render.mjs (MediaRecorder). Tout est périodique sur LOOP secondes : la vidéo boucle sans raccord.
- * Sphère de points en laiton (perspective, profondeur de champ), anneaux, impulsions lumineuses, particules
- * qui circulent, bokeh lointain. Paramètres d'URL : w, h (taille du canvas).
- */
-const q = new URLSearchParams(location.search);
-const W = +q.get('w') || 1280, H = +q.get('h') || 720;
-const LOOP = +q.get('loop') || 20;
-const PALS = {
-  gold: { bg: ['#0a1f1b', '#0f2a25', '#0a1f1b'], glow: '200,166,106', main: '214,180,118', soft: '200,166,106', hot: '250,244,232', line: 'rgb(200,166,106)', pulse: 'rgb(250,236,200)', ring: 'rgb(214,180,118)', vig: '6,18,15', shade: '8,24,20' },
-  blue: { bg: ['#040f33', '#071b49', '#040f33'], glow: '8,169,247', main: '60,190,255', soft: '8,169,247', hot: '225,245,255', line: 'rgb(8,169,247)', pulse: 'rgb(200,238,255)', ring: 'rgb(76,195,255)', vig: '3,9,30', shade: '3,9,30' },
-};
-const PAL = PALS[q.get('pal')] || PALS.gold;
-const CXF = q.has('cx') ? +q.get('cx') : 0.68;
-const UNITF = q.has('unit') ? +q.get('unit') : 0.25 * (H / Math.min(W, H));
-const SHADE = q.has('shade') ? +q.get('shade') : 1;
-const cv = document.getElementById('c');
-cv.width = W; cv.height = H;
-const ctx = cv.getContext('2d');
-const TAU = Math.PI * 2;
+  <head>
+    <meta charset="utf-8" />
+    <title>Nova – scène 3D du hero (source de la vidéo)</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        background: #0b211d;
+      }
+      canvas {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="c"></canvas>
+    <script>
+      /*
+       * Scène 3D du hero, rendue image par image sur un canvas 2D (aucune bibliothèque), puis enregistrée en vidéo
+       * par render.mjs (MediaRecorder). Tout est périodique sur LOOP secondes : la vidéo boucle sans raccord.
+       * Sphère de points en laiton (perspective, profondeur de champ), anneaux, impulsions lumineuses, particules
+       * qui circulent, bokeh lointain. Paramètres d'URL : w, h (taille du canvas).
+       */
+      const q = new URLSearchParams(location.search);
+      const W = +q.get('w') || 1280,
+        H = +q.get('h') || 720;
+      const LOOP = +q.get('loop') || 20;
+      const PALS = {
+        gold: {
+          bg: ['#0a1f1b', '#0f2a25', '#0a1f1b'],
+          glow: '200,166,106',
+          main: '214,180,118',
+          soft: '200,166,106',
+          hot: '250,244,232',
+          line: 'rgb(200,166,106)',
+          pulse: 'rgb(250,236,200)',
+          ring: 'rgb(214,180,118)',
+          vig: '6,18,15',
+          shade: '8,24,20',
+        },
+        blue: {
+          bg: ['#040f33', '#071b49', '#040f33'],
+          glow: '8,169,247',
+          main: '60,190,255',
+          soft: '8,169,247',
+          hot: '225,245,255',
+          line: 'rgb(8,169,247)',
+          pulse: 'rgb(200,238,255)',
+          ring: 'rgb(76,195,255)',
+          vig: '3,9,30',
+          shade: '3,9,30',
+        },
+      };
+      const PAL = PALS[q.get('pal')] || PALS.gold;
+      const CXF = q.has('cx') ? +q.get('cx') : 0.68;
+      const UNITF = q.has('unit') ? +q.get('unit') : 0.25 * (H / Math.min(W, H));
+      const SHADE = q.has('shade') ? +q.get('shade') : 1;
+      const cv = document.getElementById('c');
+      cv.width = W;
+      cv.height = H;
+      const ctx = cv.getContext('2d');
+      const TAU = Math.PI * 2;
 
-// générateur pseudo-aléatoire déterministe : la même scène à chaque rendu
-let seed = 7;
-const rnd = () => ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646;
+      // générateur pseudo-aléatoire déterministe : la même scène à chaque rendu
+      let seed = 7;
+      const rnd = () => ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646;
 
-// sprites lumineux pré-rendus
-const sprite = (rgb) => {
-  const s = document.createElement('canvas'); s.width = s.height = 128;
-  const c = s.getContext('2d');
-  const g = c.createRadialGradient(64, 64, 0, 64, 64, 64);
-  g.addColorStop(0, `rgba(${rgb},1)`); g.addColorStop(0.25, `rgba(${rgb},.55)`); g.addColorStop(1, `rgba(${rgb},0)`);
-  c.fillStyle = g; c.fillRect(0, 0, 128, 128);
-  return s;
-};
-const GOLD = sprite(PAL.main), IVORY = sprite(PAL.hot), WARM = sprite(PAL.soft);
+      // sprites lumineux pré-rendus
+      const sprite = (rgb) => {
+        const s = document.createElement('canvas');
+        s.width = s.height = 128;
+        const c = s.getContext('2d');
+        const g = c.createRadialGradient(64, 64, 0, 64, 64, 64);
+        g.addColorStop(0, `rgba(${rgb},1)`);
+        g.addColorStop(0.25, `rgba(${rgb},.55)`);
+        g.addColorStop(1, `rgba(${rgb},0)`);
+        c.fillStyle = g;
+        c.fillRect(0, 0, 128, 128);
+        return s;
+      };
+      const GOLD = sprite(PAL.main),
+        IVORY = sprite(PAL.hot),
+        WARM = sprite(PAL.soft);
 
-// ---------- géométrie ----------
-const N = 230;
-const golden = Math.PI * (3 - Math.sqrt(5));
-const S = [];
-for (let i = 0; i < N; i++) {
-  const y = 1 - (2 * (i + 0.5)) / N, r = Math.sqrt(1 - y * y), a = i * golden;
-  S.push([Math.cos(a) * r, y, Math.sin(a) * r]);
-}
-const edges = [], seen = new Set();
-S.forEach((p, i) => {
-  S.map((o, j) => [j, Math.hypot(p[0] - o[0], p[1] - o[1], p[2] - o[2])]).filter((o) => o[0] !== i).sort((a, b) => a[1] - b[1]).slice(0, 3).forEach(([j]) => {
-    const k = i < j ? i + '-' + j : j + '-' + i;
-    if (!seen.has(k)) { seen.add(k); edges.push([i, j, rnd()]); }
-  });
-});
-const ring = (R, n, tx, tz) => Array.from({ length: n }, (_, i) => {
-  const a = (i / n) * TAU; let x = Math.cos(a) * R, y = 0, z = Math.sin(a) * R;
-  const y1 = y * Math.cos(tx) - z * Math.sin(tx), z1 = y * Math.sin(tx) + z * Math.cos(tx);
-  return [x * Math.cos(tz) - y1 * Math.sin(tz), x * Math.sin(tz) + y1 * Math.cos(tz), z1];
-});
-const rings = [
-  { pts: ring(1.42, 120, 1.15, 0.35), a: 0.5, runners: 3, dir: 1 },
-  { pts: ring(1.72, 150, -0.55, -0.25), a: 0.34, runners: 4, dir: -1 },
-];
-const bokeh = Array.from({ length: 46 }, () => ({ x: rnd(), y: rnd(), r: 0.012 + rnd() * 0.05, a: 0.05 + rnd() * 0.14, n: 1 + Math.floor(rnd() * 2), sway: rnd() * TAU, z: rnd() }));
-const dust = Array.from({ length: 70 }, () => ({ x: rnd(), y: rnd(), r: 0.002 + rnd() * 0.004, a: 0.2 + rnd() * 0.5, n: 1 + Math.floor(rnd() * 3), ph: rnd() * TAU }));
+      // ---------- géométrie ----------
+      const N = 230;
+      const golden = Math.PI * (3 - Math.sqrt(5));
+      const S = [];
+      for (let i = 0; i < N; i++) {
+        const y = 1 - (2 * (i + 0.5)) / N,
+          r = Math.sqrt(1 - y * y),
+          a = i * golden;
+        S.push([Math.cos(a) * r, y, Math.sin(a) * r]);
+      }
+      const edges = [],
+        seen = new Set();
+      S.forEach((p, i) => {
+        S.map((o, j) => [j, Math.hypot(p[0] - o[0], p[1] - o[1], p[2] - o[2])])
+          .filter((o) => o[0] !== i)
+          .sort((a, b) => a[1] - b[1])
+          .slice(0, 3)
+          .forEach(([j]) => {
+            const k = i < j ? i + '-' + j : j + '-' + i;
+            if (!seen.has(k)) {
+              seen.add(k);
+              edges.push([i, j, rnd()]);
+            }
+          });
+      });
+      const ring = (R, n, tx, tz) =>
+        Array.from({ length: n }, (_, i) => {
+          const a = (i / n) * TAU;
+          let x = Math.cos(a) * R,
+            y = 0,
+            z = Math.sin(a) * R;
+          const y1 = y * Math.cos(tx) - z * Math.sin(tx),
+            z1 = y * Math.sin(tx) + z * Math.cos(tx);
+          return [x * Math.cos(tz) - y1 * Math.sin(tz), x * Math.sin(tz) + y1 * Math.cos(tz), z1];
+        });
+      const rings = [
+        { pts: ring(1.42, 120, 1.15, 0.35), a: 0.5, runners: 3, dir: 1 },
+        { pts: ring(1.72, 150, -0.55, -0.25), a: 0.34, runners: 4, dir: -1 },
+      ];
+      const bokeh = Array.from({ length: 46 }, () => ({
+        x: rnd(),
+        y: rnd(),
+        r: 0.012 + rnd() * 0.05,
+        a: 0.05 + rnd() * 0.14,
+        n: 1 + Math.floor(rnd() * 2),
+        sway: rnd() * TAU,
+        z: rnd(),
+      }));
+      const dust = Array.from({ length: 70 }, () => ({
+        x: rnd(),
+        y: rnd(),
+        r: 0.002 + rnd() * 0.004,
+        a: 0.2 + rnd() * 0.5,
+        n: 1 + Math.floor(rnd() * 3),
+        ph: rnd() * TAU,
+      }));
 
-// ---------- rendu d'une image à l'instant t (secondes, périodique sur LOOP) ----------
-const CX = W * CXF, CY = H * 0.5, UNIT = Math.min(W, H) * UNITF, D = 4.4;
-function proj(p, cy, sy, cp, sp) {
-  const x1 = p[0] * cy + p[2] * sy, z1 = -p[0] * sy + p[2] * cy;
-  const y2 = p[1] * cp - z1 * sp, z2 = p[1] * sp + z1 * cp;
-  const s = D / (D - z2);
-  return [CX + x1 * s * UNIT, CY + y2 * s * UNIT, z2, s];
-}
-const blit = (img, x, y, size, alpha) => { ctx.globalAlpha = alpha; ctx.drawImage(img, x - size, y - size, size * 2, size * 2); };
+      // ---------- rendu d'une image à l'instant t (secondes, périodique sur LOOP) ----------
+      const CX = W * CXF,
+        CY = H * 0.5,
+        UNIT = Math.min(W, H) * UNITF,
+        D = 4.4;
+      function proj(p, cy, sy, cp, sp) {
+        const x1 = p[0] * cy + p[2] * sy,
+          z1 = -p[0] * sy + p[2] * cy;
+        const y2 = p[1] * cp - z1 * sp,
+          z2 = p[1] * sp + z1 * cp;
+        const s = D / (D - z2);
+        return [CX + x1 * s * UNIT, CY + y2 * s * UNIT, z2, s];
+      }
+      const blit = (img, x, y, size, alpha) => {
+        ctx.globalAlpha = alpha;
+        ctx.drawImage(img, x - size, y - size, size * 2, size * 2);
+      };
 
-function render(t) {
-  const ph = (t / LOOP) * TAU;
-  // fond : dégradé vert nuit + halo chaud
-  const bg = ctx.createLinearGradient(0, 0, W, H);
-  bg.addColorStop(0, PAL.bg[0]); bg.addColorStop(0.55, PAL.bg[1]); bg.addColorStop(1, PAL.bg[2]);
-  ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1; ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
-  const halo = ctx.createRadialGradient(CX, CY, 0, CX, CY, H * (0.75 + 0.03 * Math.sin(ph * 2)));
-  halo.addColorStop(0, `rgba(${PAL.glow},.26)`); halo.addColorStop(0.5, `rgba(${PAL.glow},.07)`); halo.addColorStop(1, `rgba(${PAL.glow},0)`);
-  ctx.fillStyle = halo; ctx.fillRect(0, 0, W, H);
+      function render(t) {
+        const ph = (t / LOOP) * TAU;
+        // fond : dégradé vert nuit + halo chaud
+        const bg = ctx.createLinearGradient(0, 0, W, H);
+        bg.addColorStop(0, PAL.bg[0]);
+        bg.addColorStop(0.55, PAL.bg[1]);
+        bg.addColorStop(1, PAL.bg[2]);
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = bg;
+        ctx.fillRect(0, 0, W, H);
+        const halo = ctx.createRadialGradient(CX, CY, 0, CX, CY, H * (0.75 + 0.03 * Math.sin(ph * 2)));
+        halo.addColorStop(0, `rgba(${PAL.glow},.26)`);
+        halo.addColorStop(0.5, `rgba(${PAL.glow},.07)`);
+        halo.addColorStop(1, `rgba(${PAL.glow},0)`);
+        ctx.fillStyle = halo;
+        ctx.fillRect(0, 0, W, H);
 
-  ctx.globalCompositeOperation = 'lighter';
-  // bokeh lointain (grands disques flous qui montent lentement)
-  for (const b of bokeh) {
-    const y = (((b.y - (t / LOOP) * b.n) % 1) + 1) % 1, x = b.x + Math.sin(ph * b.n + b.sway) * 0.012;
-    blit(WARM, x * W, y * H, b.r * H * 2.2, b.a * 0.55);
-  }
+        ctx.globalCompositeOperation = 'lighter';
+        // bokeh lointain (grands disques flous qui montent lentement)
+        for (const b of bokeh) {
+          const y = (((b.y - (t / LOOP) * b.n) % 1) + 1) % 1,
+            x = b.x + Math.sin(ph * b.n + b.sway) * 0.012;
+          blit(WARM, x * W, y * H, b.r * H * 2.2, b.a * 0.55);
+        }
 
-  const yaw = ph, pitch = 0.36 + 0.07 * Math.sin(ph);
-  const cy = Math.cos(yaw), sy = Math.sin(yaw), cp = Math.cos(pitch), sp = Math.sin(pitch);
-  const P = S.map((p) => proj(p, cy, sy, cp, sp));
-  const breathe = 1 + 0.015 * Math.sin(ph * 2);
+        const yaw = ph,
+          pitch = 0.36 + 0.07 * Math.sin(ph);
+        const cy = Math.cos(yaw),
+          sy = Math.sin(yaw),
+          cp = Math.cos(pitch),
+          sp = Math.sin(pitch);
+        const P = S.map((p) => proj(p, cy, sy, cp, sp));
+        const breathe = 1 + 0.015 * Math.sin(ph * 2);
 
-  // cœur lumineux
-  blit(GOLD, CX, CY, UNIT * 1.35 * breathe, 0.2);
-  blit(IVORY, CX, CY, UNIT * 0.4 * breathe, 0.16);
+        // cœur lumineux
+        blit(GOLD, CX, CY, UNIT * 1.35 * breathe, 0.2);
+        blit(IVORY, CX, CY, UNIT * 0.4 * breathe, 0.16);
 
-  // anneaux : segments plus vifs vers l'avant, coureurs lumineux
-  rings.forEach((R, ri) => {
-    const q = R.pts.map((p) => proj(p, cy, sy, cp, sp));
-    ctx.lineWidth = 1.3;
-    for (let i = 0; i < q.length; i++) {
-      const a = q[i], b = q[(i + 1) % q.length], d = ((a[2] + b[2]) / 2 + 1.8) / 3.6;
-      ctx.globalAlpha = Math.max(0.03, R.a * (0.15 + 0.85 * d));
-      ctx.strokeStyle = PAL.ring;
-      ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
-    }
-    for (let k = 0; k < R.runners; k++) {
-      const idx = ((((t / LOOP) * (2 + ri) * R.dir + k / R.runners) % 1) + 1) % 1 * q.length;
-      const a = q[Math.floor(idx) % q.length], d = (a[2] + 1.8) / 3.6;
-      blit(IVORY, a[0], a[1], UNIT * (0.04 + 0.05 * d), 0.5 + 0.4 * d);
-      blit(GOLD, a[0], a[1], UNIT * (0.12 + 0.08 * d), 0.2 + 0.25 * d);
-    }
-  });
+        // anneaux : segments plus vifs vers l'avant, coureurs lumineux
+        rings.forEach((R, ri) => {
+          const q = R.pts.map((p) => proj(p, cy, sy, cp, sp));
+          ctx.lineWidth = 1.3;
+          for (let i = 0; i < q.length; i++) {
+            const a = q[i],
+              b = q[(i + 1) % q.length],
+              d = ((a[2] + b[2]) / 2 + 1.8) / 3.6;
+            ctx.globalAlpha = Math.max(0.03, R.a * (0.15 + 0.85 * d));
+            ctx.strokeStyle = PAL.ring;
+            ctx.beginPath();
+            ctx.moveTo(a[0], a[1]);
+            ctx.lineTo(b[0], b[1]);
+            ctx.stroke();
+          }
+          for (let k = 0; k < R.runners; k++) {
+            const idx = (((((t / LOOP) * (2 + ri) * R.dir + k / R.runners) % 1) + 1) % 1) * q.length;
+            const a = q[Math.floor(idx) % q.length],
+              d = (a[2] + 1.8) / 3.6;
+            blit(IVORY, a[0], a[1], UNIT * (0.04 + 0.05 * d), 0.5 + 0.4 * d);
+            blit(GOLD, a[0], a[1], UNIT * (0.12 + 0.08 * d), 0.2 + 0.25 * d);
+          }
+        });
 
-  // connexions : impulsions qui s'allument, plus vives vers la caméra
-  ctx.lineWidth = 1;
-  for (const [i, j, f] of edges) {
-    const a = P[i], b = P[j], d = ((a[2] + b[2]) / 2 + 1) / 2;
-    const pulse = Math.pow(Math.max(0, Math.sin(ph * 3 + f * TAU)), 10);
-    ctx.globalAlpha = Math.min(1, 0.04 + 0.12 * d + pulse * (0.3 + 0.45 * d));
-    ctx.strokeStyle = pulse > 0.2 ? PAL.pulse : PAL.line;
-    ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
-  }
+        // connexions : impulsions qui s'allument, plus vives vers la caméra
+        ctx.lineWidth = 1;
+        for (const [i, j, f] of edges) {
+          const a = P[i],
+            b = P[j],
+            d = ((a[2] + b[2]) / 2 + 1) / 2;
+          const pulse = Math.pow(Math.max(0, Math.sin(ph * 3 + f * TAU)), 10);
+          ctx.globalAlpha = Math.min(1, 0.04 + 0.12 * d + pulse * (0.3 + 0.45 * d));
+          ctx.strokeStyle = pulse > 0.2 ? PAL.pulse : PAL.line;
+          ctx.beginPath();
+          ctx.moveTo(a[0], a[1]);
+          ctx.lineTo(b[0], b[1]);
+          ctx.stroke();
+        }
 
-  // points : profondeur de champ (mise au point un peu devant le centre ; le fond et le premier plan sont doux)
-  const order = P.map((p, i) => i).sort((i, j) => P[i][2] - P[j][2]);
-  for (const i of order) {
-    const p = P[i], z = p[2], blur = Math.min(1, Math.abs(z - 0.25) / 1.1);
-    const core = UNIT * 0.034 * (0.5 + (z + 1) * 0.5 * 1.1) * p[3] * breathe;
-    const soft = core * (1.1 + blur * 3.2);
-    const lum = 0.25 + 0.75 * ((z + 1) / 2);
-    blit(blur > 0.45 ? WARM : GOLD, p[0], p[1], soft * 1.3, (0.07 + 0.12 * lum) * (1 - blur * 0.4));
-    if (blur < 0.6) {
-      ctx.globalCompositeOperation = 'source-over';
-      blit(IVORY, p[0], p[1], core * 0.85, 0.3 + 0.7 * lum * (1 - blur));
-      ctx.globalCompositeOperation = 'lighter';
-    }
-  }
+        // points : profondeur de champ (mise au point un peu devant le centre ; le fond et le premier plan sont doux)
+        const order = P.map((p, i) => i).sort((i, j) => P[i][2] - P[j][2]);
+        for (const i of order) {
+          const p = P[i],
+            z = p[2],
+            blur = Math.min(1, Math.abs(z - 0.25) / 1.1);
+          const core = UNIT * 0.034 * (0.5 + (z + 1) * 0.5 * 1.1) * p[3] * breathe;
+          const soft = core * (1.1 + blur * 3.2);
+          const lum = 0.25 + 0.75 * ((z + 1) / 2);
+          blit(blur > 0.45 ? WARM : GOLD, p[0], p[1], soft * 1.3, (0.07 + 0.12 * lum) * (1 - blur * 0.4));
+          if (blur < 0.6) {
+            ctx.globalCompositeOperation = 'source-over';
+            blit(IVORY, p[0], p[1], core * 0.85, 0.3 + 0.7 * lum * (1 - blur));
+            ctx.globalCompositeOperation = 'lighter';
+          }
+        }
 
-  // particules de poussière qui traversent la scène
-  for (const d of dust) {
-    const x = (((d.x + (t / LOOP) * d.n * 0.35) % 1) + 1) % 1, y = d.y + Math.sin(ph * d.n + d.ph) * 0.02;
-    blit(IVORY, x * W, y * H, d.r * H * 3, d.a * (0.5 + 0.5 * Math.sin(ph * 2 * d.n + d.ph)));
-  }
+        // particules de poussière qui traversent la scène
+        for (const d of dust) {
+          const x = (((d.x + (t / LOOP) * d.n * 0.35) % 1) + 1) % 1,
+            y = d.y + Math.sin(ph * d.n + d.ph) * 0.02;
+          blit(IVORY, x * W, y * H, d.r * H * 3, d.a * (0.5 + 0.5 * Math.sin(ph * 2 * d.n + d.ph)));
+        }
 
-  // vignette
-  ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
-  const vg = ctx.createRadialGradient(W * CXF, H * 0.5, Math.min(W, H) * 0.35, W * CXF, H * 0.5, Math.max(W, H) * 0.95);
-  vg.addColorStop(0, `rgba(${PAL.vig},0)`); vg.addColorStop(1, `rgba(${PAL.vig},.72)`);
-  ctx.fillStyle = vg; ctx.fillRect(0, 0, W, H);
-  // côté texte : assombrissement progressif vers la gauche (lisibilité du titre)
-  if (SHADE) {
-    const lg = ctx.createLinearGradient(0, 0, W * 0.55, 0);
-    lg.addColorStop(0, `rgba(${PAL.shade},.55)`); lg.addColorStop(1, `rgba(${PAL.shade},0)`);
-    ctx.fillStyle = lg; ctx.fillRect(0, 0, W * 0.55, H);
-  }
-}
-window.renderAt = (t) => { render(t); return cv.toDataURL('image/png'); };
+        // vignette
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.globalAlpha = 1;
+        const vg = ctx.createRadialGradient(
+          W * CXF,
+          H * 0.5,
+          Math.min(W, H) * 0.35,
+          W * CXF,
+          H * 0.5,
+          Math.max(W, H) * 0.95
+        );
+        vg.addColorStop(0, `rgba(${PAL.vig},0)`);
+        vg.addColorStop(1, `rgba(${PAL.vig},.72)`);
+        ctx.fillStyle = vg;
+        ctx.fillRect(0, 0, W, H);
+        // côté texte : assombrissement progressif vers la gauche (lisibilité du titre)
+        if (SHADE) {
+          const lg = ctx.createLinearGradient(0, 0, W * 0.55, 0);
+          lg.addColorStop(0, `rgba(${PAL.shade},.55)`);
+          lg.addColorStop(1, `rgba(${PAL.shade},0)`);
+          ctx.fillStyle = lg;
+          ctx.fillRect(0, 0, W * 0.55, H);
+        }
+      }
+      window.renderAt = (t) => {
+        render(t);
+        return cv.toDataURL('image/png');
+      };
 
-// enregistrement : MediaRecorder sur captureStream, une boucle exactement
-window.record = (opts) => new Promise((resolve, reject) => {
-  const stream = cv.captureStream(30);
-  const rec = new MediaRecorder(stream, { mimeType: opts.mime, videoBitsPerSecond: opts.bitrate });
-  const chunks = [];
-  rec.ondataavailable = (e) => e.data.size && chunks.push(e.data);
-  rec.onerror = (e) => reject(e.error || e);
-  rec.onstop = () => {
-    window.__blob = new Blob(chunks, { type: opts.mime });
-    resolve({ size: window.__blob.size, type: window.__blob.type });
-  };
-  const frameMs = 1000 / 30;
-  let t0 = performance.now(), frames = 0, started = false;
-  const total = Math.round(LOOP * 30);
-  const tick = () => {
-    const now = performance.now();
-    const k = Math.floor((now - t0) / frameMs);
-    if (k >= frames) {
-      render((frames / 30) % LOOP);
-      if (!started) { rec.start(250); started = true; }
-      frames = k + 1;
-      if (frames > total) { rec.stop(); return; }
-    }
-    setTimeout(tick, 4);
-  };
-  tick();
-});
-window.readChunk = async (start, len) => {
-  const buf = new Uint8Array(await window.__blob.slice(start, start + len).arrayBuffer());
-  let s = ''; for (let i = 0; i < buf.length; i += 0x8000) s += String.fromCharCode.apply(null, buf.subarray(i, i + 0x8000));
-  return btoa(s);
-};
-render(0);
-</script>
-</body>
+      // enregistrement : MediaRecorder sur captureStream, une boucle exactement
+      window.record = (opts) =>
+        new Promise((resolve, reject) => {
+          const stream = cv.captureStream(30);
+          const rec = new MediaRecorder(stream, { mimeType: opts.mime, videoBitsPerSecond: opts.bitrate });
+          const chunks = [];
+          rec.ondataavailable = (e) => e.data.size && chunks.push(e.data);
+          rec.onerror = (e) => reject(e.error || e);
+          rec.onstop = () => {
+            window.__blob = new Blob(chunks, { type: opts.mime });
+            resolve({ size: window.__blob.size, type: window.__blob.type });
+          };
+          const frameMs = 1000 / 30;
+          let t0 = performance.now(),
+            frames = 0,
+            started = false;
+          const total = Math.round(LOOP * 30);
+          const tick = () => {
+            const now = performance.now();
+            const k = Math.floor((now - t0) / frameMs);
+            if (k >= frames) {
+              render((frames / 30) % LOOP);
+              if (!started) {
+                rec.start(250);
+                started = true;
+              }
+              frames = k + 1;
+              if (frames > total) {
+                rec.stop();
+                return;
+              }
+            }
+            setTimeout(tick, 4);
+          };
+          tick();
+        });
+      window.readChunk = async (start, len) => {
+        const buf = new Uint8Array(await window.__blob.slice(start, start + len).arrayBuffer());
+        let s = '';
+        for (let i = 0; i < buf.length; i += 0x8000) s += String.fromCharCode.apply(null, buf.subarray(i, i + 0x8000));
+        return btoa(s);
+      };
+      render(0);
+    </script>
+  </body>
 </html>

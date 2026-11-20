@@ -6,16 +6,16 @@
 
 ## 1. État du dépôt (constaté avant tout push)
 
-| Point | Constat | Action |
-|---|---|---|
-| Branche de travail | `feat/nova-site` (24 commits, dont 1 hérité du thème AstroWind) | Pousser **cette seule branche** |
-| Remote `origin` | **Pointe sur `https://github.com/onwidget/astrowind.git`, le dépôt du thème, pas le vôtre** | **À renommer avant tout `git push`** (étape 2.2) ; un push vers ce remote ne doit jamais avoir lieu |
-| `.env` | Ignoré par Git (`.gitignore` l'exclut), jamais présent dans l'historique | Rien à faire |
-| `.env.example` | Versionné, sans valeur sensible | Rien à faire |
-| Secrets dans l'historique | Aucune clé d'API, jeton, clé privée ni URL de webhook réelle trouvés (motifs `sk-`, `AKIA`, `ghp_`, `xox*`, `AIza`, clés privées, Make/Zapier/Slack/Formspree/Web3Forms) ; le numéro WhatsApp n'apparaît pas non plus dans l'historique | Compléter si possible avec un scanner dédié (étape 2.1) |
-| Adresse e-mail des commits | `brahimelfarnani3@gmail.com` sur 23 commits | Sans conséquence pour un dépôt **privé** ; à anonymiser (adresse `noreply` GitHub) avant toute publication |
-| Dossier `screenshots/` | 17 Mo de captures versionnées | Facultatif : à retirer du dépôt si vous voulez l'alléger (n'est pas nécessaire au build) |
-| `.vercel/` | Ajouté à `.gitignore` (créé par `vercel link`) | Rien à faire |
+| Point                      | Constat                                                                                                                                                                                                                                 | Action                                                                                                     |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| Branche de travail         | `feat/nova-site` (24 commits, dont 1 hérité du thème AstroWind)                                                                                                                                                                         | Pousser **cette seule branche**                                                                            |
+| Remote `origin`            | **Pointe sur `https://github.com/onwidget/astrowind.git`, le dépôt du thème, pas le vôtre**                                                                                                                                             | **À renommer avant tout `git push`** (étape 2.2) ; un push vers ce remote ne doit jamais avoir lieu        |
+| `.env`                     | Ignoré par Git (`.gitignore` l'exclut), jamais présent dans l'historique                                                                                                                                                                | Rien à faire                                                                                               |
+| `.env.example`             | Versionné, sans valeur sensible                                                                                                                                                                                                         | Rien à faire                                                                                               |
+| Secrets dans l'historique  | Aucune clé d'API, jeton, clé privée ni URL de webhook réelle trouvés (motifs `sk-`, `AKIA`, `ghp_`, `xox*`, `AIza`, clés privées, Make/Zapier/Slack/Formspree/Web3Forms) ; le numéro WhatsApp n'apparaît pas non plus dans l'historique | Compléter si possible avec un scanner dédié (étape 2.1)                                                    |
+| Adresse e-mail des commits | `brahimelfarnani3@gmail.com` sur 23 commits                                                                                                                                                                                             | Sans conséquence pour un dépôt **privé** ; à anonymiser (adresse `noreply` GitHub) avant toute publication |
+| Dossier `screenshots/`     | 17 Mo de captures versionnées                                                                                                                                                                                                           | Facultatif : à retirer du dépôt si vous voulez l'alléger (n'est pas nécessaire au build)                   |
+| `.vercel/`                 | Ajouté à `.gitignore` (créé par `vercel link`)                                                                                                                                                                                          | Rien à faire                                                                                               |
 
 Aucun commit n'est supprimé, l'historique n'est pas réécrit.
 
@@ -81,13 +81,13 @@ Vercel considère `main` comme branche de production. `main` ne contient pas enc
 
 ### 2.6 Variables d'environnement (démo)
 
-| Variable | Valeur (démo) | Remarque |
-|---|---|---|
-| `PUBLIC_DEMO_MODE` | `true` | `noindex, nofollow`, pas de sitemap, formulaires désactivés sans webhook (aucun témoignage d'exemple : ils sont réservés au développement local) |
-| `PUBLIC_SHOW_PLACEHOLDERS` | `false` | masque tous les « [À COMPLÉTER] » |
-| `PUBLIC_WHATSAPP_NUMBER` | `212667944611` | affiché dans le lien `wa.me` (public par nature) |
-| `PUBLIC_FORM_WEBHOOK` | *(vide)* | tant qu'aucun traitement n'est configuré, l'envoi reste désactivé |
-| `SITE_URL` | *(facultatif)* | URL exacte de la démo ; sinon, en démo, `VERCEL_PROJECT_PRODUCTION_URL` est utilisée automatiquement |
+| Variable                   | Valeur (démo)  | Remarque                                                                                                                                         |
+| -------------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `PUBLIC_DEMO_MODE`         | `true`         | `noindex, nofollow`, pas de sitemap, formulaires désactivés sans webhook (aucun témoignage d'exemple : ils sont réservés au développement local) |
+| `PUBLIC_SHOW_PLACEHOLDERS` | `false`        | masque tous les « [À COMPLÉTER] »                                                                                                                |
+| `PUBLIC_WHATSAPP_NUMBER`   | `212667944611` | affiché dans le lien `wa.me` (public par nature)                                                                                                 |
+| `PUBLIC_FORM_WEBHOOK`      | _(vide)_       | tant qu'aucun traitement n'est configuré, l'envoi reste désactivé                                                                                |
+| `SITE_URL`                 | _(facultatif)_ | URL exacte de la démo ; sinon, en démo, `VERCEL_PROJECT_PRODUCTION_URL` est utilisée automatiquement                                             |
 
 Tableau de bord : Project → Settings → Environment Variables (cocher Production, et Preview si besoin).
 En ligne de commande :
@@ -138,13 +138,13 @@ Communiquer ensuite l'URL de démo : le déroulé de `deployment-checklist.md` p
 
 ### 3.5 Mode démo sans indexation
 
-| Mécanisme | Effet | Où |
-|---|---|---|
-| `<meta name="robots" content="noindex, nofollow">` | sur **toutes** les pages HTML, y compris fiches formation, blog, pages légales et 404 | `src/components/common/Metadata.astro` |
-| Pas de sitemap | `@astrojs/sitemap` n'est pas chargé ; `/sitemap-index.xml` n'existe pas | `astro.config.ts` |
-| `robots.txt` | `Allow: /`, aucun `Disallow`, aucune ligne `Sitemap` : les moteurs peuvent lire le `noindex` | `vendor/integration/index.ts` |
-| URL canoniques / `og:image` / données structurées | construites avec l'URL de la démo (`SITE_URL` ou URL du projet Vercel), pas avec `novaconsort.com` | `vendor/integration/index.ts`, `src/site.config.ts` |
-| Formulaires | désactivés sans webhook, message explicite, aucune requête envoyée | `ContactForm.astro`, `Footer.astro` |
+| Mécanisme                                          | Effet                                                                                              | Où                                                  |
+| -------------------------------------------------- | -------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| `<meta name="robots" content="noindex, nofollow">` | sur **toutes** les pages HTML, y compris fiches formation, blog, pages légales et 404              | `src/components/common/Metadata.astro`              |
+| Pas de sitemap                                     | `@astrojs/sitemap` n'est pas chargé ; `/sitemap-index.xml` n'existe pas                            | `astro.config.ts`                                   |
+| `robots.txt`                                       | `Allow: /`, aucun `Disallow`, aucune ligne `Sitemap` : les moteurs peuvent lire le `noindex`       | `vendor/integration/index.ts`                       |
+| URL canoniques / `og:image` / données structurées  | construites avec l'URL de la démo (`SITE_URL` ou URL du projet Vercel), pas avec `novaconsort.com` | `vendor/integration/index.ts`, `src/site.config.ts` |
+| Formulaires                                        | désactivés sans webhook, message explicite, aucune requête envoyée                                 | `ContactForm.astro`, `Footer.astro`                 |
 
 **Ce n'est pas une protection d'accès.** `noindex` demande poliment aux moteurs de ne pas référencer les pages ; toute personne qui connaît l'URL peut les lire. Si le contenu doit rester confidentiel, activer au niveau de l'hébergement l'authentification du déploiement (Vercel → Settings → Deployment Protection ; les options disponibles dépendent de l'offre) et la vérifier en navigation privée.
 

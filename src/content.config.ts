@@ -91,7 +91,9 @@ const formationCollection = defineCollection({
 
     resume: z.string(),
     objectifs: z.array(z.string()).default([TBD]),
-    programme: z.array(z.object({ titre: z.string(), points: z.array(z.string()).optional() })).default([{ titre: TBD }]),
+    programme: z
+      .array(z.object({ titre: z.string(), points: z.array(z.string()).optional() }))
+      .default([{ titre: TBD }]),
     public: z.string().default(TBD),
     duree: z.string().default(TBD),
     modalites: z.string().default(TBD),

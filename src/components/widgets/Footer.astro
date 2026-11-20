@@ -50,7 +50,13 @@ const variant = FOOTER_VARIANT;
           Les nouvelles sessions et ressources IA, dans votre boîte mail
         </p>
       </div>
-      <form class="newsletter-form" data-endpoint={SITE_CONFIG.form.endpoint} data-email={c.email} data-demo-disabled={nlDisabled ? '' : undefined} novalidate>
+      <form
+        class="newsletter-form"
+        data-endpoint={SITE_CONFIG.form.endpoint}
+        data-email={c.email}
+        data-demo-disabled={nlDisabled ? '' : undefined}
+        novalidate
+      >
         <div class="flex flex-col gap-3 sm:flex-row">
           <label for="nl-email" class="sr-only">Votre adresse e-mail</label>
           <input
@@ -66,7 +72,11 @@ const variant = FOOTER_VARIANT;
             aria-describedby="nl-help"
           />
           <input type="text" name="website" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
-          <button type="submit" class="btn-primary shrink-0 disabled:cursor-not-allowed disabled:opacity-55" disabled={nlDisabled}>S'inscrire</button>
+          <button
+            type="submit"
+            class="btn-primary shrink-0 disabled:cursor-not-allowed disabled:opacity-55"
+            disabled={nlDisabled}>S'inscrire</button
+          >
         </div>
         <p id="nl-help" class="mt-3 text-sm text-[#a8a8a0]" role="status" aria-live="polite">
           {
@@ -74,7 +84,13 @@ const variant = FOOTER_VARIANT;
               <>Version de démonstration : l'inscription à la newsletter est désactivée.</>
             ) : (
               <>
-                Vos données restent confidentielles. <a href="/politique-de-confidentialite" class="flex min-h-11 w-fit items-center underline underline-offset-2 hover:text-white">Lire notre politique de confidentialité</a>
+                Vos données restent confidentielles.{' '}
+                <a
+                  href="/politique-de-confidentialite"
+                  class="flex min-h-11 w-fit items-center underline underline-offset-2 hover:text-white"
+                >
+                  Lire notre politique de confidentialité
+                </a>
               </>
             )
           }
@@ -120,7 +136,11 @@ const variant = FOOTER_VARIANT;
             <ul class="mt-3 text-[0.95rem]">
               {links.map(({ text, href, ariaLabel }) => (
                 <li>
-                  <a class="inline-flex min-h-11 items-center transition-colors hover:text-white" href={href} aria-label={ariaLabel}>
+                  <a
+                    class="inline-flex min-h-11 items-center transition-colors hover:text-white"
+                    href={href}
+                    aria-label={ariaLabel}
+                  >
                     <Fragment set:html={text} />
                   </a>
                 </li>
@@ -134,20 +154,31 @@ const variant = FOOTER_VARIANT;
         <p class="text-xs font-semibold uppercase tracking-[0.18em] text-white">Contact</p>
         <address class="mt-5 space-y-3 text-[0.95rem] not-italic">
           <p>{c.address.street}, {c.address.city}, {c.address.countryName}</p>
-          <p><a class="inline-flex min-h-11 items-center break-all transition-colors hover:text-white" href={`mailto:${c.email}`}>{c.email}</a></p>
+          <p>
+            <a
+              class="inline-flex min-h-11 items-center break-all transition-colors hover:text-white"
+              href={`mailto:${c.email}`}>{c.email}</a
+            >
+          </p>
           {visible(c.phone) && <p set:html={ph(c.phone)} />}
         </address>
       </div>
     </div>
 
     <!-- Mentions -->
-    <div class="flex flex-col gap-4 border-t border-white/10 pt-7 pb-24 text-sm md:flex-row md:items-center md:justify-between">
+    <div
+      class="flex flex-col gap-4 border-t border-white/10 pt-7 pb-24 text-sm md:flex-row md:items-center md:justify-between"
+    >
       <p><Fragment set:html={footNote} /> <span class="text-[#a8a8a0]">— {SITE_CONFIG.slogan}.</span></p>
       <ul class="flex flex-wrap gap-x-6 gap-y-2">
         {
           secondaryLinks.map(({ text, href }) => (
             <li>
-              <a class="inline-flex min-h-11 items-center transition-colors hover:text-white" href={href} set:html={text} />
+              <a
+                class="inline-flex min-h-11 items-center transition-colors hover:text-white"
+                href={href}
+                set:html={text}
+              />
             </li>
           ))
         }
@@ -166,7 +197,14 @@ const variant = FOOTER_VARIANT;
       linear-gradient(180deg, #111111 0%, #0d2450 60%, #10306c 100%);
   }
   .footer-line {
-    background: linear-gradient(90deg, transparent, rgb(17 17 17 / 75%) 30%, rgb(228 248 74 / 75%) 60%, rgb(243 107 18 / 80%) 85%, transparent);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgb(17 17 17 / 75%) 30%,
+      rgb(228 248 74 / 75%) 60%,
+      rgb(243 107 18 / 80%) 85%,
+      transparent
+    );
   }
   .footer-line::after {
     content: '';
@@ -219,7 +257,13 @@ const variant = FOOTER_VARIANT;
             const res = await fetch(endpoint, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-              body: JSON.stringify({ type: 'newsletter', email, page: location.href, date: new Date().toISOString(), source: 'site-nova' }),
+              body: JSON.stringify({
+                type: 'newsletter',
+                email,
+                page: location.href,
+                date: new Date().toISOString(),
+                source: 'site-nova',
+              }),
             });
             if (!res.ok) throw new Error();
             form.reset();

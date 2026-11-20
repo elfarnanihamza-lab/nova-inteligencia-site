@@ -26,7 +26,10 @@ const decode = (s = '') =>
     .replace(/&gt;/g, '>')
     .replace(/&nbsp;|&#160;/g, ' ')
     .replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(Number(n)));
-const strip = (s = '') => decode(s.replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim();
+const strip = (s = '') =>
+  decode(s.replace(/<[^>]+>/g, ' '))
+    .replace(/\s+/g, ' ')
+    .trim();
 const meta = (h, attr, name) => {
   const re = new RegExp(`<meta[^>]*${attr}="${name}"[^>]*>`, 'i');
   const tag = h.match(re)?.[0];
@@ -36,14 +39,23 @@ const meta = (h, attr, name) => {
 const rows = [];
 for (const f of files.sort()) {
   const h = fs.readFileSync(f, 'utf8');
-  let url = '/' + path.relative(DIST, f).replace(/\\/g, '/').replace(/index\.html$/, '').replace(/\.html$/, '');
+  let url =
+    '/' +
+    path
+      .relative(DIST, f)
+      .replace(/\\/g, '/')
+      .replace(/index\.html$/, '')
+      .replace(/\.html$/, '');
   if (url !== '/' && url.endsWith('/')) url = url.slice(0, -1);
   const title = decode(h.match(/<title>([^<]*)<\/title>/i)?.[1] ?? '');
   const desc = meta(h, 'name', 'description');
   const robots = meta(h, 'name', 'robots');
   const noindex = /noindex/i.test(robots);
   const h1s = [...h.matchAll(/<h1[^>]*>([\s\S]*?)<\/h1>/gi)].map((m) => strip(m[1]));
-  const canonical = h.match(/<link[^>]*rel="canonical"[^>]*href="([^"]*)"/i)?.[1] ?? h.match(/<link[^>]*href="([^"]*)"[^>]*rel="canonical"/i)?.[1] ?? '';
+  const canonical =
+    h.match(/<link[^>]*rel="canonical"[^>]*href="([^"]*)"/i)?.[1] ??
+    h.match(/<link[^>]*href="([^"]*)"[^>]*rel="canonical"/i)?.[1] ??
+    '';
   const ogImage = meta(h, 'property', 'og:image');
   const twCard = meta(h, 'name', 'twitter:card');
   const twImage = meta(h, 'name', 'twitter:image');
@@ -64,7 +76,20 @@ for (const f of files.sort()) {
   let skip = false;
   for (let i = 1; i < levels.length; i++) if (levels[i] - levels[i - 1] > 1) skip = true;
   if (url === '/404') continue;
-  rows.push({ url, title, desc, noindex, h1s, canonical, ogImage, twCard, twImage, types: [...new Set(types)], noAlt, skip });
+  rows.push({
+    url,
+    title,
+    desc,
+    noindex,
+    h1s,
+    canonical,
+    ogImage,
+    twCard,
+    twImage,
+    types: [...new Set(types)],
+    noAlt,
+    skip,
+  });
 }
 
 const ok = (n, a, b) => (n >= a && n <= b ? '✅' : '⚠️');

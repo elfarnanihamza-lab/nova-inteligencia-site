@@ -61,14 +61,25 @@ export const organizationSchema = () => {
   ];
 };
 
-export const courseSchema = (f: { title: string; description: string; url: string; prix?: number; devise?: string }) => ({
+export const courseSchema = (f: {
+  title: string;
+  description: string;
+  url: string;
+  prix?: number;
+  devise?: string;
+}) => ({
   '@context': 'https://schema.org',
   '@type': 'Course',
   name: f.title,
   description: f.description,
   url: f.url,
   inLanguage: 'fr',
-  provider: { '@type': ['Organization', 'EducationalOrganization'], '@id': `${base}/#organization`, name: SITE_CONFIG.name, sameAs: base },
+  provider: {
+    '@type': ['Organization', 'EducationalOrganization'],
+    '@id': `${base}/#organization`,
+    name: SITE_CONFIG.name,
+    sameAs: base,
+  },
   // Offre publiée seulement si le tarif est gratuit ou confirmé en dirhams (MAD) : jamais de montant en USD.
   ...(priceKind(f.prix, f.devise) === 'free' || priceKind(f.prix, f.devise) === 'paid'
     ? {

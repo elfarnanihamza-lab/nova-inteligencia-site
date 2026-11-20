@@ -15,7 +15,13 @@ const fm = (file) => {
   const get = (k) => block.match(new RegExp(`^${k}:\\s*"?(.+?)"?\\s*$`, 'm'))?.[1];
   return { title: get('title'), categorie: get('categorie'), category: get('category') };
 };
-const CAT = { ia: 'Intelligence artificielle', 'ia-metier': 'IA + Métier', parcours: 'Parcours digital', innovation: 'Entrepreneuriat & innovation', junior: 'Junior' };
+const CAT = {
+  ia: 'Intelligence artificielle',
+  'ia-metier': 'IA + Métier',
+  parcours: 'Parcours digital',
+  innovation: 'Entrepreneuriat & innovation',
+  junior: 'Junior',
+};
 
 const pages = [
   { key: 'accueil', eyebrow: 'Casablanca, Maroc', title: 'Formation en intelligence artificielle à Casablanca' },
@@ -27,7 +33,11 @@ const pages = [
 ];
 for (const f of fs.readdirSync('src/data/formations').filter((f) => f.endsWith('.md'))) {
   const d = fm(path.join('src/data/formations', f));
-  pages.push({ key: `formation-${f.replace(/\.md$/, '')}`, eyebrow: `Formation · ${CAT[d.categorie] ?? ''}`, title: d.title });
+  pages.push({
+    key: `formation-${f.replace(/\.md$/, '')}`,
+    eyebrow: `Formation · ${CAT[d.categorie] ?? ''}`,
+    title: d.title,
+  });
 }
 for (const f of fs.readdirSync('src/data/post').filter((f) => /\.mdx?$/.test(f))) {
   const d = fm(path.join('src/data/post', f));
@@ -59,7 +69,10 @@ for (const p of pages) {
   }
   const y0 = 352 - ((lines.length - 1) * size * 1.12) / 2;
   const text = lines
-    .map((l, i) => `<text x="80" y="${Math.round(y0 + i * size * 1.12)}" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="${size}" fill="#ffffff">${esc(l)}</text>`)
+    .map(
+      (l, i) =>
+        `<text x="80" y="${Math.round(y0 + i * size * 1.12)}" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="${size}" fill="#ffffff">${esc(l)}</text>`
+    )
     .join('');
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630">
 <defs>
@@ -74,6 +87,9 @@ ${text}
 <rect x="80" y="540" width="160" height="5" rx="2.5" fill="url(#g)"/>
 <text x="1120" y="552" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#C3CEE2">novaconsort.com</text>
 </svg>`;
-  await sharp(Buffer.from(svg)).composite([{ input: logo, left: 80, top: 56 }]).png({ compressionLevel: 9 }).toFile(path.join(OUT, `${p.key}.png`));
+  await sharp(Buffer.from(svg))
+    .composite([{ input: logo, left: 80, top: 56 }])
+    .png({ compressionLevel: 9 })
+    .toFile(path.join(OUT, `${p.key}.png`));
 }
 console.log(`${pages.length} images générées dans ${OUT}`);

@@ -38,37 +38,43 @@ export const testimonials: Testimonial[] = [
   {
     name: 'Salma El Amrani',
     role: 'Entrepreneure — Casablanca',
-    quote: "Cette formation m'a permis de mieux comprendre comment intégrer l'IA dans mon activité et d'identifier des tâches que je peux automatiser.",
+    quote:
+      "Cette formation m'a permis de mieux comprendre comment intégrer l'IA dans mon activité et d'identifier des tâches que je peux automatiser.",
     demo: true,
   },
   {
     name: 'Youssef Benali',
     role: 'Responsable marketing — Rabat',
-    quote: "J'ai découvert de nouvelles façons d'utiliser l'IA pour préparer mes contenus, structurer mes campagnes et gagner du temps au quotidien.",
+    quote:
+      "J'ai découvert de nouvelles façons d'utiliser l'IA pour préparer mes contenus, structurer mes campagnes et gagner du temps au quotidien.",
     demo: true,
   },
   {
     name: 'Imane Alaoui',
     role: 'Consultante indépendante — Marrakech',
-    quote: "Le programme m'a aidée à mieux comprendre les outils d'IA et à imaginer des applications concrètes pour mon travail.",
+    quote:
+      "Le programme m'a aidée à mieux comprendre les outils d'IA et à imaginer des applications concrètes pour mon travail.",
     demo: true,
   },
   {
     name: 'Mehdi Berrada',
     role: 'Entrepreneur — Tanger',
-    quote: "J'ai particulièrement apprécié la dimension pratique et les exemples d'utilisation de l'intelligence artificielle dans un contexte professionnel.",
+    quote:
+      "J'ai particulièrement apprécié la dimension pratique et les exemples d'utilisation de l'intelligence artificielle dans un contexte professionnel.",
     demo: true,
   },
   {
     name: 'Sara Bennani',
     role: 'Professionnelle de la finance — Casablanca',
-    quote: "J'ai découvert plusieurs possibilités pour faciliter certaines tâches d'analyse et améliorer mon organisation grâce à l'IA.",
+    quote:
+      "J'ai découvert plusieurs possibilités pour faciliter certaines tâches d'analyse et améliorer mon organisation grâce à l'IA.",
     demo: true,
   },
   {
     name: 'Amine Tazi',
     role: 'Développeur web — Fès',
-    quote: "Cette découverte de l'IA m'a permis d'explorer de nouveaux outils et de réfléchir à leur intégration dans mes projets numériques.",
+    quote:
+      "Cette découverte de l'IA m'a permis d'explorer de nouveaux outils et de réfléchir à leur intégration dans mes projets numériques.",
     demo: true,
   },
 ];
@@ -91,5 +97,7 @@ const realOrDev = testimonials.filter((t) => !t.demo || (SHOW_FICTIONAL_TESTIMON
 const breakMode = import.meta.env.PUBLIC_BREAK_UI as 'worst' | 'one' | 'many' | 'empty' | undefined;
 const breakSets = breakMode ? await import('./testimonials.worst') : undefined;
 export const visibleTestimonials: Testimonial[] = breakSets
-  ? { worst: breakSets.worstCase, one: breakSets.oneCase, many: breakSets.manyCase, empty: breakSets.emptyCase }[breakMode!] ?? realOrDev
+  ? ({ worst: breakSets.worstCase, one: breakSets.oneCase, many: breakSets.manyCase, empty: breakSets.emptyCase }[
+      breakMode!
+    ] ?? realOrDev)
   : realOrDev;

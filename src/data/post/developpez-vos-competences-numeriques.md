@@ -1,17 +1,17 @@
 ---
 publishDate: 2025-03-23T09:00:00Z
 title: "Développez vos compétences numériques pour l'avenir"
-excerpt: "Étudiant, en reconversion ou simplement curieux : pourquoi les compétences numériques comptent, lesquelles travailler en priorité et comment progresser."
+excerpt: 'Étudiant, en reconversion ou simplement curieux : pourquoi les compétences numériques comptent, lesquelles travailler en priorité et comment progresser.'
 category: Compétences numériques
 tags: [compétences numériques, formation, carrière]
 author: Mounir Moutaib
 draft: false
-image: "~/assets/images/og/blog-developpez-vos-competences-numeriques.png"
+image: '~/assets/images/og/blog-developpez-vos-competences-numeriques.png'
 imageAlt: "Illustration de l'article : Compétences numériques : lesquelles développer pour l'avenir"
 metadata:
   title: "Compétences numériques : lesquelles développer pour l'avenir"
   ignoreTitleTemplate: true
-  description: "Employabilité, outils, programmation et marketing digital : découvrez les compétences numériques à développer et nos conseils pour progresser vite."
+  description: 'Employabilité, outils, programmation et marketing digital : découvrez les compétences numériques à développer et nos conseils pour progresser vite.'
 ---
 
 > **Note interne – à relire :** cet article reprend, sous forme résumée, l'article publié sur l'ancien site. Merci de le relire et de le compléter avant publication. La date de publication d'origine (23 mars, année inconnue) est à confirmer.

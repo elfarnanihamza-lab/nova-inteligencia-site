@@ -206,15 +206,15 @@ body {
   padding: 0 5px;
 }
 
-.dropdown:focus .dropdown-menu, .dropdown:focus-within .dropdown-menu {
+.dropdown:focus .dropdown-menu,
+.dropdown:focus-within .dropdown-menu {
   display: block;
 }
-
 
 @media (hover: hover) and (pointer: fine) {
   .dropdown:hover .dropdown-menu {
-  display: block;
-}
+    display: block;
+  }
 }
 
 [astro-icon].icon-light > * {
@@ -490,7 +490,6 @@ details.faq .faq-icon {
 details.faq[open] .faq-icon {
   transform: rotate(45deg);
 }
-
 
 /* ---------- Photos ---------- */
 .photo-tint {

@@ -69,8 +69,11 @@ const type = compact ? 'inscription' : 'contact';
       demoDisabled && (
         <div class="sm:col-span-2" role="note" id={id('demo-note')}>
           <p class="rounded-xl border border-[#cfe3fb] bg-[#eef6ff] px-4 py-3 text-sm leading-relaxed text-[#111111]">
-            <strong class="font-semibold">Version de démonstration :</strong> ce formulaire n'envoie aucune demande pour le moment. Pour nous joindre,
-            écrivez à <a class="font-semibold underline underline-offset-2" href={`mailto:${SITE_CONFIG.contact.email}`}>{SITE_CONFIG.contact.email}</a>
+            <strong class="font-semibold">Version de démonstration :</strong> ce formulaire n'envoie aucune demande pour
+            le moment. Pour nous joindre, écrivez à{' '}
+            <a class="font-semibold underline underline-offset-2" href={`mailto:${SITE_CONFIG.contact.email}`}>
+              {SITE_CONFIG.contact.email}
+            </a>
             {wa && <> ou utilisez le bouton WhatsApp.</>}
           </p>
         </div>
@@ -108,7 +111,10 @@ const type = compact ? 'inscription' : 'contact';
     <div>
       <label for={id('tel')} class={label}>Téléphone <Fragment set:html={req} /></label>
       <div class="relative">
-        <span class="nova-prefix pointer-events-none absolute inset-y-1.5 left-1.5 flex items-center rounded-lg px-2.5 text-sm font-semibold text-heading" aria-hidden="true">
+        <span
+          class="nova-prefix pointer-events-none absolute inset-y-1.5 left-1.5 flex items-center rounded-lg px-2.5 text-sm font-semibold text-heading"
+          aria-hidden="true"
+        >
           +212
         </span>
         <input
@@ -150,7 +156,15 @@ const type = compact ? 'inscription' : 'contact';
     <!-- 4. Ville (facultatif) -->
     <div>
       <label for={id('ville')} class={label}>Ville <Fragment set:html={optional} /></label>
-      <input id={id('ville')} name="ville" type="text" maxlength="80" autocomplete="address-level2" class={field} placeholder="Casablanca" />
+      <input
+        id={id('ville')}
+        name="ville"
+        type="text"
+        maxlength="80"
+        autocomplete="address-level2"
+        class={field}
+        placeholder="Casablanca"
+      />
     </div>
 
     <!-- 5. Vous êtes -->
@@ -164,7 +178,13 @@ const type = compact ? 'inscription' : 'contact';
             ['etudiant', 'Étudiant', 'tabler:school'],
           ].map(([value, text, icon]) => (
             <label class="profil-opt flex cursor-pointer items-center gap-3 px-4 py-3 text-sm font-semibold text-heading">
-              <input type="radio" name="profil" value={value} checked={profil === value} class="h-5 w-5 shrink-0 accent-[#111111]" />
+              <input
+                type="radio"
+                name="profil"
+                value={value}
+                checked={profil === value}
+                class="h-5 w-5 shrink-0 accent-[#111111]"
+              />
               <Icon name={icon} class="profil-icon h-5 w-5" aria-hidden="true" />
               {text}
             </label>
@@ -189,8 +209,12 @@ const type = compact ? 'inscription' : 'contact';
             </optgroup>
           ))
         }
-        <option value="sur-mesure" selected={formation === 'sur-mesure'}>Formation sur mesure pour mon entreprise</option>
-        <option value="service-marketing" selected={formation === 'service-marketing'}>Service marketing digital pour mon entreprise</option>
+        <option value="sur-mesure" selected={formation === 'sur-mesure'}
+          >Formation sur mesure pour mon entreprise</option
+        >
+        <option value="service-marketing" selected={formation === 'service-marketing'}
+          >Service marketing digital pour mon entreprise</option
+        >
       </select>
     </div>
 
@@ -225,10 +249,14 @@ const type = compact ? 'inscription' : 'contact';
           data-label="Consentement"
         />
         <span>
-          J'accepte que {SITE_CONFIG.name} traite mes données pour répondre à ma demande, conformément à la loi
-          marocaine n° 09-08 et au RGPD.
+          J'accepte que {SITE_CONFIG.name} traite mes données pour répondre à ma demande, conformément à la loi marocaine
+          n° 09-08 et au RGPD.
           <Fragment set:html={req} />
-          <a href="/politique-de-confidentialite" class="flex min-h-11 w-fit items-center font-semibold text-ink underline underline-offset-2">Lire la politique de confidentialité</a>
+          <a
+            href="/politique-de-confidentialite"
+            class="flex min-h-11 w-fit items-center font-semibold text-ink underline underline-offset-2"
+            >Lire la politique de confidentialité</a
+          >
         </span>
       </label>
       <p id={id('consent-err')} class="field-error mt-1.5 text-sm text-[#b42318]" aria-live="polite"></p>
@@ -237,7 +265,10 @@ const type = compact ? 'inscription' : 'contact';
     <div class="flex flex-wrap items-center gap-4 sm:col-span-2">
       <button
         type="submit"
-        class:list={['btn-primary disabled:cursor-not-allowed disabled:opacity-55', compact ? 'w-full' : 'w-full sm:w-auto']}
+        class:list={[
+          'btn-primary disabled:cursor-not-allowed disabled:opacity-55',
+          compact ? 'w-full' : 'w-full sm:w-auto',
+        ]}
         data-submit
         disabled={demoDisabled}
         aria-describedby={demoDisabled ? id('demo-note') : undefined}
@@ -253,10 +284,18 @@ const type = compact ? 'inscription' : 'contact';
   <div class="form-success hidden py-6 text-center" tabindex="-1" data-success>
     <svg class="success-check mx-auto h-20 w-20" viewBox="0 0 52 52" aria-hidden="true">
       <defs>
-        <linearGradient id={id('ok')} x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#111111"></stop><stop offset="1" stop-color="#b8cc1a"></stop></linearGradient>
+        <linearGradient id={id('ok')} x1="0" y1="0" x2="1" y2="1"
+          ><stop offset="0" stop-color="#111111"></stop><stop offset="1" stop-color="#b8cc1a"></stop></linearGradient
+        >
       </defs>
       <circle cx="26" cy="26" r="24" fill="none" stroke={`url(#${id('ok')})`} stroke-width="2.5"></circle>
-      <path d="M15 27.5l7.5 7.5L38 19" fill="none" stroke={`url(#${id('ok')})`} stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+      <path
+        d="M15 27.5l7.5 7.5L38 19"
+        fill="none"
+        stroke={`url(#${id('ok')})`}
+        stroke-width="3"
+        stroke-linecap="round"
+        stroke-linejoin="round"></path>
     </svg>
     <h3 class="mt-6 text-2xl font-bold tracking-tight text-heading" data-success-title>Merci !</h3>
     <p class="mx-auto mt-3 max-w-md leading-relaxed text-muted" data-success-text>
@@ -286,10 +325,10 @@ const type = compact ? 'inscription' : 'contact';
       background-color 0.2s ease;
   }
   @media (hover: hover) and (pointer: fine) {
-  .nova-field:hover {
-    border-color: #b6c5dd;
+    .nova-field:hover {
+      border-color: #b6c5dd;
+    }
   }
-}
   .nova-field:focus {
     outline: none;
     border-color: #111111;
@@ -331,10 +370,10 @@ const type = compact ? 'inscription' : 'contact';
       box-shadow 0.2s ease;
   }
   @media (hover: hover) and (pointer: fine) {
-  .profil-opt:hover {
-    border-color: #111111;
+    .profil-opt:hover {
+      border-color: #111111;
+    }
   }
-}
   .profil-icon {
     color: #637086;
     transition: color 0.2s ease;
@@ -456,7 +495,8 @@ const type = compact ? 'inscription' : 'contact';
         : /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(el.value.trim())
           ? ''
           : 'Adresse e-mail invalide (ex. vous@exemple.com).',
-    consent: (el) => ((el as HTMLInputElement).checked ? '' : 'Merci d’accepter le traitement de vos données pour envoyer la demande.'),
+    consent: (el) =>
+      (el as HTMLInputElement).checked ? '' : 'Merci d’accepter le traitement de vos données pour envoyer la demande.',
   };
 
   const init = () => {
@@ -479,7 +519,10 @@ const type = compact ? 'inscription' : 'contact';
         if (err) err.textContent = msg;
         return !msg;
       };
-      const validated = () => [...form.querySelectorAll<Field>('input[name], select[name], textarea[name]')].filter((el) => validators[el.name]);
+      const validated = () =>
+        [...form.querySelectorAll<Field>('input[name], select[name], textarea[name]')].filter(
+          (el) => validators[el.name]
+        );
 
       validated().forEach((el) => {
         el.addEventListener('blur', () => {
@@ -599,7 +642,9 @@ const type = compact ? 'inscription' : 'contact';
             payload.message && `Message : ${payload.message}`,
           ].filter(Boolean);
           location.href = `mailto:${form.dataset.email}?subject=${encodeURIComponent('Demande via le site — ' + (payload.formationTitre || 'information'))}&body=${encodeURIComponent(lines.join('\n'))}`;
-          showSuccess(`Votre messagerie s'ouvre avec votre demande pré-remplie : il ne reste qu'à l'envoyer. Si rien ne s'ouvre, écrivez-nous à ${form.dataset.email}.`);
+          showSuccess(
+            `Votre messagerie s'ouvre avec votre demande pré-remplie : il ne reste qu'à l'envoyer. Si rien ne s'ouvre, écrivez-nous à ${form.dataset.email}.`
+          );
         }
       });
 

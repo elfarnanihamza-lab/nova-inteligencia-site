@@ -27,11 +27,23 @@ for (const f of fs.readdirSync('src/data/formations').filter((f) => f.endsWith('
 }
 
 const strip = (s) =>
-  s.replace(/<[^>]+>/g, ' ').replace(/&amp;/g, '&').replace(/&#39;|&#x27;/g, "'").replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim();
+  s
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&#39;|&#x27;/g, "'")
+    .replace(/&nbsp;/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
 
 const rows = [];
 for (const f of files) {
-  const page = '/' + path.relative(DIST, f).replace(/\\/g, '/').replace(/index\.html$/, '').replace(/\/$/, '');
+  const page =
+    '/' +
+    path
+      .relative(DIST, f)
+      .replace(/\\/g, '/')
+      .replace(/index\.html$/, '')
+      .replace(/\/$/, '');
   const h = fs.readFileSync(f, 'utf8');
   // zone : en-tête, pied de page ou contenu
   const zoneOf = (i) => {
@@ -39,7 +51,8 @@ for (const f of files) {
     if (before.lastIndexOf('<header') > before.lastIndexOf('</header>')) return 'menu';
     if (before.lastIndexOf('<footer') > before.lastIndexOf('</footer>')) return 'pied de page';
     const sec = before.lastIndexOf('<section');
-    if (sec > before.lastIndexOf('</section>') && /marquee-band/.test(before.slice(sec, before.indexOf('>', sec)))) return 'bande défilante';
+    if (sec > before.lastIndexOf('</section>') && /marquee-band/.test(before.slice(sec, before.indexOf('>', sec))))
+      return 'bande défilante';
     return 'contenu';
   };
   for (const m of h.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/gi)) {
@@ -68,4 +81,8 @@ console.log('Liens vers /formations :', rows.length, JSON.stringify(by('type')))
 const single = rows.filter((r) => r.type === 'catégorie' && r.detail.startsWith('1 '));
 console.log('Catalogues filtrés à 1 formation :', single.length);
 const home = rows.filter((r) => r.page === '/');
-console.log('Accueil :', home.length, JSON.stringify(home.reduce((o, r) => ((o[r.type] = (o[r.type] || 0) + 1), o), {})));
+console.log(
+  'Accueil :',
+  home.length,
+  JSON.stringify(home.reduce((o, r) => ((o[r.type] = (o[r.type] || 0) + 1), o), {}))
+);

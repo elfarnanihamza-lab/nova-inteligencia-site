@@ -40,10 +40,22 @@ export const ANNOUNCEMENT = {
   id: 'defilant-2026-b',
   /** Messages qui défilent en boucle (chacun avec son lien). */
   items: [
-    { text: "IA Junior Academy : une première approche de l'IA pour les 5 à 17 ans.", cta: 'Découvrir', href: '/formations/ia-junior-academy' },
-    { text: "Programmes d'entrepreneuriat et d'innovation gratuits.", cta: 'Voir les programmes', href: '/formations?categorie=innovation' },
+    {
+      text: "IA Junior Academy : une première approche de l'IA pour les 5 à 17 ans.",
+      cta: 'Découvrir',
+      href: '/formations/ia-junior-academy',
+    },
+    {
+      text: "Programmes d'entrepreneuriat et d'innovation gratuits.",
+      cta: 'Voir les programmes',
+      href: '/formations?categorie=innovation',
+    },
     { text: 'Une formation sur mesure pour vos équipes ?', cta: 'Parlons-en', href: '/entreprises' },
-    { text: 'Marketing digital pour entreprises : boostez vos ventes.', cta: 'Voir nos services', href: '/services-marketing' },
+    {
+      text: 'Marketing digital pour entreprises : boostez vos ventes.',
+      cta: 'Voir nos services',
+      href: '/services-marketing',
+    },
   ],
 };
 
@@ -68,7 +80,7 @@ export const SITE_CONFIG = {
   shortName: 'Nova',
   slogan: "L'excellence académique à l'ère digitale",
   description:
-    "Nova Inteligencia Group est un centre de formation en intelligence artificielle, stratégie digitale et leadership entrepreneurial basé à Casablanca, au Maroc.",
+    'Nova Inteligencia Group est un centre de formation en intelligence artificielle, stratégie digitale et leadership entrepreneurial basé à Casablanca, au Maroc.',
   /**
    * URL publique du site (sans slash final) : reprise de `site` (src/config.yaml), que la variable de build
    * SITE_URL peut remplacer (ex. URL de démonstration Vercel). À confirmer avec le nom de domaine définitif.
@@ -81,7 +93,7 @@ export const SITE_CONFIG = {
     phone: TBD,
     /** Numéro WhatsApp : lu depuis PUBLIC_WHATSAPP_NUMBER (.env ou hébergeur), format international sans « + » ni espaces. Vide = bouton WhatsApp masqué. */
     whatsapp: (import.meta.env.PUBLIC_WHATSAPP_NUMBER as string | undefined) || '',
-    whatsappMessage: "Bonjour, je souhaite avoir des informations sur vos formations.",
+    whatsappMessage: 'Bonjour, je souhaite avoir des informations sur vos formations.',
     hours: TBD,
     address: {
       street: '207-209 Boulevard de la Résistance, Niveau 3, Suite 5',
@@ -154,19 +166,74 @@ export const SITE_CONFIG = {
  * Les autres proviennent de l'ancien site mais restent à confirmer par Nova (voir questions-client.md).
  */
 export const SPHERES = [
-  { key: 'ia', icon: 'tabler:brain', title: 'Cursus en IA', text: "Formation à l'intelligence artificielle pour un usage opérationnel immédiat, du niveau fondations au niveau professionnel.", category: 'ia', verified: true },
-  { key: 'digital', icon: 'tabler:device-laptop', title: 'Culture digitale', text: "Les métiers du digital, les outils professionnels et l'IA, pour une carrière de salarié, de freelance ou d'entrepreneur.", category: 'parcours', verified: true },
-  { key: 'business', icon: 'tabler:building-skyscraper', title: "Ingénierie d'affaire", text: "Accompagnement stratégique pour bâtir des entreprises performantes : de l'idée au projet, incubation et accélération.", category: 'innovation', verified: true },
-  { key: 'langues', icon: 'tabler:language', title: 'Expertise linguistique', text: 'Immersion linguistique de haut niveau pour les marchés mondiaux.', verified: false },
-  { key: 'academique', icon: 'tabler:school', title: 'Accompagnement académique', text: 'Tutorat pour maîtriser les concepts complexes.', verified: false },
-  { key: 'legal', icon: 'tabler:scale', title: 'Conseil légal', text: 'Expertise juridique pour protéger les innovations.', verified: false },
+  {
+    key: 'ia',
+    icon: 'tabler:brain',
+    title: 'Cursus en IA',
+    text: "Formation à l'intelligence artificielle pour un usage opérationnel immédiat, du niveau fondations au niveau professionnel.",
+    category: 'ia',
+    verified: true,
+  },
+  {
+    key: 'digital',
+    icon: 'tabler:device-laptop',
+    title: 'Culture digitale',
+    text: "Les métiers du digital, les outils professionnels et l'IA, pour une carrière de salarié, de freelance ou d'entrepreneur.",
+    category: 'parcours',
+    verified: true,
+  },
+  {
+    key: 'business',
+    icon: 'tabler:building-skyscraper',
+    title: "Ingénierie d'affaire",
+    text: "Accompagnement stratégique pour bâtir des entreprises performantes : de l'idée au projet, incubation et accélération.",
+    category: 'innovation',
+    verified: true,
+  },
+  {
+    key: 'langues',
+    icon: 'tabler:language',
+    title: 'Expertise linguistique',
+    text: 'Immersion linguistique de haut niveau pour les marchés mondiaux.',
+    verified: false,
+  },
+  {
+    key: 'academique',
+    icon: 'tabler:school',
+    title: 'Accompagnement académique',
+    text: 'Tutorat pour maîtriser les concepts complexes.',
+    verified: false,
+  },
+  {
+    key: 'legal',
+    icon: 'tabler:scale',
+    title: 'Conseil légal',
+    text: 'Expertise juridique pour protéger les innovations.',
+    verified: false,
+  },
 ];
 
 export const CATEGORIES: Record<string, { label: string; description: string; icon: string }> = {
-  ia: { icon: 'tabler:brain', label: 'Intelligence artificielle', description: "Maîtriser l'IA, ses outils, ses agents et l'automatisation." },
-  'ia-metier': { icon: 'tabler:briefcase', label: 'IA + Métier', description: "Appliquer l'IA à votre métier, du niveau fondamental au niveau professionnel." },
-  parcours: { icon: 'tabler:route', label: 'Parcours digital', description: 'Un parcours complet vers les métiers du digital.' },
-  innovation: { icon: 'tabler:bulb', label: 'Entrepreneuriat & innovation', description: 'Du projet à la startup : compétences entrepreneuriales et technologiques.' },
+  ia: {
+    icon: 'tabler:brain',
+    label: 'Intelligence artificielle',
+    description: "Maîtriser l'IA, ses outils, ses agents et l'automatisation.",
+  },
+  'ia-metier': {
+    icon: 'tabler:briefcase',
+    label: 'IA + Métier',
+    description: "Appliquer l'IA à votre métier, du niveau fondamental au niveau professionnel.",
+  },
+  parcours: {
+    icon: 'tabler:route',
+    label: 'Parcours digital',
+    description: 'Un parcours complet vers les métiers du digital.',
+  },
+  innovation: {
+    icon: 'tabler:bulb',
+    label: 'Entrepreneuriat & innovation',
+    description: 'Du projet à la startup : compétences entrepreneuriales et technologiques.',
+  },
   junior: { icon: 'tabler:school', label: 'Junior', description: "L'IA pour les enfants et adolescents." },
 };
 

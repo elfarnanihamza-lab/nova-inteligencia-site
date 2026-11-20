@@ -1,120 +1,112 @@
 {
- "report": {
-  "desktop-1440x900": {
-   "visible": 3,
-   "total": 6,
-   "cardW": 392,
-   "mediaH": [
-    234
-   ],
-   "ctaH": 52,
-   "prevDisabled": true,
-   "nextDisabled": false,
-   "controlsHidden": false,
-   "count": "1–3 sur 6",
-   "overflowX": false,
-   "revealed": "8/8",
-   "fontDesc": "15.2px",
-   "after": {
-    "scrollLeft": 420,
-    "count": "2–4 sur 6",
-    "prevDisabled": false
-   },
-   "errors": []
+  "report": {
+    "desktop-1440x900": {
+      "visible": 3,
+      "total": 6,
+      "cardW": 392,
+      "mediaH": [234],
+      "ctaH": 52,
+      "prevDisabled": true,
+      "nextDisabled": false,
+      "controlsHidden": false,
+      "count": "1–3 sur 6",
+      "overflowX": false,
+      "revealed": "8/8",
+      "fontDesc": "15.2px",
+      "after": {
+        "scrollLeft": 420,
+        "count": "2–4 sur 6",
+        "prevDisabled": false
+      },
+      "errors": []
+    },
+    "laptop-1366x600": {
+      "visible": 3,
+      "total": 6,
+      "cardW": 392,
+      "mediaH": [234],
+      "ctaH": 52,
+      "prevDisabled": true,
+      "nextDisabled": false,
+      "controlsHidden": false,
+      "count": "1–3 sur 6",
+      "overflowX": false,
+      "revealed": "8/8",
+      "fontDesc": "15.2px",
+      "after": {
+        "scrollLeft": 420,
+        "count": "2–4 sur 6",
+        "prevDisabled": false
+      },
+      "errors": []
+    },
+    "tablette-768x1024": {
+      "visible": 2,
+      "total": 6,
+      "cardW": 348,
+      "mediaH": [208],
+      "ctaH": 52,
+      "prevDisabled": true,
+      "nextDisabled": false,
+      "controlsHidden": false,
+      "count": "1–2 sur 6",
+      "overflowX": false,
+      "revealed": "7/8",
+      "fontDesc": "15.2px",
+      "after": {
+        "scrollLeft": 372,
+        "count": "2–3 sur 6"
+      },
+      "errors": []
+    },
+    "mobile-375x667": {
+      "visible": 1,
+      "total": 6,
+      "cardW": 295,
+      "mediaH": [176],
+      "ctaH": 52,
+      "prevDisabled": true,
+      "nextDisabled": false,
+      "controlsHidden": false,
+      "count": "1 sur 6",
+      "overflowX": false,
+      "revealed": "6/8",
+      "fontDesc": "15.2px",
+      "after": {
+        "scrollLeft": 319,
+        "count": "2 sur 6"
+      },
+      "errors": []
+    }
   },
-  "laptop-1366x600": {
-   "visible": 3,
-   "total": 6,
-   "cardW": 392,
-   "mediaH": [
-    234
-   ],
-   "ctaH": 52,
-   "prevDisabled": true,
-   "nextDisabled": false,
-   "controlsHidden": false,
-   "count": "1–3 sur 6",
-   "overflowX": false,
-   "revealed": "8/8",
-   "fontDesc": "15.2px",
-   "after": {
-    "scrollLeft": 420,
-    "count": "2–4 sur 6",
-    "prevDisabled": false
-   },
-   "errors": []
+  "links": [
+    "200 /formations/level-1-ai-foundations",
+    "200 /contact?formation=level-1-ai-foundations",
+    "200 /formations/level-2-ai-productivity-automation",
+    "200 /contact?formation=level-2-ai-productivity-automation",
+    "200 /formations/level-3-ai-professional-workflows",
+    "200 /contact?formation=level-3-ai-professional-workflows",
+    "200 /formations/level-1-fondamentaux-ia-metier",
+    "200 /contact?formation=level-1-fondamentaux-ia-metier",
+    "200 /formations/nova-digital-master-program",
+    "200 /contact?formation=nova-digital-master-program",
+    "200 /formations/ia-junior-academy",
+    "200 /contact?formation=ia-junior-academy",
+    "200 /formations",
+    "200 /contact"
+  ],
+  "hover": {
+    "card": "matrix(1, 0, 0, 1, 0, -6)",
+    "svg": "matrix(1.045, 0, 0, 1.045, 0, 0)"
   },
-  "tablette-768x1024": {
-   "visible": 2,
-   "total": 6,
-   "cardW": 348,
-   "mediaH": [
-    208
-   ],
-   "ctaH": 52,
-   "prevDisabled": true,
-   "nextDisabled": false,
-   "controlsHidden": false,
-   "count": "1–2 sur 6",
-   "overflowX": false,
-   "revealed": "7/8",
-   "fontDesc": "15.2px",
-   "after": {
-    "scrollLeft": 372,
-    "count": "2–3 sur 6"
-   },
-   "errors": []
+  "reduced": {
+    "allVisible": true,
+    "trackScroll": "auto"
   },
-  "mobile-375x667": {
-   "visible": 1,
-   "total": 6,
-   "cardW": 295,
-   "mediaH": [
-    176
-   ],
-   "ctaH": 52,
-   "prevDisabled": true,
-   "nextDisabled": false,
-   "controlsHidden": false,
-   "count": "1 sur 6",
-   "overflowX": false,
-   "revealed": "6/8",
-   "fontDesc": "15.2px",
-   "after": {
-    "scrollLeft": 319,
-    "count": "2 sur 6"
-   },
-   "errors": []
+  "nojs": {
+    "cards": 6,
+    "opacity": "1",
+    "controls": "none",
+    "trackOverflow": "auto"
   }
- },
- "links": [
-  "200 /formations/level-1-ai-foundations",
-  "200 /contact?formation=level-1-ai-foundations",
-  "200 /formations/level-2-ai-productivity-automation",
-  "200 /contact?formation=level-2-ai-productivity-automation",
-  "200 /formations/level-3-ai-professional-workflows",
-  "200 /contact?formation=level-3-ai-professional-workflows",
-  "200 /formations/level-1-fondamentaux-ia-metier",
-  "200 /contact?formation=level-1-fondamentaux-ia-metier",
-  "200 /formations/nova-digital-master-program",
-  "200 /contact?formation=nova-digital-master-program",
-  "200 /formations/ia-junior-academy",
-  "200 /contact?formation=ia-junior-academy",
-  "200 /formations",
-  "200 /contact"
- ],
- "hover": {
-  "card": "matrix(1, 0, 0, 1, 0, -6)",
-  "svg": "matrix(1.045, 0, 0, 1.045, 0, 0)"
- },
- "reduced": {
-  "allVisible": true,
-  "trackScroll": "auto"
- },
- "nojs": {
-  "cards": 6,
-  "opacity": "1",
-  "controls": "none",
-  "trackOverflow": "auto"
- }
 }

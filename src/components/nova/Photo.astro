@@ -37,7 +37,10 @@ const src = photos[`/src/assets/images/photos/${name}.jpg`]?.default;
 if (!src) throw new Error(`Photo introuvable : ${name}`);
 ---
 
-<div class:list={['photo-frame relative overflow-hidden bg-navy', className]} style={aspect ? `aspect-ratio:${aspect}` : undefined}>
+<div
+  class:list={['photo-frame relative overflow-hidden bg-navy', className]}
+  style={aspect ? `aspect-ratio:${aspect}` : undefined}
+>
   <Picture
     src={src}
     alt={alt}
@@ -46,7 +49,7 @@ if (!src) throw new Error(`Photo introuvable : ${name}`);
     sizes={sizes}
     loading={loading}
     decoding="async"
-    {...(loading === 'eager' ? { fetchpriority: 'high' } : {})}
+    {...loading === 'eager' ? { fetchpriority: 'high' } : {}}
     pictureAttributes={{ class: 'block h-full w-full' }}
     class="photo-img h-full w-full object-cover"
     style={`object-position:${position}`}

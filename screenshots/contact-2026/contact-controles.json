@@ -1,262 +1,262 @@
 {
- "report": {
-  "avant-desktop-1440x900": {
-   "links": [
-    {
-     "t": "contact@novainteligencia.group",
-     "href": "mailto:contact@novainteligencia.group",
-     "target": ""
+  "report": {
+    "avant-desktop-1440x900": {
+      "links": [
+        {
+          "t": "contact@novainteligencia.group",
+          "href": "mailto:contact@novainteligencia.group",
+          "target": ""
+        },
+        {
+          "t": "Itinéraire",
+          "href": "https://www.google.com/maps/dir/?api=1&destination=207-209%20Boulevard%20de%20la%20R%C3%A9sistance%2C%20Niveau%203%2C%20Suite%205%2C%20Casablanca%2C%20Maroc",
+          "target": "_blank"
+        },
+        {
+          "t": "Nous contacter",
+          "href": "/contact",
+          "target": ""
+        }
+      ],
+      "btns": [
+        {
+          "t": "Itinéraire",
+          "w": 150,
+          "h": 52,
+          "inside": true
+        },
+        {
+          "t": "Nous contacter",
+          "w": 171,
+          "h": 52,
+          "inside": true
+        }
+      ],
+      "iframes": 1,
+      "iframeSrc": "https://www.google.com/maps?q=207-209%20Boulevard%20de%20la%20R%C3%A9sistance%2C%20Niveau%203%2C%20Suite%205%2C%20Casabl",
+      "mapH": 400,
+      "overflowX": false,
+      "revealed": "true (3)",
+      "errors": []
     },
-    {
-     "t": "Itinéraire",
-     "href": "https://www.google.com/maps/dir/?api=1&destination=207-209%20Boulevard%20de%20la%20R%C3%A9sistance%2C%20Niveau%203%2C%20Suite%205%2C%20Casablanca%2C%20Maroc",
-     "target": "_blank"
+    "avant-laptop-1366x600": {
+      "links": [
+        {
+          "t": "contact@novainteligencia.group",
+          "href": "mailto:contact@novainteligencia.group",
+          "target": ""
+        },
+        {
+          "t": "Itinéraire",
+          "href": "https://www.google.com/maps/dir/?api=1&destination=207-209%20Boulevard%20de%20la%20R%C3%A9sistance%2C%20Niveau%203%2C%20Suite%205%2C%20Casablanca%2C%20Maroc",
+          "target": "_blank"
+        },
+        {
+          "t": "Nous contacter",
+          "href": "/contact",
+          "target": ""
+        }
+      ],
+      "btns": [
+        {
+          "t": "Itinéraire",
+          "w": 150,
+          "h": 52,
+          "inside": true
+        },
+        {
+          "t": "Nous contacter",
+          "w": 171,
+          "h": 52,
+          "inside": true
+        }
+      ],
+      "iframes": 1,
+      "iframeSrc": "https://www.google.com/maps?q=207-209%20Boulevard%20de%20la%20R%C3%A9sistance%2C%20Niveau%203%2C%20Suite%205%2C%20Casabl",
+      "mapH": 400,
+      "overflowX": false,
+      "revealed": "true (3)",
+      "errors": []
     },
-    {
-     "t": "Nous contacter",
-     "href": "/contact",
-     "target": ""
+    "avant-mobile-375x667": {
+      "links": [
+        {
+          "t": "contact@novainteligencia.group",
+          "href": "mailto:contact@novainteligencia.group",
+          "target": ""
+        },
+        {
+          "t": "Itinéraire",
+          "href": "https://www.google.com/maps/dir/?api=1&destination=207-209%20Boulevard%20de%20la%20R%C3%A9sistance%2C%20Niveau%203%2C%20Suite%205%2C%20Casablanca%2C%20Maroc",
+          "target": "_blank"
+        },
+        {
+          "t": "Nous contacter",
+          "href": "/contact",
+          "target": ""
+        }
+      ],
+      "btns": [
+        {
+          "t": "Itinéraire",
+          "w": 142,
+          "h": 52,
+          "inside": true
+        },
+        {
+          "t": "Nous contacter",
+          "w": 163,
+          "h": 52,
+          "inside": true
+        }
+      ],
+      "iframes": 1,
+      "iframeSrc": "https://www.google.com/maps?q=207-209%20Boulevard%20de%20la%20R%C3%A9sistance%2C%20Niveau%203%2C%20Suite%205%2C%20Casabl",
+      "mapH": 400,
+      "overflowX": false,
+      "revealed": "true (3)",
+      "errors": []
+    },
+    "apres-desktop-1440x900": {
+      "links": [
+        {
+          "t": "contact@novainteligencia.group",
+          "href": "mailto:contact@novainteligencia.group",
+          "target": ""
+        },
+        {
+          "t": "Itinéraire(Google Maps, nouvel onglet)",
+          "href": "https://www.google.com/maps/dir/?api=1&destination=207-209%20Boulevard%20de%20la%20R%C3%A9sistance%2C%20Niveau%203%2C%20Suite%205%2C%20Casablanca%2C%20Maroc",
+          "target": "_blank"
+        },
+        {
+          "t": "Nous contacter",
+          "href": "/contact",
+          "target": ""
+        },
+        {
+          "t": "Ouvrir dans Google Maps(nouvel onglet)",
+          "href": "https://www.google.com/maps/search/?api=1&query=207-209%20Boulevard%20de%20la%20R%C3%A9sistance%2C%20Niveau%203%2C%20Suite%205%2C%20Casablanca%2C%20Maroc",
+          "target": "_blank"
+        }
+      ],
+      "btns": [
+        {
+          "t": "Itinéraire(Google Ma",
+          "w": 150,
+          "h": 52,
+          "inside": true
+        },
+        {
+          "t": "Nous contacter",
+          "w": 194,
+          "h": 52,
+          "inside": true
+        }
+      ],
+      "iframes": 1,
+      "iframeSrc": "https://www.google.com/maps?q=207-209%20Boulevard%20de%20la%20R%C3%A9sistance%2C%20Niveau%203%2C%20Suite%205%2C%20Casabl",
+      "mapH": 440,
+      "overflowX": false,
+      "revealed": "true (7)",
+      "errors": []
+    },
+    "apres-laptop-1366x600": {
+      "links": [
+        {
+          "t": "contact@novainteligencia.group",
+          "href": "mailto:contact@novainteligencia.group",
+          "target": ""
+        },
+        {
+          "t": "Itinéraire(Google Maps, nouvel onglet)",
+          "href": "https://www.google.com/maps/dir/?api=1&destination=207-209%20Boulevard%20de%20la%20R%C3%A9sistance%2C%20Niveau%203%2C%20Suite%205%2C%20Casablanca%2C%20Maroc",
+          "target": "_blank"
+        },
+        {
+          "t": "Nous contacter",
+          "href": "/contact",
+          "target": ""
+        },
+        {
+          "t": "Ouvrir dans Google Maps(nouvel onglet)",
+          "href": "https://www.google.com/maps/search/?api=1&query=207-209%20Boulevard%20de%20la%20R%C3%A9sistance%2C%20Niveau%203%2C%20Suite%205%2C%20Casablanca%2C%20Maroc",
+          "target": "_blank"
+        }
+      ],
+      "btns": [
+        {
+          "t": "Itinéraire(Google Ma",
+          "w": 150,
+          "h": 52,
+          "inside": true
+        },
+        {
+          "t": "Nous contacter",
+          "w": 194,
+          "h": 52,
+          "inside": true
+        }
+      ],
+      "iframes": 1,
+      "iframeSrc": "https://www.google.com/maps?q=207-209%20Boulevard%20de%20la%20R%C3%A9sistance%2C%20Niveau%203%2C%20Suite%205%2C%20Casabl",
+      "mapH": 440,
+      "overflowX": false,
+      "revealed": "true (7)",
+      "errors": []
+    },
+    "apres-mobile-375x667": {
+      "links": [
+        {
+          "t": "contact@novainteligencia.group",
+          "href": "mailto:contact@novainteligencia.group",
+          "target": ""
+        },
+        {
+          "t": "Itinéraire(Google Maps, nouvel onglet)",
+          "href": "https://www.google.com/maps/dir/?api=1&destination=207-209%20Boulevard%20de%20la%20R%C3%A9sistance%2C%20Niveau%203%2C%20Suite%205%2C%20Casablanca%2C%20Maroc",
+          "target": "_blank"
+        },
+        {
+          "t": "Nous contacter",
+          "href": "/contact",
+          "target": ""
+        },
+        {
+          "t": "Ouvrir dans Google Maps(nouvel onglet)",
+          "href": "https://www.google.com/maps/search/?api=1&query=207-209%20Boulevard%20de%20la%20R%C3%A9sistance%2C%20Niveau%203%2C%20Suite%205%2C%20Casablanca%2C%20Maroc",
+          "target": "_blank"
+        }
+      ],
+      "btns": [
+        {
+          "t": "Itinéraire(Google Ma",
+          "w": 343,
+          "h": 52,
+          "inside": true
+        },
+        {
+          "t": "Nous contacter",
+          "w": 343,
+          "h": 52,
+          "inside": true
+        }
+      ],
+      "iframes": 1,
+      "iframeSrc": "https://www.google.com/maps?q=207-209%20Boulevard%20de%20la%20R%C3%A9sistance%2C%20Niveau%203%2C%20Suite%205%2C%20Casabl",
+      "mapH": 280,
+      "overflowX": false,
+      "revealed": "true (7)",
+      "errors": []
     }
-   ],
-   "btns": [
-    {
-     "t": "Itinéraire",
-     "w": 150,
-     "h": 52,
-     "inside": true
-    },
-    {
-     "t": "Nous contacter",
-     "w": 171,
-     "h": 52,
-     "inside": true
-    }
-   ],
-   "iframes": 1,
-   "iframeSrc": "https://www.google.com/maps?q=207-209%20Boulevard%20de%20la%20R%C3%A9sistance%2C%20Niveau%203%2C%20Suite%205%2C%20Casabl",
-   "mapH": 400,
-   "overflowX": false,
-   "revealed": "true (3)",
-   "errors": []
   },
-  "avant-laptop-1366x600": {
-   "links": [
-    {
-     "t": "contact@novainteligencia.group",
-     "href": "mailto:contact@novainteligencia.group",
-     "target": ""
-    },
-    {
-     "t": "Itinéraire",
-     "href": "https://www.google.com/maps/dir/?api=1&destination=207-209%20Boulevard%20de%20la%20R%C3%A9sistance%2C%20Niveau%203%2C%20Suite%205%2C%20Casablanca%2C%20Maroc",
-     "target": "_blank"
-    },
-    {
-     "t": "Nous contacter",
-     "href": "/contact",
-     "target": ""
-    }
-   ],
-   "btns": [
-    {
-     "t": "Itinéraire",
-     "w": 150,
-     "h": 52,
-     "inside": true
-    },
-    {
-     "t": "Nous contacter",
-     "w": 171,
-     "h": 52,
-     "inside": true
-    }
-   ],
-   "iframes": 1,
-   "iframeSrc": "https://www.google.com/maps?q=207-209%20Boulevard%20de%20la%20R%C3%A9sistance%2C%20Niveau%203%2C%20Suite%205%2C%20Casabl",
-   "mapH": 400,
-   "overflowX": false,
-   "revealed": "true (3)",
-   "errors": []
+  "hover": {
+    "cardTransform": "matrix(1, 0, 0, 1, 0, -4)",
+    "mailColor": "rgb(7, 87, 200)",
+    "underline": "100% 1.5px"
   },
-  "avant-mobile-375x667": {
-   "links": [
-    {
-     "t": "contact@novainteligencia.group",
-     "href": "mailto:contact@novainteligencia.group",
-     "target": ""
-    },
-    {
-     "t": "Itinéraire",
-     "href": "https://www.google.com/maps/dir/?api=1&destination=207-209%20Boulevard%20de%20la%20R%C3%A9sistance%2C%20Niveau%203%2C%20Suite%205%2C%20Casablanca%2C%20Maroc",
-     "target": "_blank"
-    },
-    {
-     "t": "Nous contacter",
-     "href": "/contact",
-     "target": ""
-    }
-   ],
-   "btns": [
-    {
-     "t": "Itinéraire",
-     "w": 142,
-     "h": 52,
-     "inside": true
-    },
-    {
-     "t": "Nous contacter",
-     "w": 163,
-     "h": 52,
-     "inside": true
-    }
-   ],
-   "iframes": 1,
-   "iframeSrc": "https://www.google.com/maps?q=207-209%20Boulevard%20de%20la%20R%C3%A9sistance%2C%20Niveau%203%2C%20Suite%205%2C%20Casabl",
-   "mapH": 400,
-   "overflowX": false,
-   "revealed": "true (3)",
-   "errors": []
-  },
-  "apres-desktop-1440x900": {
-   "links": [
-    {
-     "t": "contact@novainteligencia.group",
-     "href": "mailto:contact@novainteligencia.group",
-     "target": ""
-    },
-    {
-     "t": "Itinéraire(Google Maps, nouvel onglet)",
-     "href": "https://www.google.com/maps/dir/?api=1&destination=207-209%20Boulevard%20de%20la%20R%C3%A9sistance%2C%20Niveau%203%2C%20Suite%205%2C%20Casablanca%2C%20Maroc",
-     "target": "_blank"
-    },
-    {
-     "t": "Nous contacter",
-     "href": "/contact",
-     "target": ""
-    },
-    {
-     "t": "Ouvrir dans Google Maps(nouvel onglet)",
-     "href": "https://www.google.com/maps/search/?api=1&query=207-209%20Boulevard%20de%20la%20R%C3%A9sistance%2C%20Niveau%203%2C%20Suite%205%2C%20Casablanca%2C%20Maroc",
-     "target": "_blank"
-    }
-   ],
-   "btns": [
-    {
-     "t": "Itinéraire(Google Ma",
-     "w": 150,
-     "h": 52,
-     "inside": true
-    },
-    {
-     "t": "Nous contacter",
-     "w": 194,
-     "h": 52,
-     "inside": true
-    }
-   ],
-   "iframes": 1,
-   "iframeSrc": "https://www.google.com/maps?q=207-209%20Boulevard%20de%20la%20R%C3%A9sistance%2C%20Niveau%203%2C%20Suite%205%2C%20Casabl",
-   "mapH": 440,
-   "overflowX": false,
-   "revealed": "true (7)",
-   "errors": []
-  },
-  "apres-laptop-1366x600": {
-   "links": [
-    {
-     "t": "contact@novainteligencia.group",
-     "href": "mailto:contact@novainteligencia.group",
-     "target": ""
-    },
-    {
-     "t": "Itinéraire(Google Maps, nouvel onglet)",
-     "href": "https://www.google.com/maps/dir/?api=1&destination=207-209%20Boulevard%20de%20la%20R%C3%A9sistance%2C%20Niveau%203%2C%20Suite%205%2C%20Casablanca%2C%20Maroc",
-     "target": "_blank"
-    },
-    {
-     "t": "Nous contacter",
-     "href": "/contact",
-     "target": ""
-    },
-    {
-     "t": "Ouvrir dans Google Maps(nouvel onglet)",
-     "href": "https://www.google.com/maps/search/?api=1&query=207-209%20Boulevard%20de%20la%20R%C3%A9sistance%2C%20Niveau%203%2C%20Suite%205%2C%20Casablanca%2C%20Maroc",
-     "target": "_blank"
-    }
-   ],
-   "btns": [
-    {
-     "t": "Itinéraire(Google Ma",
-     "w": 150,
-     "h": 52,
-     "inside": true
-    },
-    {
-     "t": "Nous contacter",
-     "w": 194,
-     "h": 52,
-     "inside": true
-    }
-   ],
-   "iframes": 1,
-   "iframeSrc": "https://www.google.com/maps?q=207-209%20Boulevard%20de%20la%20R%C3%A9sistance%2C%20Niveau%203%2C%20Suite%205%2C%20Casabl",
-   "mapH": 440,
-   "overflowX": false,
-   "revealed": "true (7)",
-   "errors": []
-  },
-  "apres-mobile-375x667": {
-   "links": [
-    {
-     "t": "contact@novainteligencia.group",
-     "href": "mailto:contact@novainteligencia.group",
-     "target": ""
-    },
-    {
-     "t": "Itinéraire(Google Maps, nouvel onglet)",
-     "href": "https://www.google.com/maps/dir/?api=1&destination=207-209%20Boulevard%20de%20la%20R%C3%A9sistance%2C%20Niveau%203%2C%20Suite%205%2C%20Casablanca%2C%20Maroc",
-     "target": "_blank"
-    },
-    {
-     "t": "Nous contacter",
-     "href": "/contact",
-     "target": ""
-    },
-    {
-     "t": "Ouvrir dans Google Maps(nouvel onglet)",
-     "href": "https://www.google.com/maps/search/?api=1&query=207-209%20Boulevard%20de%20la%20R%C3%A9sistance%2C%20Niveau%203%2C%20Suite%205%2C%20Casablanca%2C%20Maroc",
-     "target": "_blank"
-    }
-   ],
-   "btns": [
-    {
-     "t": "Itinéraire(Google Ma",
-     "w": 343,
-     "h": 52,
-     "inside": true
-    },
-    {
-     "t": "Nous contacter",
-     "w": 343,
-     "h": 52,
-     "inside": true
-    }
-   ],
-   "iframes": 1,
-   "iframeSrc": "https://www.google.com/maps?q=207-209%20Boulevard%20de%20la%20R%C3%A9sistance%2C%20Niveau%203%2C%20Suite%205%2C%20Casabl",
-   "mapH": 280,
-   "overflowX": false,
-   "revealed": "true (7)",
-   "errors": []
+  "reduced": {
+    "allVisible": true,
+    "mapTransform": "none"
   }
- },
- "hover": {
-  "cardTransform": "matrix(1, 0, 0, 1, 0, -4)",
-  "mailColor": "rgb(7, 87, 200)",
-  "underline": "100% 1.5px"
- },
- "reduced": {
-  "allVisible": true,
-  "mapTransform": "none"
- }
 }

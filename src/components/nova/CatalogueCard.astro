@@ -28,7 +28,13 @@ const levelLabel = lvl ? d.niveau.split('—')[1]?.trim() : undefined;
 const duree = hasPh(d.duree) ? undefined : d.duree;
 const modalites = hasPh(d.modalites) ? undefined : d.modalites;
 const photo = PHOTOS[formation.id] ?? { name: 'equipe-marketing', position: 'center' };
-const COLOR: Record<string, string> = { ia: '#111111', 'ia-metier': '#2563eb', parcours: '#111111', innovation: '#111111', junior: '#059669' };
+const COLOR: Record<string, string> = {
+  ia: '#111111',
+  'ia-metier': '#2563eb',
+  parcours: '#111111',
+  innovation: '#111111',
+  junior: '#059669',
+};
 const color = COLOR[d.categorie] ?? '#111111';
 ---
 
@@ -100,7 +106,15 @@ const color = COLOR[d.categorie] ?? '#111111';
       <div class="cat-foot">
         <p class="cat-price">
           <span class="cat-price-label">Tarif</span>
-          {kind === 'free' ? <span class="cat-price-free">Gratuit</span> : visible(price) && <span class:list={['cat-price-val', kind !== 'paid' && 'is-soft']} set:html={ph(price)} />}
+          {
+            kind === 'free' ? (
+              <span class="cat-price-free">Gratuit</span>
+            ) : (
+              visible(price) && (
+                <span class:list={['cat-price-val', kind !== 'paid' && 'is-soft']} set:html={ph(price)} />
+              )
+            )
+          }
         </p>
         <span class="cat-cta" aria-hidden="true">
           Découvrir
@@ -134,7 +148,9 @@ const color = COLOR[d.categorie] ?? '#111111';
   @media (hover: hover) and (pointer: fine) {
     .cat-card:hover .cat-inner {
       transform: translate(-4px, -4px);
-      box-shadow: 8px 8px 0 #e4f84a, 8px 8px 0 1px #111111;
+      box-shadow:
+        8px 8px 0 #e4f84a,
+        8px 8px 0 1px #111111;
     }
     .cat-card:hover .cat-cta {
       background: #e4f84a;
@@ -308,7 +324,9 @@ const color = COLOR[d.categorie] ?? '#111111';
     font-size: 0.85rem;
     font-weight: 700;
     color: #fff;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease;
   }
   .cat-cta :global(svg) {
     width: 1rem;

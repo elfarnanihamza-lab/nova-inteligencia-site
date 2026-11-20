@@ -54,23 +54,32 @@ const cards = SESSIONS.map((s) => {
         Prochaines sessions
         <span class="h-px w-8 bg-brand-gradient" aria-hidden="true"></span>
       </p>
-      <h2 id="sessions-title" class="mt-4 font-heading text-[2.1rem] font-bold leading-[1.08] tracking-[-0.03em] text-heading text-balance md:text-[3rem]">
+      <h2
+        id="sessions-title"
+        class="mt-4 font-heading text-[2.1rem] font-bold leading-[1.08] tracking-[-0.03em] text-heading text-balance md:text-[3rem]"
+      >
         Maîtrisez l'IA. <span class="text-gradient">Transformez votre métier.</span>
       </h2>
       <p class="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-muted">
-        Des formations concrètes pour intégrer l'intelligence artificielle dans votre activité et gagner en efficacité au quotidien.
+        Des formations concrètes pour intégrer l'intelligence artificielle dans votre activité et gagner en efficacité
+        au quotidien.
       </p>
     </header>
   </div>
 
   <div class="sessions-stage relative mt-12 md:mt-14" data-sessions>
-    <div class="sessions-viewport" data-sessions-viewport tabindex="0" aria-label="Prochaines sessions : faites défiler horizontalement">
+    <div
+      class="sessions-viewport"
+      data-sessions-viewport
+      tabindex="0"
+      aria-label="Prochaines sessions : faites défiler horizontalement"
+    >
       <ul class="sessions-track" role="list" data-sessions-track>
         {
           cards.map((c) => (
             <li class="sessions-slide">
               <article class="session-card" style={c.style} aria-labelledby={`session-${c.slug}`}>
-                <span class="session-topline" aria-hidden="true"></span>
+                <span class="session-topline" aria-hidden="true" />
                 <div class="session-media">
                   <Photo
                     name={c.photo}
@@ -83,7 +92,7 @@ const cards = SESSIONS.map((s) => {
                     class="h-full w-full"
                   />
                   <span class="session-badge">
-                    <span class="session-badge-dot" aria-hidden="true"></span>
+                    <span class="session-badge-dot" aria-hidden="true" />
                     {c.badge}
                   </span>
                   {c.free && <span class="session-free">Gratuit</span>}
@@ -95,10 +104,20 @@ const cards = SESSIONS.map((s) => {
                   )}
                 </div>
                 <div class="session-body">
-                  <h3 id={`session-${c.slug}`} class="line-clamp-3 text-[1.2rem] font-bold leading-snug tracking-[-0.01em] text-heading [overflow-wrap:anywhere]" dir="auto" title={c.title}>
+                  <h3
+                    id={`session-${c.slug}`}
+                    class="line-clamp-3 text-[1.2rem] font-bold leading-snug tracking-[-0.01em] text-heading [overflow-wrap:anywhere]"
+                    dir="auto"
+                    title={c.title}
+                  >
                     {c.title}
                   </h3>
-                  <p class="session-desc mt-2.5 text-[0.95rem] leading-relaxed text-muted [overflow-wrap:anywhere]" dir="auto">{c.resume}</p>
+                  <p
+                    class="session-desc mt-2.5 text-[0.95rem] leading-relaxed text-muted [overflow-wrap:anywhere]"
+                    dir="auto"
+                  >
+                    {c.resume}
+                  </p>
                   <dl class="session-facts">
                     <div>
                       <dt>
@@ -170,7 +189,12 @@ const cards = SESSIONS.map((s) => {
       <button type="button" class="sessions-arrow" data-sessions-prev aria-label="Formation précédente">
         <Icon name="tabler:chevron-left" aria-hidden="true" />
       </button>
-      <button type="button" class="sessions-arrow" data-sessions-toggle aria-label="Mettre en pause le défilement des formations">
+      <button
+        type="button"
+        class="sessions-arrow"
+        data-sessions-toggle
+        aria-label="Mettre en pause le défilement des formations"
+      >
         <Icon name="tabler:player-pause-filled" class="sessions-ico-pause" aria-hidden="true" />
         <Icon name="tabler:player-play-filled" class="sessions-ico-play" aria-hidden="true" />
       </button>
@@ -183,8 +207,13 @@ const cards = SESSIONS.map((s) => {
   <div class="relative mx-auto max-w-7xl px-4 pb-16 pt-6 sm:px-6 md:pb-24 lg:pb-28">
     <p class="text-center text-base text-muted">Vous cherchez une autre formation&nbsp;?</p>
     <p class="mt-1 flex flex-wrap items-center justify-center gap-x-6">
-      <a class="inline-flex min-h-11 items-center font-semibold text-ink underline underline-offset-4" href="/formations">Voir le catalogue complet</a>
-      <a class="inline-flex min-h-11 items-center font-semibold text-ink underline underline-offset-4" href="/contact">Être informé des prochaines sessions</a>
+      <a
+        class="inline-flex min-h-11 items-center font-semibold text-ink underline underline-offset-4"
+        href="/formations">Voir le catalogue complet</a
+      >
+      <a class="inline-flex min-h-11 items-center font-semibold text-ink underline underline-offset-4" href="/contact"
+        >Être informé des prochaines sessions</a
+      >
     </p>
   </div>
 </section>
@@ -261,7 +290,9 @@ const cards = SESSIONS.map((s) => {
     border: 1px solid #e3eaf5;
     border-radius: 1.5rem;
     background: #fff;
-    box-shadow: 0 1px 0 rgb(17 17 17 / 3%), 0 18px 40px -30px rgb(17 17 17 / 45%);
+    box-shadow:
+      0 1px 0 rgb(17 17 17 / 3%),
+      0 18px 40px -30px rgb(17 17 17 / 45%);
     transition:
       transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
       box-shadow 0.45s ease,
@@ -276,15 +307,19 @@ const cards = SESSIONS.map((s) => {
   }
   .session-card:focus-within {
     border-color: #d5e0f0;
-    box-shadow: 0 1px 0 rgb(17 17 17 / 3%), 0 34px 60px -34px rgb(17 17 17 / 42%);
+    box-shadow:
+      0 1px 0 rgb(17 17 17 / 3%),
+      0 34px 60px -34px rgb(17 17 17 / 42%);
   }
 
   @media (hover: hover) and (pointer: fine) {
-  .session-card:hover {
-    border-color: #d5e0f0;
-    box-shadow: 0 1px 0 rgb(17 17 17 / 3%), 0 34px 60px -34px rgb(17 17 17 / 42%);
+    .session-card:hover {
+      border-color: #d5e0f0;
+      box-shadow:
+        0 1px 0 rgb(17 17 17 / 3%),
+        0 34px 60px -34px rgb(17 17 17 / 42%);
+    }
   }
-}
   .session-media {
     position: relative;
     aspect-ratio: 3 / 2;
@@ -442,16 +477,16 @@ const cards = SESSIONS.map((s) => {
     transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   }
   @media (hover: hover) and (pointer: fine) {
-  .session-notify:hover {
-    background: #f1f5fb;
-    color: #111111;
+    .session-notify:hover {
+      background: #f1f5fb;
+      color: #111111;
+    }
   }
-}
   @media (hover: hover) and (pointer: fine) {
-  .session-notify:hover :global(svg) {
-    transform: rotate(-14deg);
+    .session-notify:hover :global(svg) {
+      transform: rotate(-14deg);
+    }
   }
-}
   .session-notify:active,
   .sessions-arrow:active {
     transform: scale(0.97);
@@ -491,12 +526,12 @@ const cards = SESSIONS.map((s) => {
     height: 1.1rem;
   }
   @media (hover: hover) and (pointer: fine) {
-  .sessions-arrow:hover {
-    transform: translateY(-2px);
-    border-color: #b8cc1a;
-    background: #f5fbff;
+    .sessions-arrow:hover {
+      transform: translateY(-2px);
+      border-color: #b8cc1a;
+      background: #f5fbff;
+    }
   }
-}
   .sessions-arrow:focus-visible {
     outline: 3px solid rgb(17 17 17 / 40%);
     outline-offset: 2px;
@@ -556,7 +591,10 @@ const cards = SESSIONS.map((s) => {
     controls.hidden = false;
 
     // Copies pour une boucle continue : inertes et masquées aux technologies d'assistance.
-    let setW = 0, step = 0, center = 0, clones: HTMLElement[] = [];
+    let setW = 0,
+      step = 0,
+      center = 0;
+    const clones: HTMLElement[] = [];
     let mode: 'flow' | 'step' = 'flow';
     const measure = () => {
       const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
@@ -581,8 +619,12 @@ const cards = SESSIONS.map((s) => {
 
     let x = 0; // décalage courant (px), ramené dans [0, setW[
     let hold = 0; // temps passé sur la carte courante (mode carte par carte)
-    let raf = 0, last = 0, running = false;
-    let userPaused = false, visible = false, focused = false;
+    let raf = 0,
+      last = 0,
+      running = false;
+    let userPaused = false,
+      visible = false,
+      focused = false;
     let nudge: { from: number; to: number; t0: number } | null = null;
     let drag: { id: number; x0: number; y0: number; start: number; active: boolean } | null = null;
     let resumeAt = 0;
@@ -625,7 +667,8 @@ const cards = SESSIONS.map((s) => {
     // Flèches : glissement d'une carte (aligné sur la grille des cartes), puis reprise du défilement
     const go = (dir: 1 | -1) => {
       const base = nudge ? nudge.to : x;
-      const target = dir === 1 ? (Math.floor(base / step + 0.001) + 1) * step : (Math.ceil(base / step - 0.001) - 1) * step;
+      const target =
+        dir === 1 ? (Math.floor(base / step + 0.001) + 1) * step : (Math.ceil(base / step - 0.001) - 1) * step;
       nudge = { from: x, to: target, t0: performance.now() };
       hold = 0;
       resumeAt = performance.now() + 2500;
@@ -636,7 +679,10 @@ const cards = SESSIONS.map((s) => {
     toggle.addEventListener('click', () => {
       userPaused = !userPaused;
       stage.classList.toggle('is-user-paused', userPaused);
-      toggle.setAttribute('aria-label', userPaused ? 'Reprendre le défilement des formations' : 'Mettre en pause le défilement des formations');
+      toggle.setAttribute(
+        'aria-label',
+        userPaused ? 'Reprendre le défilement des formations' : 'Mettre en pause le défilement des formations'
+      );
     });
     // le focus clavier n'est jamais déplacé ; le défilement s'arrête tant qu'il se trouve dans la zone
     stage.addEventListener('focusin', () => (focused = true));
@@ -652,7 +698,8 @@ const cards = SESSIONS.map((s) => {
     });
     viewport.addEventListener('pointermove', (e) => {
       if (!drag || e.pointerId !== drag.id) return;
-      const dx = e.clientX - drag.x0, dy = e.clientY - drag.y0;
+      const dx = e.clientX - drag.x0,
+        dy = e.clientY - drag.y0;
       if (!drag.active) {
         if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 6) {
           drag = null; // geste vertical : on laisse la page défiler
@@ -690,7 +737,8 @@ const cards = SESSIONS.map((s) => {
     const io = new IntersectionObserver(
       ([e]) => {
         visible = e.isIntersecting;
-        visible ? start() : stop();
+        if (visible) start();
+        else stop();
       },
       { threshold: 0.1 }
     );

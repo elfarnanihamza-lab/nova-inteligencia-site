@@ -15,19 +15,20 @@ npm run preview    # prévisualise le build
 
 ## 2. Où modifier quoi ?
 
-| Je veux modifier… | Fichier |
-|---|---|
-| Téléphone, WhatsApp, horaires, adresse, réseaux sociaux, webhook du formulaire, mentions légales | `src/site.config.ts` (**un seul fichier**) |
-| Nom du site, URL, titre et description SEO par défaut, langue | `src/config.yaml` |
-| Couleurs et polices | `src/components/CustomStyles.astro` et `src/assets/styles/tailwind.css` (voir « Direction artistique ») |
-| Menu et pied de page | `src/navigation.ts` |
-| Textes de l'accueil, À propos, Entreprises, Contact | `src/pages/index.astro`, `a-propos.astro`, `entreprises.astro`, `contact.astro` |
-| Logo | `src/assets/brand/` (fichiers générés depuis le logo officiel) et `src/components/Logo.astro` ; favicon dans `src/assets/favicons/` et `public/` |
-| Image de partage (réseaux sociaux) | `src/assets/images/default.png` (1200×630) |
+| Je veux modifier…                                                                                | Fichier                                                                                                                                          |
+| ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Téléphone, WhatsApp, horaires, adresse, réseaux sociaux, webhook du formulaire, mentions légales | `src/site.config.ts` (**un seul fichier**)                                                                                                       |
+| Nom du site, URL, titre et description SEO par défaut, langue                                    | `src/config.yaml`                                                                                                                                |
+| Couleurs et polices                                                                              | `src/components/CustomStyles.astro` et `src/assets/styles/tailwind.css` (voir « Direction artistique »)                                          |
+| Menu et pied de page                                                                             | `src/navigation.ts`                                                                                                                              |
+| Textes de l'accueil, À propos, Entreprises, Contact                                              | `src/pages/index.astro`, `a-propos.astro`, `entreprises.astro`, `contact.astro`                                                                  |
+| Logo                                                                                             | `src/assets/brand/` (fichiers générés depuis le logo officiel) et `src/components/Logo.astro` ; favicon dans `src/assets/favicons/` et `public/` |
+| Image de partage (réseaux sociaux)                                                               | `src/assets/images/default.png` (1200×630)                                                                                                       |
 
 Les textes « **[À COMPLÉTER]** » et « **[Proposition – à valider]** » sont masqués sur le site final ; ils s'affichent surlignés en jaune en mode relecture (voir plus bas). Recherchez ces deux chaînes dans le code pour les retrouver (`À COMPLÉTER`).
 
 ### Contenus provisoires (« [À COMPLÉTER] »)
+
 Par défaut, **aucun texte provisoire n'est affiché** : les champs inconnus des fiches, le téléphone, les horaires, etc. sont simplement masqués.
 Pour les voir surlignés en jaune pendant une relecture :
 
@@ -37,12 +38,15 @@ Pour les voir surlignés en jaune pendant une relecture :
 Le réglage se trouve dans `src/site.config.ts` (`SHOW_PLACEHOLDERS`).
 
 ### Crédibilité : ce qui n'est affiché qu'une fois vérifié
+
 Dans `src/site.config.ts` :
+
 - `affiliationsVerified` (false) : les affiliations AAAI, AAIA, AMIIA ne sont affichées nulle part (ni dans les données structurées) tant qu'elles ne sont pas prouvées.
 - `SPHERES` : seules les sphères `verified: true` (adossées à des formations du catalogue) apparaissent sur l'accueil. Expertise linguistique, accompagnement académique et conseil légal restent masqués en attendant la confirmation de Nova.
 - La section « Témoignages » n'apparaît qu'avec de vrais avis (nom, profil, accord écrit) ; les exemples de mise en page ne s'affichent qu'en développement local.
 
 ### Direction artistique et animations
+
 - Palette : bleu nuit `#0B1F3A`, bleu électrique `#2D6BFF`, violet `#7B3FF2`, blanc, blanc cassé `#F5F7FB`, gris clair `#E8EDF5`, gris texte `#68758A` (légèrement assombri en `#637086` pour le contraste AA). Aucun orange.
 - Variables : `src/components/CustomStyles.astro` ; utilitaires et boutons : `src/assets/styles/tailwind.css`.
 - Réseau neuronal animé du héro : `src/components/nova/NeuralNetwork.astro` (Canvas 2D, sans dépendance, démarrage différé, 30 i/s sur mobile, pause hors écran, image fixe si l'utilisateur a demandé moins d'animations).
@@ -50,9 +54,11 @@ Dans `src/site.config.ts` :
 - Logo : le logo officiel est utilisé avec ses couleurs d'origine (seule exception à la règle « pas d'orange ») ; sur fond sombre, seul le texte marine passe en blanc. `npm run brand` régénère ces fichiers.
 
 ### Activer le bouton WhatsApp
+
 Renseignez la variable d'environnement `PUBLIC_WHATSAPP_NUMBER` (fichier `.env` en local, réglages de l'hébergeur en production), au format international sans `+` ni espaces. Tant qu'elle est vide, le bouton flottant et les liens WhatsApp sont masqués.
 
 ### Brancher le formulaire (webhook / CRM)
+
 Dans `src/site.config.ts`, renseignez `form.endpoint` avec l'URL d'un webhook (Make, Zapier, n8n, Formspree, Web3Forms, API de votre CRM…). Le formulaire y envoie un `POST` JSON : `prenom, nom, email, telephone, entreprise, sujet, formation, message, page, date, source`. Sans endpoint, le formulaire ouvre le client mail du visiteur (solution de secours).
 
 ## 3. Ajouter ou modifier une formation (sans toucher au code)
@@ -65,27 +71,27 @@ Chaque formation est un fichier Markdown dans `src/data/formations/`. Pour en aj
 
 ```yaml
 ---
-title: "Nom de la formation"
-categorie: ia            # ia | ia-metier | parcours | innovation | junior
-niveau: "Niveau 1 — Fondations"
-niveauNum: 1             # 1, 2 ou 3 (filtre du catalogue), facultatif
-prix: 1500               # 0 = gratuit ; supprimer la ligne si inconnu
-devise: MAD              # le tarif n'est publié qu'en dirhams (MAD) ; sans MAD, « Tarif sur demande » s'affiche
-resume: "Description courte."
-objectifs: ["Objectif 1", "Objectif 2"]
+title: 'Nom de la formation'
+categorie: ia # ia | ia-metier | parcours | innovation | junior
+niveau: 'Niveau 1 — Fondations'
+niveauNum: 1 # 1, 2 ou 3 (filtre du catalogue), facultatif
+prix: 1500 # 0 = gratuit ; supprimer la ligne si inconnu
+devise: MAD # le tarif n'est publié qu'en dirhams (MAD) ; sans MAD, « Tarif sur demande » s'affiche
+resume: 'Description courte.'
+objectifs: ['Objectif 1', 'Objectif 2']
 programme:
-  - titre: "Module 1"
-    points: ["Point A", "Point B"]
+  - titre: 'Module 1'
+    points: ['Point A', 'Point B']
 public: "À qui s'adresse la formation"
-duree: "2 jours (14 h)"
-modalites: "Présentiel à Casablanca"
-prerequis: "Aucun"
-formateur: "Nom du formateur"
-prochaineSession: "12 janvier 2027"
-featured: true           # true = affichée sur l'accueil
-order: 5                 # ordre d'affichage
-seoTitle: "Titre Google (≤ 60 caractères)"
-seoDescription: "Description Google (≤ 155 caractères)"
+duree: '2 jours (14 h)'
+modalites: 'Présentiel à Casablanca'
+prerequis: 'Aucun'
+formateur: 'Nom du formateur'
+prochaineSession: '12 janvier 2027'
+featured: true # true = affichée sur l'accueil
+order: 5 # ordre d'affichage
+seoTitle: 'Titre Google (≤ 60 caractères)'
+seoDescription: 'Description Google (≤ 155 caractères)'
 ---
 ```
 
@@ -111,14 +117,14 @@ Un article = un fichier Markdown dans `src/data/post/` (titre, `excerpt`, `categ
 
 À définir dans un fichier `.env` (voir `.env.example`) ou dans les réglages de l'hébergeur (Vercel, Netlify…).
 
-| Variable | Rôle | Par défaut |
-|---|---|---|
-| `PUBLIC_FORM_WEBHOOK` | URL qui reçoit les formulaires (contact, inscription, devis, newsletter) en JSON : Make, Zapier, n8n, Formspree, CRM… | vide : ouverture de la messagerie du visiteur |
-| `PUBLIC_DEMO_MODE` | `true` : **mode démonstration** : `noindex, nofollow` sur toutes les pages, pas de sitemap, `robots.txt` sans `Disallow`, formulaires désactivés tant qu'aucun webhook n'est configuré. Ce n'est pas une protection d'accès | `false` |
-| `PUBLIC_SHOW_PLACEHOLDERS` | `true` : affiche les contenus provisoires « [À COMPLÉTER] » surlignés | `false` |
-| `PUBLIC_WHATSAPP_NUMBER` | numéro WhatsApp au format international sans `+` (vide : bouton masqué) | vide |
-| `SITE_URL` | (build, non publique) URL publique du site pour les liens canoniques, images de partage et sitemap | `site` de `src/config.yaml` |
-| `PUBLIC_FOOTER_VARIANT` | `nuit` (bleu nuit → bleu numérique) ou `indigo` (bleu électrique profond) | `nuit` |
+| Variable                   | Rôle                                                                                                                                                                                                                        | Par défaut                                    |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
+| `PUBLIC_FORM_WEBHOOK`      | URL qui reçoit les formulaires (contact, inscription, devis, newsletter) en JSON : Make, Zapier, n8n, Formspree, CRM…                                                                                                       | vide : ouverture de la messagerie du visiteur |
+| `PUBLIC_DEMO_MODE`         | `true` : **mode démonstration** : `noindex, nofollow` sur toutes les pages, pas de sitemap, `robots.txt` sans `Disallow`, formulaires désactivés tant qu'aucun webhook n'est configuré. Ce n'est pas une protection d'accès | `false`                                       |
+| `PUBLIC_SHOW_PLACEHOLDERS` | `true` : affiche les contenus provisoires « [À COMPLÉTER] » surlignés                                                                                                                                                       | `false`                                       |
+| `PUBLIC_WHATSAPP_NUMBER`   | numéro WhatsApp au format international sans `+` (vide : bouton masqué)                                                                                                                                                     | vide                                          |
+| `SITE_URL`                 | (build, non publique) URL publique du site pour les liens canoniques, images de partage et sitemap                                                                                                                          | `site` de `src/config.yaml`                   |
+| `PUBLIC_FOOTER_VARIANT`    | `nuit` (bleu nuit → bleu numérique) ou `indigo` (bleu électrique profond)                                                                                                                                                   | `nuit`                                        |
 
 Contenu JSON envoyé au webhook : `type` (contact, inscription, newsletter), `nom`, `telephone` (format +212…), `email`, `ville`, `profil`, `formation` (identifiant), `formationTitre`, `message`, `consentement`, `page`, `date`, `source`.
 
@@ -131,12 +137,13 @@ Carrousel : défilement continu (une seule boucle `requestAnimationFrame`, propr
 ## Effets visuels (réutilisables)
 
 Attributs à poser sur n'importe quel élément :
+
 - `data-reveal` (+ `style="--reveal-delay:120ms"`) : apparition au défilement ;
 - `class="spotlight" data-spotlight` : bordure lumineuse qui suit le curseur ; ajouter `class="tilt" data-tilt` pour l'inclinaison 3D (souris uniquement) ;
 - `data-count="12"` : compteur animé ;
 - `decode="mot"` sur le composant `Section` : mot-clé du titre « décodé » à l'apparition (à réserver à 2 ou 3 titres) ;
 - `data-glow` sur une section sombre : halo lumineux qui suit la souris.
-Tout est désactivé si l'utilisateur a demandé moins d'animations (`prefers-reduced-motion`).
+  Tout est désactivé si l'utilisateur a demandé moins d'animations (`prefers-reduced-motion`).
 
 ## SEO : outils
 
@@ -149,20 +156,23 @@ Tout est désactivé si l'utilisateur a demandé moins d'animations (`prefers-re
 
 Le build produit un site statique dans `dist/`.
 
-**Vercel** : importez le dépôt Git sur vercel.com → framework « Astro » détecté → *Build command* `npm run build`, *Output* `dist`. Ajoutez votre domaine dans *Settings → Domains*. Procédure complète de démonstration (dépôt privé, variables, mode démo sans indexation) : `docs/deploiement-vercel.md` ; tests après mise en ligne : `deployment-checklist.md`.
+**Vercel** : importez le dépôt Git sur vercel.com → framework « Astro » détecté → _Build command_ `npm run build`, _Output_ `dist`. Ajoutez votre domaine dans _Settings → Domains_. Procédure complète de démonstration (dépôt privé, variables, mode démo sans indexation) : `docs/deploiement-vercel.md` ; tests après mise en ligne : `deployment-checklist.md`.
 
-**Netlify** : « Add new site » → dépôt Git → *Build command* `npm run build`, *Publish directory* `dist` (le fichier `netlify.toml` est déjà fourni).
+**Netlify** : « Add new site » → dépôt Git → _Build command_ `npm run build`, _Publish directory_ `dist` (le fichier `netlify.toml` est déjà fourni).
 
 **VPS Hostinger** :
+
 ```bash
 # sur le serveur (Ubuntu) : installer Node 22 et Nginx, puis
 git clone <votre-dépôt> nova-site && cd nova-site
 npm install && npm run build
 sudo cp -r dist/* /var/www/nova/
 ```
+
 Configurez Nginx pour servir `/var/www/nova` (exemple dans `nginx/`), puis activez HTTPS avec `sudo certbot --nginx -d votre-domaine.ma`. Alternative sans Node sur le serveur : exécutez `npm run build` sur votre PC et envoyez le contenu de `dist/` par SFTP dans `public_html`.
 
 Après chaque modification de contenu : relancer `npm run build` et redéployer (automatique avec Vercel/Netlify à chaque `git push`).
 
 ## 7. Contenu restant à fournir
+
 Voir `questions-client.md` (liste à envoyer à Nova) et `content-inventory.md` (inventaire du site d'origine).

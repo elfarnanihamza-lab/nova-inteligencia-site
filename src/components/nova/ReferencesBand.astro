@@ -22,22 +22,37 @@ const logos = { amiia, ministere, aaai, aaia, novaNm } as const;
       <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 md:py-16">
         <div class="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p class="inline-block bg-[#e4f84a] px-2 py-1 text-xs font-bold uppercase tracking-[0.14em] text-[#111111]">Références</p>
-            <h2 id="refs-title" class="mt-4 font-heading text-3xl font-bold leading-tight tracking-[-0.03em] md:text-5xl">{REFERENCES.title}</h2>
+            <p class="inline-block bg-[#e4f84a] px-2 py-1 text-xs font-bold uppercase tracking-[0.14em] text-[#111111]">
+              Références
+            </p>
+            <h2
+              id="refs-title"
+              class="mt-4 font-heading text-3xl font-bold leading-tight tracking-[-0.03em] md:text-5xl"
+            >
+              {REFERENCES.title}
+            </h2>
           </div>
         </div>
-        <ul class="mt-10 grid grid-cols-2 overflow-hidden rounded-md border-l border-t border-white/20 md:grid-cols-3 lg:grid-cols-5" role="list">
-          {
-            REFERENCES.items.map((r) => {
-              const src = logos[r.logo as keyof typeof logos];
-              return (
-                <li class="ref-cell flex min-h-40 flex-col items-center justify-center gap-4 border-b border-r border-white/20 p-6 text-center max-md:last:col-span-2">
-                  <Image src={src} alt={r.name} height={80} width={Math.round(80 * (src.width / src.height))} loading="lazy" class="ref-logo h-20 w-auto max-w-full object-contain" />
-                  <span class="text-xs leading-snug text-[#e5e5df]">{r.name}</span>
-                </li>
-              );
-            })
-          }
+        <ul
+          class="mt-10 grid grid-cols-2 overflow-hidden rounded-md border-l border-t border-white/20 md:grid-cols-3 lg:grid-cols-5"
+          role="list"
+        >
+          {REFERENCES.items.map((r) => {
+            const src = logos[r.logo as keyof typeof logos];
+            return (
+              <li class="ref-cell flex min-h-40 flex-col items-center justify-center gap-4 border-b border-r border-white/20 p-6 text-center max-md:last:col-span-2">
+                <Image
+                  src={src}
+                  alt={r.name}
+                  height={80}
+                  width={Math.round(80 * (src.width / src.height))}
+                  loading="lazy"
+                  class="ref-logo h-20 w-auto max-w-full object-contain"
+                />
+                <span class="text-xs leading-snug text-[#e5e5df]">{r.name}</span>
+              </li>
+            );
+          })}
         </ul>
       </div>
     </section>
@@ -47,7 +62,9 @@ const logos = { amiia, ministere, aaai, aaia, novaNm } as const;
 <style>
   .ref-logo {
     opacity: 0.92;
-    transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.23, 1, 0.32, 1);
+    transition:
+      opacity 0.25s ease,
+      transform 0.25s cubic-bezier(0.23, 1, 0.32, 1);
   }
   @media (hover: hover) and (pointer: fine) {
     .ref-cell:hover .ref-logo {

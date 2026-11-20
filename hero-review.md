@@ -4,11 +4,11 @@ Branche locale `feat/nova-site` · **aucun commit, aucun push, aucun déploiemen
 
 ## 1. État de départ et sauvegardes
 
-| Repère | Contenu |
-|---|---|
-| Étiquette `sauvegarde-avant-hero` (commit `1a9974e`) | Site avant toute refonte du Hero (arbre propre à ce moment-là) |
-| Remise Git `stash@{0}` | « Hero v1 (Canvas 2D) non validé » : première refonte (12 fichiers), conservée intacte |
-| `screenshots/hero-2026/v1-canvas2d/` | Captures de la v1, pour comparaison |
+| Repère                                               | Contenu                                                                                |
+| ---------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| Étiquette `sauvegarde-avant-hero` (commit `1a9974e`) | Site avant toute refonte du Hero (arbre propre à ce moment-là)                         |
+| Remise Git `stash@{0}`                               | « Hero v1 (Canvas 2D) non validé » : première refonte (12 fichiers), conservée intacte |
+| `screenshots/hero-2026/v1-canvas2d/`                 | Captures de la v1, pour comparaison                                                    |
 
 ## 2. Diagnostic : pourquoi la v1 était trop simple
 
@@ -28,11 +28,11 @@ Branche locale `feat/nova-site` · **aucun commit, aucun push, aucun déploiemen
 
 ## 4. H1 : trois propositions
 
-| | Titre | Sous-titre proposé | Bénéfice commercial |
-|---|---|---|---|
-| **A (en place)** | « L'intelligence artificielle, maîtrisée. » | Des formations concrètes en intelligence artificielle, en automatisation et en compétences numériques : de vos premiers prompts aux agents IA et aux workflows professionnels. | Promesse d'expertise, positionnement haut de gamme, mot-clé « intelligence artificielle » dans le H1 |
-| B | « Formez-vous à l'IA. Prenez une longueur d'avance. » | Trois niveaux de progression, du premier prompt aux workflows professionnels, et des parcours IA appliqués à votre métier. | Orienté action et avantage concurrentiel, invite directement à l'inscription |
-| C | « Transformez votre potentiel grâce à l'IA. » | Des formations en intelligence artificielle, en automatisation et en compétences numériques, pour les professionnels, les entreprises et les porteurs de projet. | Aspirationnel, cohérent avec la signature « Transformer » du logo |
+|                  | Titre                                                 | Sous-titre proposé                                                                                                                                                             | Bénéfice commercial                                                                                  |
+| ---------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
+| **A (en place)** | « L'intelligence artificielle, maîtrisée. »           | Des formations concrètes en intelligence artificielle, en automatisation et en compétences numériques : de vos premiers prompts aux agents IA et aux workflows professionnels. | Promesse d'expertise, positionnement haut de gamme, mot-clé « intelligence artificielle » dans le H1 |
+| B                | « Formez-vous à l'IA. Prenez une longueur d'avance. » | Trois niveaux de progression, du premier prompt aux workflows professionnels, et des parcours IA appliqués à votre métier.                                                     | Orienté action et avantage concurrentiel, invite directement à l'inscription                         |
+| C                | « Transformez votre potentiel grâce à l'IA. »         | Des formations en intelligence artificielle, en automatisation et en compétences numériques, pour les professionnels, les entreprises et les porteurs de projet.               | Aspirationnel, cohérent avec la signature « Transformer » du logo                                    |
 
 **Recommandation : A.** Il est le plus court (3 lignes qui tiennent à 1366 × 600), contient le mot-clé principal en toutes lettres et porte le registre premium voulu. L'effet de « décodage » sur « maîtrisée. » renforce le message. B est l'alternative si la priorité devient la conversion directe : il est plus long (deux phrases) et utilise l'abréviation « IA ». C est plus générique et moins différenciant.
 
@@ -50,11 +50,11 @@ Branche locale `feat/nova-site` · **aucun commit, aucun push, aucun déploiemen
 
 ## 6. Fichiers modifiés
 
-| Fichier | Nature |
-|---|---|
-| `src/components/nova/hero-gl.ts` | **Nouveau** : moteur WebGL |
-| `src/components/nova/HeroScene.astro` | **Nouveau** (remplace la v1 non commitée) : canevas, styles de la scène et des modules, chargement différé |
-| `src/pages/index.astro` | Section Hero uniquement (et l'import correspondant) : badge, H1, sous-titre, CTA, zone du noyau, modules, décor de repli |
+| Fichier                               | Nature                                                                                                                   |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `src/components/nova/hero-gl.ts`      | **Nouveau** : moteur WebGL                                                                                               |
+| `src/components/nova/HeroScene.astro` | **Nouveau** (remplace la v1 non commitée) : canevas, styles de la scène et des modules, chargement différé               |
+| `src/pages/index.astro`               | Section Hero uniquement (et l'import correspondant) : badge, H1, sous-titre, CTA, zone du noyau, modules, décor de repli |
 
 Composants inchangés : `NeuralNetwork.astro` (toujours utilisé par les bandeaux des pages internes et la 404), `TechGrid`, `Fx`, `Motion`.
 
@@ -62,14 +62,14 @@ Composants inchangés : `NeuralNetwork.astro` (toujours utilisé par les bandeau
 
 ## 7. Tests effectués (serveur local `astro preview`)
 
-| Contrôle | 1366 × 600 | 1280 × 720 | 1440 × 900 | 375 × 667 |
-|---|---|---|---|---|
-| H1 et deux CTA visibles sans défilement | ✅ (CTA à 551 px) | ✅ (585 px) | ✅ (645 px) | ✅ (558 px) |
-| Débordement horizontal | aucun | aucun | aucun | aucun |
-| Modules sur le texte | non | non | non | non |
-| Noyau sur le texte | non (colonne séparée) | non | non | non (sous les CTA) |
-| WebGL actif | oui | oui | oui | oui |
-| Erreurs JavaScript / console | aucune | aucune | aucune | aucune |
+| Contrôle                                | 1366 × 600            | 1280 × 720  | 1440 × 900  | 375 × 667          |
+| --------------------------------------- | --------------------- | ----------- | ----------- | ------------------ |
+| H1 et deux CTA visibles sans défilement | ✅ (CTA à 551 px)     | ✅ (585 px) | ✅ (645 px) | ✅ (558 px)        |
+| Débordement horizontal                  | aucun                 | aucun       | aucun       | aucun              |
+| Modules sur le texte                    | non                   | non         | non         | non                |
+| Noyau sur le texte                      | non (colonne séparée) | non         | non         | non (sous les CTA) |
+| WebGL actif                             | oui                   | oui         | oui         | oui                |
+| Erreurs JavaScript / console            | aucune                | aucune      | aucune      | aucune             |
 
 - H1 unique, texte HTML réel : « L'intelligence artificielle, maîtrisée. » (espaces vérifiés dans le HTML final).
 - CTA : « Voir les formations » → `/formations`, « Nous contacter » → `/contact`. Survol : élévation de 2 px, dégradé qui glisse, icône décalée de 3 px. Retour visuel au clic.
@@ -80,17 +80,17 @@ Composants inchangés : `NeuralNetwork.astro` (toujours utilisé par les bandeau
 
 La machine de test est bruitée (antivirus, variations de ±8 points). Pour comparer honnêtement, les deux versions ont été mesurées en alternance, 5 passes chacune, et ce sont les médianes qui sont retenues. « Bonnes pratiques » est plafonné à 81 par un script injecté par l'antivirus Kaspersky du poste, sans lien avec le site.
 
-| Version | Performance | TBT | LCP | CLS | Accessibilité | SEO |
-|---|---|---|---|---|---|---|
-| Avant (commit `1a9974e`) | 90 | 177 ms | 2,52 s | 0 | 100 | 100 |
-| Hero v2, première version | 85 | 306 ms | 2,66 s | 0 | 100 | 100 |
+| Version                   | Performance | TBT    | LCP    | CLS | Accessibilité | SEO |
+| ------------------------- | ----------- | ------ | ------ | --- | ------------- | --- |
+| Avant (commit `1a9974e`)  | 90          | 177 ms | 2,52 s | 0   | 100           | 100 |
+| Hero v2, première version | 85          | 306 ms | 2,66 s | 0   | 100           | 100 |
 
 Seconde fenêtre de mesure, avec la version livrée (compilation non bloquante, sol précalculé, démarrage différé sur mobile). La machine était plus chargée, d'où un « avant » plus bas :
 
-| Version | Performance (5 passes) | TBT | LCP | Accessibilité | SEO |
-|---|---|---|---|---|---|
-| Avant (commit `1a9974e`) | **83** (83, 83, 83, 84, 85) | 390 ms | 2,52 s | 100 | 100 |
-| Hero v2 livré | **81** (84, 81, 86, 79, 62) | 445 ms | 2,66 s | 100 | 100 |
+| Version                  | Performance (5 passes)      | TBT    | LCP    | Accessibilité | SEO |
+| ------------------------ | --------------------------- | ------ | ------ | ------------- | --- |
+| Avant (commit `1a9974e`) | **83** (83, 83, 83, 84, 85) | 390 ms | 2,52 s | 100           | 100 |
+| Hero v2 livré            | **81** (84, 81, 86, 79, 62) | 445 ms | 2,66 s | 100           | 100 |
 
 Lecture : le nouveau Hero coûte **environ 2 à 5 points** de performance mobile simulée par rapport au Hero d'origine, surtout en temps de blocage (TBT) au démarrage de la scène. Une passe isolée à 62 reflète une perturbation de la machine (TBT de 2 s, absente des autres passes). Accessibilité et SEO restent à 100, CLS à 0.
 

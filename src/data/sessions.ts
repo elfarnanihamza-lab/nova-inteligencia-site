@@ -43,10 +43,46 @@ export interface SessionEntry {
 }
 
 export const SESSIONS: SessionEntry[] = [
-  { slug: 'level-1-ai-foundations', badge: "Fondamentaux de l'IA", photo: 'espace-etude', position: '70% 40%', accent: 'orange' },
-  { slug: 'level-2-ai-productivity-automation', badge: 'Productivité & agents IA', photo: 'apprenant-portable', position: '30% 50%', accent: 'bleu' },
-  { slug: 'level-3-ai-professional-workflows', badge: 'Automatisation', photo: 'atelier-formation', position: '60% 40%', accent: 'turquoise' },
-  { slug: 'level-1-fondamentaux-ia-metier', badge: 'IA métier', photo: 'equipe-marketing', position: '40% 40%', accent: 'indigo' },
-  { slug: 'nova-digital-master-program', badge: 'Parcours digital', photo: 'atelier-marketing', position: '55% 50%', accent: 'rouge' },
-  { slug: 'ia-junior-academy', badge: 'Junior · 5–17 ans', photo: 'equipe-marketing', position: '60% 50%', accent: 'vert' },
+  {
+    slug: 'level-1-ai-foundations',
+    badge: "Fondamentaux de l'IA",
+    photo: 'espace-etude',
+    position: '70% 40%',
+    accent: 'orange',
+  },
+  {
+    slug: 'level-2-ai-productivity-automation',
+    badge: 'Productivité & agents IA',
+    photo: 'apprenant-portable',
+    position: '30% 50%',
+    accent: 'bleu',
+  },
+  {
+    slug: 'level-3-ai-professional-workflows',
+    badge: 'Automatisation',
+    photo: 'atelier-formation',
+    position: '60% 40%',
+    accent: 'turquoise',
+  },
+  {
+    slug: 'level-1-fondamentaux-ia-metier',
+    badge: 'IA métier',
+    photo: 'equipe-marketing',
+    position: '40% 40%',
+    accent: 'indigo',
+  },
+  {
+    slug: 'nova-digital-master-program',
+    badge: 'Parcours digital',
+    photo: 'atelier-marketing',
+    position: '55% 50%',
+    accent: 'rouge',
+  },
+  {
+    slug: 'ia-junior-academy',
+    badge: 'Junior · 5–17 ans',
+    photo: 'equipe-marketing',
+    position: '60% 50%',
+    accent: 'vert',
+  },
 ];
