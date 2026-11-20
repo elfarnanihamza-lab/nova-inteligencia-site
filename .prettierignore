@@ -2,3 +2,5 @@ dist
 node_modules
 .github
 .changeset
+# Configuration locale des outils (non liée au site)
+.claude/
