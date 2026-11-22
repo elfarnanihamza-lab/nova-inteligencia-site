@@ -58,7 +58,7 @@ export default defineConfig({
       ? []
       : [
           sitemap({
-            filter: (page) => !/\/(mentions-legales|politique-de-confidentialite|tag)(\/|$)/.test(page),
+            filter: (page) => !/\/(mentions-legales|politique-de-confidentialite|offre|tag)(\/|$)/.test(page),
           }),
         ]),
     mdx(),

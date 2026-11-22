@@ -1,0 +1,343 @@
+---
+/**
+ * Formulaire court de la landing page publicitaire (/offre) : 4 champs pour convertir un maximum de prospects.
+ *   Nom* · Téléphone* (+212) · Ville (champ libre, laissé vide) · Programme (tous les programmes proposés sur la page) · Consentement*
+ * La demande s'ouvre dans WhatsApp Business, message déjà rédigé (le prospect n'a qu'à appuyer sur « Envoyer »).
+ * Spécifique à /offre : le formulaire commun du site (ContactForm) n'est pas touché.
+ * Mesure : émet l'événement « nova:lead » (consommé par le Pixel Meta de la page, s'il est installé).
+ */
+import { getCollection } from 'astro:content';
+import { Icon } from 'astro-icon/components';
+import { CATEGORIES } from '~/site.config';
+
+export interface Props {
+  formId: string;
+  /** Numéro WhatsApp Business, format international sans « + ». */
+  whatsapp: string;
+  buttonLabel?: string;
+  title?: string;
+  /** Programme présélectionné (identifiant de formation). */
+  formation?: string;
+}
+const { formId, whatsapp, buttonLabel = 'Recevoir le programme sur WhatsApp', title, formation = '' } = Astro.props;
+
+// Les programmes « Entrepreneuriat et innovation » ne sont pas proposés sur cette page publicitaire.
+const all = (await getCollection('formations', ({ data }) => !data.draft && data.categorie !== 'innovation')).sort(
+  (a, b) => a.data.order - b.data.order
+);
+const groups = Object.entries(CATEGORIES)
+  .map(([key, c]) => ({ label: c.label, items: all.filter((f) => f.data.categorie === key) }))
+  .filter((g) => g.items.length);
+
+const id = (n: string) => `${formId}-${n}`;
+const field =
+  'lead-field block w-full min-h-12 rounded-md border border-[#111111]/30 bg-white px-4 py-3 text-base text-[#111111] placeholder:text-[#6b6b66]';
+const label = 'mb-1 block text-sm font-semibold text-[#111111]';
+---
+
+<div class="lead-wrap" data-lead-wrap>
+  <form id={formId} class="lead-form grid gap-4" novalidate data-wa={whatsapp.replace(/\D/g, '')}>
+    {title && <p class="text-xl font-semibold text-[#111111]">{title}</p>}
+
+    <div
+      hidden
+      data-summary
+      tabindex="-1"
+      role="alert"
+      class="rounded-md border border-[#c0262d] bg-[#fdf2f2] px-4 py-3 text-sm text-[#9b1c22]"
+    >
+      <p class="font-semibold">Merci de corriger :</p>
+      <ul class="mt-1 list-disc space-y-1 pl-6" data-summary-list></ul>
+    </div>
+
+    <div>
+      <label for={id('nom')} class={label}>Nom complet</label>
+      <input
+        id={id('nom')}
+        name="nom"
+        type="text"
+        required
+        minlength="3"
+        maxlength="120"
+        autocomplete="name"
+        class={field}
+        placeholder="Prénom et nom"
+        aria-describedby={id('nom-err')}
+        data-label="Nom complet"
+      />
+      <p id={id('nom-err')} class="field-error mt-1 text-sm text-[#b42318]" aria-live="polite"></p>
+    </div>
+
+    <div>
+      <label for={id('tel')} class={label}>Téléphone (WhatsApp)</label>
+      <div class="relative">
+        <span
+          class="pointer-events-none absolute inset-y-2 left-2 flex items-center rounded-md bg-[#f1f1ec] px-3 text-sm font-semibold text-[#111111]"
+          aria-hidden="true">+212</span
+        >
+        <input
+          id={id('tel')}
+          name="telephone"
+          type="tel"
+          inputmode="tel"
+          maxlength="20"
+          required
+          autocomplete="tel-national"
+          class:list={[field, '!pl-20']}
+          placeholder="6 12 34 56 78"
+          aria-describedby={id('tel-err')}
+          data-label="Téléphone"
+        />
+      </div>
+      <p id={id('tel-err')} class="field-error mt-1 text-sm text-[#b42318]" aria-live="polite"></p>
+    </div>
+
+    <div class="grid gap-4">
+      <div>
+        <label for={id('ville')} class={label}>Ville</label>
+        <input
+          id={id('ville')}
+          name="ville"
+          type="text"
+          maxlength="80"
+          autocomplete="address-level2"
+          class={field}
+          placeholder="Votre ville"
+        />
+      </div>
+      <div>
+        <label for={id('formation')} class={label}>Programme</label>
+        <select id={id('formation')} name="formation" class:list={[field, 'lead-select']}>
+          <option value="">Je ne sais pas encore, conseillez-moi</option>
+          {
+            groups.map((g) => (
+              <optgroup label={g.label}>
+                {g.items.map((f) => (
+                  <option value={f.id} selected={f.id === formation}>
+                    {f.data.title}
+                  </option>
+                ))}
+              </optgroup>
+            ))
+          }
+          <optgroup label="Entreprises">
+            <option value="sur-mesure">Formation sur mesure pour mon entreprise</option>
+            <option value="service-marketing">Service marketing digital pour mon entreprise</option>
+          </optgroup>
+        </select>
+      </div>
+    </div>
+
+    <!-- Anti-spam : champ piège invisible pour les humains -->
+    <div class="absolute -left-[9999px] h-px w-px overflow-hidden" aria-hidden="true">
+      <label for={id('website')}>Ne pas remplir ce champ</label>
+      <input id={id('website')} name="website" type="text" tabindex="-1" autocomplete="off" />
+    </div>
+
+    <div>
+      <label class="flex min-h-11 cursor-pointer items-start gap-3 text-sm leading-6 text-[#4a4a46]">
+        <input
+          id={id('consent')}
+          type="checkbox"
+          name="consent"
+          required
+          class="mt-1 h-5 w-5 shrink-0 accent-[#111111]"
+          aria-describedby={id('consent-err')}
+          data-label="Consentement"
+        />
+        <span>
+          J'accepte que Nova traite mes données pour répondre à ma demande (loi n° 09-08).
+          <a
+            href="/politique-de-confidentialite"
+            class="flex min-h-11 w-fit items-center font-semibold text-[#111111] underline underline-offset-2"
+          >
+            Confidentialité
+          </a>
+        </span>
+      </label>
+      <p id={id('consent-err')} class="field-error mt-1 text-sm text-[#b42318]" aria-live="polite"></p>
+    </div>
+
+    <button type="submit" class="btn-primary w-full" data-submit>
+      <Icon name="tabler:brand-whatsapp" class="h-5 w-5" aria-hidden="true" />
+      <span>{buttonLabel}</span>
+    </button>
+    <p class="flex items-center justify-center gap-2 text-center text-sm text-[#4a4a46]">
+      <Icon name="tabler:lock" class="h-4 w-4 shrink-0" aria-hidden="true" />
+      Sans engagement. Nous vous répondons sur WhatsApp.
+    </p>
+  </form>
+
+  <div class="hidden py-4 text-center" tabindex="-1" data-success role="status">
+    <span class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#e4f84a] text-[#111111]">
+      <Icon name="tabler:check" class="h-8 w-8" aria-hidden="true" />
+    </span>
+    <p class="mt-4 text-2xl font-semibold text-[#111111]" data-success-title>Merci !</p>
+    <p class="mx-auto mt-2 max-w-sm text-base leading-6 text-[#4a4a46]">
+      WhatsApp s'ouvre avec votre demande déjà rédigée. Appuyez sur « Envoyer » pour la transmettre à notre équipe.
+    </p>
+    <div class="mt-6 flex flex-col items-center gap-3">
+      <a class="btn-whatsapp" href="https://wa.me" target="_blank" rel="noopener noreferrer" data-success-wa>
+        <Icon name="tabler:brand-whatsapp" class="h-5 w-5" aria-hidden="true" /> Ouvrir WhatsApp
+      </a>
+      <button type="button" class="text-sm font-semibold underline underline-offset-2" data-again>
+        Envoyer une autre demande
+      </button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .lead-field {
+    transition:
+      border-color 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .lead-field:hover {
+      border-color: #111111;
+    }
+  }
+  .lead-field:focus {
+    outline: none;
+    border-color: #111111;
+    box-shadow: 0 0 0 4px rgb(228 248 74 / 55%);
+  }
+  .lead-field[aria-invalid='true'] {
+    border-color: #c0262d;
+  }
+  .lead-select {
+    appearance: none;
+    padding-right: 3rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23111111' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+  }
+  [data-submit][aria-busy='true'] {
+    opacity: 0.7;
+  }
+  [data-summary]:focus {
+    outline: 3px solid rgb(192 38 45 / 35%);
+    outline-offset: 3px;
+  }
+  [data-summary-list] a {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+</style>
+
+<script>
+  type Field = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+
+  /** Normalise un numéro marocain : renvoie +212XXXXXXXXX ou '' si invalide. */
+  const normalizePhone = (raw: string) => {
+    let d = raw.replace(/[\s.\-()]/g, '');
+    if (d.startsWith('+212')) d = d.slice(4);
+    else if (d.startsWith('00212')) d = d.slice(5);
+    else if (d.startsWith('212') && d.length === 12) d = d.slice(3);
+    if (d.startsWith('0')) d = d.slice(1);
+    return /^[5-7]\d{8}$/.test(d) ? `+212${d}` : '';
+  };
+
+  const validators: Record<string, (el: Field) => string> = {
+    nom: (el) => (el.value.trim().length < 3 ? 'Indiquez votre nom complet (3 caractères minimum).' : ''),
+    telephone: (el) =>
+      !el.value.trim()
+        ? 'Indiquez votre numéro de téléphone.'
+        : normalizePhone(el.value)
+          ? ''
+          : 'Numéro invalide : 9 chiffres commençant par 5, 6 ou 7 (ex. 6 12 34 56 78).',
+    consent: (el) => ((el as HTMLInputElement).checked ? '' : 'Cochez la case pour envoyer votre demande.'),
+  };
+
+  document.querySelectorAll<HTMLFormElement>('form.lead-form').forEach((form) => {
+    const wrap = form.closest<HTMLElement>('[data-lead-wrap]')!;
+    const success = wrap.querySelector<HTMLElement>('[data-success]')!;
+    const summary = form.querySelector<HTMLElement>('[data-summary]')!;
+    const summaryList = summary.querySelector<HTMLUListElement>('[data-summary-list]')!;
+    const loadedAt = Date.now();
+
+    const check = (el: Field) => {
+      const v = validators[el.name];
+      if (!v) return true;
+      const msg = v(el);
+      el.setAttribute('aria-invalid', msg ? 'true' : 'false');
+      const err = form.querySelector<HTMLElement>(`#${el.id}-err`);
+      if (err) err.textContent = msg;
+      return !msg;
+    };
+    const validated = () =>
+      [...form.querySelectorAll<Field>('input[name], select[name]')].filter((el) => validators[el.name]);
+
+    validated().forEach((el) => {
+      el.addEventListener('blur', () => {
+        el.dataset.touched = '1';
+        check(el);
+      });
+      el.addEventListener((el as HTMLInputElement).type === 'checkbox' ? 'change' : 'input', () => {
+        if (el.dataset.touched || el.getAttribute('aria-invalid') === 'true') check(el);
+      });
+    });
+
+    summaryList.addEventListener('click', (e) => {
+      const a = (e.target as HTMLElement).closest<HTMLAnchorElement>('a[data-field]');
+      if (!a) return;
+      e.preventDefault();
+      form.querySelector<HTMLElement>(`#${a.dataset.field}`)?.focus();
+    });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const invalid = validated().filter((el) => !check(el));
+      if (invalid.length) {
+        summaryList.replaceChildren(
+          ...invalid.map((el) => {
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = `#${el.id}`;
+            a.dataset.field = el.id;
+            a.textContent = `${el.dataset.label ?? el.name} : ${form.querySelector<HTMLElement>(`#${el.id}-err`)?.textContent ?? ''}`;
+            li.append(a);
+            return li;
+          })
+        );
+        summary.hidden = false;
+        summary.focus();
+        return;
+      }
+      summary.hidden = true;
+
+      const fd = new FormData(form);
+      if (fd.get('website') || Date.now() - loadedAt < 1500) return; // robot probable
+
+      const select = form.querySelector<HTMLSelectElement>('select[name="formation"]');
+      const nom = String(fd.get('nom') || '').trim();
+      const formationTitre = fd.get('formation') ? select?.selectedOptions[0]?.text.trim() || '' : '';
+      const ville = String(fd.get('ville') || '').trim();
+      const details = [
+        `Nom : ${nom}`,
+        `Téléphone : ${normalizePhone(String(fd.get('telephone') || ''))}`,
+        ville && `Ville : ${ville}`,
+        `Programme : ${formationTitre || 'à définir, conseillez-moi'}`,
+      ].filter(Boolean);
+      const text = ['Bonjour, je souhaite des informations sur vos formations.', '', ...details].join('\n');
+      const waUrl = `https://wa.me/${form.dataset.wa}?text=${encodeURIComponent(text)}`;
+
+      window.open(waUrl, '_blank', 'noopener');
+      document.dispatchEvent(new CustomEvent('nova:lead', { detail: { formation: formationTitre } }));
+
+      success.querySelector<HTMLElement>('[data-success-title]')!.textContent = `Merci, ${nom.split(/\s+/)[0]}`;
+      success.querySelector<HTMLAnchorElement>('[data-success-wa]')!.href = waUrl;
+      form.classList.add('hidden');
+      success.classList.remove('hidden');
+      success.focus();
+    });
+
+    wrap.querySelector('[data-again]')?.addEventListener('click', () => {
+      success.classList.add('hidden');
+      form.classList.remove('hidden');
+      form.reset();
+      form.querySelector<HTMLInputElement>('input[name="nom"]')?.focus();
+    });
+  });
+</script>

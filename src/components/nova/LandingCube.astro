@@ -1,0 +1,226 @@
+---
+/**
+ * Scène 3D décorative de la landing page /offre : cube NOVA / IA, deux cubes en orbite, anneau.
+ * CSS pur (transform seulement), aria-hidden, immobile avec prefers-reduced-motion.
+ * Spécifique à /offre (copie autonome : le composant d'en-tête du site n'est pas touché).
+ */
+const bigFaces = ['N', 'O', 'V', 'A', 'IA', '+'];
+const miniFaces = [1, 2, 3, 4, 5, 6];
+---
+
+<div class="lc-scene" aria-hidden="true">
+  <div class="lc-stage">
+    <div class="lc-ring"></div>
+    <div class="lc-spin">
+      <div class="lc-cube lc-big">
+        {bigFaces.map((f, i) => <span class={`lc-face lc-f${i + 1}`}>{f}</span>)}
+      </div>
+      <div class="lc-orbit lc-o1">
+        <div class="lc-cube lc-mini">
+          {miniFaces.map((i) => <span class={`lc-face lc-f${i}`} />)}
+        </div>
+      </div>
+      <div class="lc-orbit lc-o2">
+        <div class="lc-cube lc-mini lc-dark">
+          {miniFaces.map((i) => <span class={`lc-face lc-f${i}`} />)}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .lc-scene {
+    display: grid;
+    place-items: center;
+    perspective: 1000px;
+    min-height: 16rem;
+  }
+  .lc-stage {
+    position: relative;
+    width: 9rem;
+    height: 9rem;
+    transform-style: preserve-3d;
+    animation: lc-float 6s ease-in-out infinite;
+  }
+  .lc-spin {
+    position: absolute;
+    inset: 0;
+    transform-style: preserve-3d;
+    transform: rotateX(-24deg) rotateY(30deg);
+    animation: lc-spin 20s linear infinite;
+  }
+  .lc-cube {
+    position: absolute;
+    inset: 0;
+    transform-style: preserve-3d;
+  }
+  .lc-face {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    border: 2px solid #e4f84a;
+    background: #e4f84a;
+    color: #111111;
+    font-weight: 700;
+    font-size: 2.75rem;
+    letter-spacing: -0.04em;
+  }
+  .lc-big .lc-f1 {
+    transform: translateZ(4.5rem);
+  }
+  .lc-big .lc-f2 {
+    transform: rotateY(90deg) translateZ(4.5rem);
+  }
+  .lc-big .lc-f3 {
+    transform: rotateY(180deg) translateZ(4.5rem);
+  }
+  .lc-big .lc-f4 {
+    transform: rotateY(-90deg) translateZ(4.5rem);
+  }
+  .lc-big .lc-f5 {
+    transform: rotateX(90deg) translateZ(4.5rem);
+  }
+  .lc-big .lc-f6 {
+    transform: rotateX(-90deg) translateZ(4.5rem);
+  }
+  .lc-orbit {
+    position: absolute;
+    inset: 0;
+    transform-style: preserve-3d;
+  }
+  .lc-o1 {
+    animation: lc-orbit 9s linear infinite;
+  }
+  .lc-o2 {
+    animation: lc-orbit 14s linear infinite reverse;
+  }
+  .lc-mini {
+    inset: auto;
+    left: 50%;
+    top: 50%;
+    width: 2.25rem;
+    height: 2.25rem;
+    margin: -1.125rem 0 0 -1.125rem;
+    transform: translateX(7.5rem);
+  }
+  .lc-o2 .lc-mini {
+    transform: translateX(-6.75rem) translateY(2.25rem);
+  }
+  .lc-mini .lc-face {
+    background: #ffffff;
+    border-color: #ffffff;
+  }
+  .lc-dark .lc-face {
+    background: #ffffff;
+    border-color: #ffffff;
+    opacity: 0.55;
+  }
+  .lc-mini .lc-f1 {
+    transform: translateZ(1.125rem);
+  }
+  .lc-mini .lc-f2 {
+    transform: rotateY(90deg) translateZ(1.125rem);
+  }
+  .lc-mini .lc-f3 {
+    transform: rotateY(180deg) translateZ(1.125rem);
+  }
+  .lc-mini .lc-f4 {
+    transform: rotateY(-90deg) translateZ(1.125rem);
+  }
+  .lc-mini .lc-f5 {
+    transform: rotateX(90deg) translateZ(1.125rem);
+  }
+  .lc-mini .lc-f6 {
+    transform: rotateX(-90deg) translateZ(1.125rem);
+  }
+  .lc-ring {
+    position: absolute;
+    inset: -3rem;
+    border: 2px solid rgb(255 255 255 / 55%);
+    border-radius: 9999px;
+    transform: rotateX(72deg);
+    animation: lc-ring 12s linear infinite;
+  }
+  @keyframes lc-spin {
+    from {
+      transform: rotateX(-24deg) rotateY(0deg);
+    }
+    to {
+      transform: rotateX(-24deg) rotateY(360deg);
+    }
+  }
+  @keyframes lc-orbit {
+    from {
+      transform: rotateY(0deg);
+    }
+    to {
+      transform: rotateY(360deg);
+    }
+  }
+  @keyframes lc-ring {
+    from {
+      transform: rotateX(72deg) rotateZ(0deg);
+    }
+    to {
+      transform: rotateX(72deg) rotateZ(360deg);
+    }
+  }
+  @keyframes lc-float {
+    0%,
+    100% {
+      translate: 0 -0.5rem;
+    }
+    50% {
+      translate: 0 0.5rem;
+    }
+  }
+  @media (min-width: 768px) {
+    .lc-scene {
+      min-height: 22rem;
+    }
+    .lc-stage {
+      width: 11rem;
+      height: 11rem;
+    }
+    .lc-big .lc-f1 {
+      transform: translateZ(5.5rem);
+    }
+    .lc-big .lc-f2 {
+      transform: rotateY(90deg) translateZ(5.5rem);
+    }
+    .lc-big .lc-f3 {
+      transform: rotateY(180deg) translateZ(5.5rem);
+    }
+    .lc-big .lc-f4 {
+      transform: rotateY(-90deg) translateZ(5.5rem);
+    }
+    .lc-big .lc-f5 {
+      transform: rotateX(90deg) translateZ(5.5rem);
+    }
+    .lc-big .lc-f6 {
+      transform: rotateX(-90deg) translateZ(5.5rem);
+    }
+    .lc-face {
+      font-size: 3.4rem;
+    }
+    .lc-mini {
+      transform: translateX(9rem);
+    }
+    .lc-o2 .lc-mini {
+      transform: translateX(-8rem) translateY(2.6rem);
+    }
+    .lc-ring {
+      inset: -3.5rem;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .lc-stage,
+    .lc-spin,
+    .lc-orbit,
+    .lc-ring {
+      animation: none;
+    }
+  }
+</style>
