@@ -31,7 +31,11 @@ const metadata = {
 const LANDING_WHATSAPP = '212708302114';
 const wa = `https://wa.me/${LANDING_WHATSAPP}?text=${encodeURIComponent('Bonjour, je souhaite des informations sur vos formations.')}`;
 
-const pixelId = ((import.meta.env.PUBLIC_META_PIXEL_ID as string | undefined) || '').replace(/[^0-9]/g, '');
+// Pixel Meta « AI Pixel » (identifiant public, visible dans le code de toute page qui l'utilise).
+// PUBLIC_META_PIXEL_ID le remplace si besoin ; valeur vide = aucun Pixel.
+const META_PIXEL_ID = '1125684503312940';
+const pixelEnv = import.meta.env.PUBLIC_META_PIXEL_ID as string | undefined;
+const pixelId = (pixelEnv === undefined ? META_PIXEL_ID : pixelEnv).replace(/[^0-9]/g, '');
 
 const EXCLUDED = ['innovation'];
 const all = (await getCollection('formations', ({ data }) => !data.draft && !EXCLUDED.includes(data.categorie))).sort(
