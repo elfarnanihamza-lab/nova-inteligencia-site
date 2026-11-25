@@ -91,8 +91,8 @@ export const SITE_CONFIG = {
     email: 'contact@novainteligencia.group',
     /** Format affiché, ex. « +212 6 00 00 00 00 ». TBD tant que non fourni. */
     phone: TBD,
-    /** Numéro WhatsApp : lu depuis PUBLIC_WHATSAPP_NUMBER (.env ou hébergeur), format international sans « + » ni espaces. Vide = bouton WhatsApp masqué. */
-    whatsapp: (import.meta.env.PUBLIC_WHATSAPP_NUMBER as string | undefined) || '',
+    /** Numéro WhatsApp des boutons du site (même numéro que les formulaires), format international sans « + » ni espaces. PUBLIC_WHATSAPP_NUMBER le remplace si besoin. */
+    whatsapp: (import.meta.env.PUBLIC_WHATSAPP_NUMBER as string | undefined) || '212667944611',
     whatsappMessage: 'Bonjour, je souhaite avoir des informations sur vos formations.',
     hours: TBD,
     address: {
