@@ -46,8 +46,8 @@ export const formationAccentStyle = (slug: string, cat: string) =>
 
 /** Photo et cadrage (object-position) de chaque formation. */
 export const PHOTOS: Record<string, { name: string; position: string }> = {
-  'maitriser-claude-chatgpt': { name: 'espace-etude', position: '50% 50%' },
-  'agents-ia-automatisation-n8n-make-claude': { name: 'apprenant-portable', position: '30% 40%' },
+  'maitriser-claude-chatgpt': { name: 'formation-reunion-ecran', position: '30% 40%' },
+  'agents-ia-automatisation-n8n-make-claude': { name: 'formation-equipe-portables', position: '50% 55%' },
   'media-buyer-meta-google-tiktok-ads': { name: 'atelier-marketing', position: '35% 45%' },
   'media-buying-tracking-scaling-roas': { name: 'equipe-marketing', position: '65% 45%' },
   'vibe-coding-site-web-ia': { name: 'atelier-formation', position: '60% 35%' },

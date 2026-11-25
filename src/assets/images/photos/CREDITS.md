@@ -12,4 +12,6 @@ Photos issues de [Pexels](https://www.pexels.com) (licence Pexels : usage gratui
 | espace-etude                 | Pexels n° 9159076                  |
 | atelier-junior               | Pexels n° 7742816                  |
 | portrait-bureau              | Pexels n° 3747444                  |
+| formation-reunion-ecran      | Pexels n° 39204824                 |
+| formation-equipe-portables   | Pexels n° 34221175                 |
 | casablanca-mosquee-hassan-ii | Unsplash (photo d'origine du site) |
