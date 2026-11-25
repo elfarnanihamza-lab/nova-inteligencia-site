@@ -26,8 +26,8 @@ const metadata = {
   robots: { index: false, follow: false },
 };
 
-// Numéro WhatsApp Business propre à cette page (le reste du site n'est pas modifié).
-const LANDING_WHATSAPP = '212708302114';
+// Même numéro WhatsApp Business que les autres formulaires du site (SITE_CONFIG.form.whatsapp).
+const LANDING_WHATSAPP = SITE_CONFIG.form.whatsapp;
 const wa = `https://wa.me/${LANDING_WHATSAPP}?text=${encodeURIComponent('Bonjour, je souhaite des informations sur vos formations.')}`;
 
 // Pixel Meta « AI Pixel » (identifiant public, visible dans le code de toute page qui l'utilise).

@@ -4,6 +4,8 @@
  * libellés et mêmes validations partout. Référence : le formulaire complet de la page Contact.
  *   1. Nom complet* · 2. Téléphone* (+212) · 3. E-mail* · 4. Ville · 5. Vous êtes · 6. Formation souhaitée
  *   7. Message · 8. Consentement*
+ * - La demande s'ouvre dans WhatsApp (SITE_CONFIG.form.whatsapp), message déjà rédigé : le visiteur appuie sur
+ *   « Envoyer ». Les cas ci-dessous ne servent que si ce numéro est vidé.
  * - Envoi en JSON vers le webhook PUBLIC_FORM_WEBHOOK (Make, Zapier, n8n, Formspree, CRM…) ; succès affiché
  *   uniquement après une réponse HTTP 2xx. Variable vide : ouverture du client mail du visiteur, pré-rempli
  *   (comportement de secours, le message affiché le dit clairement). Mode démo sans webhook : envoi désactivé.
@@ -61,6 +63,7 @@ const type = compact ? 'inscription' : 'contact';
     data-endpoint={endpoint}
     data-email={SITE_CONFIG.contact.email}
     data-wa={wa}
+    data-wa-submit={SITE_CONFIG.form.whatsapp || undefined}
     data-type={type}
     data-demo-disabled={demoDisabled ? '' : undefined}
     novalidate
@@ -274,8 +277,13 @@ const type = compact ? 'inscription' : 'contact';
         aria-describedby={demoDisabled ? id('demo-note') : undefined}
       >
         <span>{buttonLabel}</span>
-        <Icon name="tabler:send" class="h-5 w-5" aria-hidden="true" />
+        <Icon
+          name={SITE_CONFIG.form.whatsapp ? 'tabler:brand-whatsapp' : 'tabler:send'}
+          class="h-5 w-5"
+          aria-hidden="true"
+        />
       </button>
+      {SITE_CONFIG.form.whatsapp && <p class="w-full text-sm text-muted">Votre demande s'ouvre dans WhatsApp.</p>}
       <p class="form-status text-sm text-muted" role="status" aria-live="polite"></p>
     </div>
   </form>
@@ -595,13 +603,13 @@ const type = compact ? 'inscription' : 'contact';
         };
         const firstName = payload.nom.split(/\s+/)[0];
 
-        const showSuccess = (text: string) => {
+        const showSuccess = (text: string, waUrl?: string) => {
           success.querySelector<HTMLElement>('[data-success-title]')!.textContent = `Merci, ${firstName} !`;
           success.querySelector<HTMLElement>('[data-success-text]')!.textContent = text;
           const waBtn = success.querySelector<HTMLAnchorElement>('[data-success-wa]')!;
-          if (form.dataset.wa) {
+          if (form.dataset.wa || waUrl) {
             const msg = `Bonjour, je viens d'envoyer une demande sur votre site${payload.formationTitre ? ` pour la formation « ${payload.formationTitre} »` : ''}. Je m'appelle ${payload.nom}.`;
-            waBtn.href = `https://wa.me/${form.dataset.wa}?text=${encodeURIComponent(msg)}`;
+            waBtn.href = waUrl ?? `https://wa.me/${form.dataset.wa}?text=${encodeURIComponent(msg)}`;
             waBtn.classList.remove('hidden');
           }
           form.classList.add('hidden');
@@ -610,7 +618,30 @@ const type = compact ? 'inscription' : 'contact';
         };
 
         const endpoint = form.dataset.endpoint;
-        if (endpoint) {
+        if (form.dataset.waSubmit) {
+          const profils: Record<string, string> = {
+            particulier: 'Particulier',
+            entreprise: 'Entreprise',
+            etudiant: 'Étudiant',
+          };
+          const details = [
+            `Nom : ${payload.nom}`,
+            `Téléphone : ${payload.telephone}`,
+            `E-mail : ${payload.email}`,
+            payload.ville && `Ville : ${payload.ville}`,
+            payload.profil && `Profil : ${profils[payload.profil] ?? payload.profil}`,
+            `Formation : ${payload.formationTitre || 'à définir, conseillez-moi'}`,
+            payload.message && `Message : ${payload.message}`,
+          ].filter(Boolean);
+          const text = ['Bonjour, voici ma demande envoyée depuis votre site.', '', ...details].join('\n');
+          const waUrl = `https://wa.me/${form.dataset.waSubmit}?text=${encodeURIComponent(text)}`;
+          // Ouverture directe, dans le geste de l'utilisateur ; le bouton de confirmation sert de secours.
+          window.open(waUrl, '_blank', 'noopener');
+          showSuccess(
+            "WhatsApp s'ouvre avec votre demande déjà rédigée : il ne reste qu'à appuyer sur « Envoyer ». Si rien ne s'ouvre, utilisez le bouton ci-dessous.",
+            waUrl
+          );
+        } else if (endpoint) {
           submit.disabled = true;
           submit.setAttribute('aria-busy', 'true');
           status.textContent = 'Envoi en cours…';

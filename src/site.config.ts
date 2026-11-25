@@ -127,6 +127,8 @@ export const SITE_CONFIG = {
    * Vide = le formulaire ouvre le client mail du visiteur (mailto) en secours.
    */
   form: {
+    /** Numéro WhatsApp Business qui reçoit les demandes des formulaires (format international sans « + »). */
+    whatsapp: ((import.meta.env.PUBLIC_FORM_WHATSAPP as string | undefined) || '212667944611').replace(/\D/g, ''),
     /** Renseigné par la variable d'environnement PUBLIC_FORM_WEBHOOK (fichier .env ou réglages de l'hébergeur). */
     endpoint: (import.meta.env.PUBLIC_FORM_WEBHOOK as string | undefined) || '',
     /** Démo sans webhook : l'envoi est désactivé et un message l'explique (aucune demande n'est transmise). */
