@@ -51,7 +51,7 @@ export const PHOTOS: Record<string, { name: string; position: string }> = {
   'media-buyer-meta-google-tiktok-ads': { name: 'atelier-marketing', position: '35% 45%' },
   'media-buying-tracking-scaling-roas': { name: 'equipe-marketing', position: '65% 45%' },
   'vibe-coding-site-web-ia': { name: 'atelier-formation', position: '60% 35%' },
-  'vibe-coding-applications-outils-metier': { name: 'portrait-bureau', position: '60% 45%' },
+  'vibe-coding-applications-outils-metier': { name: 'formation-bureau-colore', position: '45% 45%' },
   'startup-booster': { name: 'equipe-marketing', position: '90% 50%' },
   'innovation-ia-solutions-technologiques': { name: 'atelier-formation', position: '70% 70%' },
   'ia-junior-academy': { name: 'atelier-junior', position: '40% 40%' },
