@@ -34,4 +34,4 @@ Biais dans les données d'entraînement, sécurité des données et rythme d'év
 
 ## Se former avec Nova
 
-Nous proposons des formations pour tous les niveaux, de l'initiation aux workflows et agents professionnels. Consultez [le catalogue des formations](/formations).
+Nous proposons des formations pour différents profils, de la prise en main de l'IA aux agents et à l'automatisation. Consultez [le catalogue des formations](/formations).

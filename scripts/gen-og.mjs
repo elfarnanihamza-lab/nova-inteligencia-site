@@ -17,8 +17,8 @@ const fm = (file) => {
 };
 const CAT = {
   ia: 'Intelligence artificielle',
-  'ia-metier': 'IA + Métier',
-  parcours: 'Parcours digital',
+  'marketing-digital': 'Marketing digital',
+  'vibe-coding': 'Vibe coding',
   innovation: 'Entrepreneuriat & innovation',
   junior: 'Junior',
 };

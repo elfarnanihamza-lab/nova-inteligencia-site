@@ -12,6 +12,7 @@ import Photo from '~/components/nova/Photo.astro';
 import StructuredData from '~/components/common/StructuredData.astro';
 import { CATEGORIES, SITE_CONFIG, SHOW_PLACEHOLDERS, whatsappLink } from '~/site.config';
 import { ph, formatPrice, priceKind, hasPh, visible } from '~/utils/placeholders';
+import { PHOTOS } from '~/data/catalogue-visuals';
 import { courseSchema, breadcrumbSchema } from '~/utils/schema';
 
 export const getStaticPaths = (async () => {
@@ -41,21 +42,25 @@ const CATEGORY_PHOTO: Record<string, { name: string; alt: string }> = {
     name: 'atelier-formation',
     alt: 'Des participants suivent un atelier de formation sur ordinateur portable devant un écran',
   },
-  'ia-metier': {
-    name: 'professionnelle-sourire',
-    alt: 'Une professionnelle souriante travaille sur son ordinateur portable',
-  },
-  parcours: {
-    name: 'espace-etude',
-    alt: "Des apprenants travaillent sur leurs ordinateurs dans un espace d'étude lumineux",
-  },
   innovation: {
     name: 'brainstorm-notes',
     alt: 'Une équipe réfléchit ensemble avec des notes adhésives sur une paroi vitrée',
   },
   junior: { name: 'atelier-junior', alt: 'Deux jeunes apprennent sur ordinateur, accompagnés par une formatrice' },
 };
-const photo = CATEGORY_PHOTO[d.categorie];
+// Nouvelles formations : une photo par fiche (la même que sur sa carte), en attendant des photos dédiées.
+const FORMATION_ALT: Record<string, string> = {
+  'maitriser-claude-chatgpt': "Des apprenants travaillent sur leurs ordinateurs dans un espace d'étude",
+  'agents-ia-automatisation-n8n-make-claude': 'Un apprenant travaille sur son ordinateur portable pendant un atelier',
+  'media-buyer-meta-google-tiktok-ads':
+    "Un formateur anime un atelier marketing autour d'un tableau de notes adhésives",
+  'media-buying-tracking-scaling-roas': "Une équipe marketing travaille ensemble autour d'un ordinateur",
+  'vibe-coding-site-web-ia': 'Des participants suivent un atelier sur ordinateur portable devant un écran',
+  'vibe-coding-applications-outils-metier': 'Une personne travaille sur son ordinateur portable à son bureau',
+};
+const photo = FORMATION_ALT[entry.id]
+  ? { name: PHOTOS[entry.id].name, alt: FORMATION_ALT[entry.id] }
+  : CATEGORY_PHOTO[d.categorie];
 
 const metadata = {
   title: d.seoTitle ?? `${d.title} — formation à Casablanca`,
@@ -80,6 +85,9 @@ const programme = d.programme
   .filter((m) => visible(m.titre))
   .map((m) => ({ ...m, points: m.points?.filter((p) => visible(p)) }));
 const visibleFacts = facts.filter(([, v]) => visible(v));
+// Sections facultatives : absentes tant que la fiche ne les renseigne pas.
+const description = d.description_detaillee.trim();
+const outils = d.outils.filter((o) => visible(o));
 const waMsg = `Bonjour, je souhaite m'inscrire à la formation « ${d.title} ».`;
 const signup = `/contact?formation=${entry.id}#formulaire`;
 ---
@@ -125,6 +133,31 @@ const signup = `/contact?formation=${entry.id}#formulaire`;
             )
           }
         </div>
+
+        {
+          visible(description) && (
+            <div class="rounded-2xl border border-line bg-white p-6 md:p-8">
+              <h2 class="text-2xl font-bold text-heading">Description</h2>
+              <p class="mt-3 text-lg text-default" set:html={ph(description)} />
+            </div>
+          )
+        }
+
+        {
+          outils.length > 0 && (
+            <div class="rounded-2xl border border-line bg-white p-6 md:p-8">
+              <h2 class="text-2xl font-bold text-heading">Outils que vous allez apprendre</h2>
+              <ul class="mt-4 flex flex-wrap gap-2" role="list">
+                {outils.map((o) => (
+                  <li
+                    class="rounded-full border border-[#111111] bg-[#e4f84a] px-4 py-2 text-sm font-semibold text-[#111111]"
+                    set:html={ph(o)}
+                  />
+                ))}
+              </ul>
+            </div>
+          )
+        }
 
         {
           objectifs.length > 0 && (

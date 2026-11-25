@@ -65,14 +65,14 @@ Dans `src/site.config.ts`, renseignez `form.endpoint` avec l'URL d'un webhook (M
 
 Chaque formation est un fichier Markdown dans `src/data/formations/`. Pour en ajouter une :
 
-1. Dupliquez un fichier existant, par exemple `level-1-ai-foundations.md`.
+1. Dupliquez un fichier existant, par exemple `maitriser-claude-chatgpt.md`.
 2. Renommez-le : le nom du fichier devient l'adresse de la page (`mon-cours.md` → `/formations/mon-cours`).
 3. Modifiez les champs en tête de fichier :
 
 ```yaml
 ---
 title: 'Nom de la formation'
-categorie: ia # ia | ia-metier | parcours | innovation | junior
+categorie: ia # ia | marketing-digital | vibe-coding | innovation | junior
 niveau: 'Niveau 1 — Fondations'
 niveauNum: 1 # 1, 2 ou 3 (filtre du catalogue), facultatif
 prix: 1500 # 0 = gratuit ; supprimer la ligne si inconnu

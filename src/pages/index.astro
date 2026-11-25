@@ -22,6 +22,7 @@ const metadata = {
 
 const all = (await getCollection('formations', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
 const spotlight = all.filter((f) => f.data.featured).slice(0, 6);
+const categoryCount = new Set(all.map((f) => f.data.categorie)).size;
 const freeCount = all.filter((f) => priceKind(f.data.prix, f.data.devise) === 'free').length;
 const catLabel = (k: string) => CATEGORIES[k]?.label ?? k;
 const level = (f: (typeof all)[number]) =>
@@ -32,21 +33,21 @@ const intentions = [
     n: '01',
     title: "Découvrir l'IA",
     text: 'Comprendre les outils, écrire de bons prompts.',
-    href: formationHref('level-1-ai-foundations'),
+    href: formationHref('maitriser-claude-chatgpt'),
   },
   {
     n: '02',
     title: 'Gagner du temps',
     text: 'Automatiser ses tâches, créer ses premiers agents.',
-    href: formationHref('level-2-ai-productivity-automation'),
+    href: formationHref('agents-ia-automatisation-n8n-make-claude'),
   },
   {
     n: '03',
-    title: 'Appliquer à mon métier',
-    text: 'Une série par fonction, du niveau 1 au niveau pro.',
-    href: categoryHref('ia-metier'),
+    title: 'Lancer des pubs',
+    text: 'Lancer et optimiser des campagnes en ligne.',
+    href: categoryHref('marketing-digital'),
   },
-  { n: '04', title: 'Lancer un projet', text: "De l'idée à la startup.", href: categoryHref('innovation') },
+  { n: '04', title: 'Lancer un projet', text: 'Incuber, accélérer, développer.', href: categoryHref('innovation') },
   {
     n: '05',
     title: 'Pour un enfant',
@@ -77,7 +78,7 @@ const faq = [
   {
     question: 'Quelles formations en intelligence artificielle proposez-vous ?',
     answer:
-      "Trois niveaux de formation en IA (fondations, productivité et automatisation, professionnel), une série « IA + Métier », le Nova Digital Master Program, des programmes d'entrepreneuriat et d'innovation, et une IA Junior Academy.",
+      "Des formations en intelligence artificielle (Claude et ChatGPT, agents IA et automatisation), en marketing digital et en vibe coding, des programmes d'entrepreneuriat et d'innovation, et une IA Junior Academy.",
   },
   {
     question: 'Où se trouve Nova Inteligencia Group ?',
@@ -90,12 +91,11 @@ const faq = [
   {
     question: 'Les formations conviennent-elles aux débutants ?',
     answer:
-      "Oui. Le niveau 1 (AI Foundations et Fondamentaux IA + Métier) donne les bases de l'intelligence artificielle et des outils essentiels.",
+      "Oui. « Maîtriser Claude & ChatGPT » vous apprend à comprendre l'IA et à l'utiliser dans votre travail. En cas de doute, écrivez-nous : nous vous aidons à choisir.",
   },
   {
     question: 'Obtient-on un certificat à la fin de la formation ?',
-    answer:
-      'Le Nova Digital Master Program donne lieu à un certificat. Pour les autres formations, contactez-nous pour connaître les modalités de certification.',
+    answer: 'Contactez-nous pour connaître les modalités de certification de la formation qui vous intéresse.',
   },
   {
     question: 'Proposez-vous des formations pour les entreprises ?',
@@ -122,8 +122,8 @@ const faq = [
           Apprenez l'IA.<br /><span class="mt-1 inline-block bg-[#e4f84a] px-2 leading-[1.05]">Tout de suite.</span>
         </h1>
         <p class="hero-in mt-7 max-w-lg text-lg leading-relaxed text-[#333333] text-pretty" style="--d:60ms">
-          {all.length} programmes, du premier prompt au projet professionnel : intelligence artificielle, automatisation,
-          métiers du digital. À Casablanca, pour particuliers et entreprises.
+          {all.length} programmes, du premier prompt au projet professionnel : intelligence artificielle, marketing digital,
+          vibe coding. À Casablanca, pour particuliers et entreprises.
         </p>
         <div class="hero-in mt-8 flex flex-wrap items-center gap-4" style="--d:120ms">
           <a href="/formations" class="btn-primary">
@@ -162,8 +162,9 @@ const faq = [
           class="!rounded-md"
         />
         <div class="flex min-h-40 flex-col justify-between rounded-md bg-[#111111] p-5 text-white">
-          <span class="text-sm font-semibold text-[#e5e5df]">Niveaux de progression</span>
-          <span class="font-heading text-6xl font-bold leading-none tracking-tight text-[#e4f84a]">3</span>
+          <span class="text-sm font-semibold text-[#e5e5df]">Catégories</span>
+          <span class="font-heading text-6xl font-bold leading-none tracking-tight text-[#e4f84a]">{categoryCount}</span
+          >
         </div>
       </div>
     </div>

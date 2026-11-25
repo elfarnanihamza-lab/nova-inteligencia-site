@@ -26,6 +26,21 @@ const whenExternalScripts = (items: (() => AstroIntegration) | (() => AstroInteg
 export default defineConfig({
   output: 'static',
 
+  // Anciennes formations : redirection vers les fiches actuelles ou le catalogue. Sur un hébergement statique
+  // (GitHub Pages), Astro génère une page de redirection immédiate avec balise canonique (pas de code HTTP 301).
+  redirects: {
+    '/formations/level-1-ai-foundations': '/formations/maitriser-claude-chatgpt',
+    '/formations/level-2-ai-productivity-automation': '/formations/agents-ia-automatisation-n8n-make-claude',
+    '/formations/level-3-ai-professional-workflows': '/formations/agents-ia-automatisation-n8n-make-claude',
+    // Formations retirées du catalogue (IA + Métier, Parcours digital, deux programmes d'entrepreneuriat)
+    '/formations/level-1-fondamentaux-ia-metier': '/formations/maitriser-claude-chatgpt',
+    '/formations/level-2-ia-metier-techniques-avancees': '/formations/agents-ia-automatisation-n8n-make-claude',
+    '/formations/level-3-ai-metier-professionnel': '/formations/agents-ia-automatisation-n8n-make-claude',
+    '/formations/nova-digital-master-program': '/formations',
+    '/formations/formation-entrepreneuriale-developpement-competences': '/formations',
+    '/formations/de-l-idee-au-projet': '/formations',
+  },
+
   // Prefetch links as they enter the viewport for snappier navigations
   // (works together with <ClientRouter />, which enables prefetch by default).
   // Préchargement au survol / focus : navigation instantanée sans alourdir le chargement initial.

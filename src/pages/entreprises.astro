@@ -10,7 +10,7 @@ import { SITE_CONFIG, whatsappLink } from '~/site.config';
 import { ph } from '~/utils/placeholders';
 import { SHOW_PLACEHOLDERS } from '~/site.config';
 import { breadcrumbSchema } from '~/utils/schema';
-import { formationHref } from '~/utils/formation-links';
+import { formationHref, categoryHref } from '~/utils/formation-links';
 
 const metadata = {
   title: 'Formation IA entreprise au Maroc : ChatGPT et automatisation',
@@ -39,7 +39,7 @@ const themes = [
   {
     icon: 'tabler:briefcase',
     title: 'IA appliquée à votre métier',
-    text: "Cursus « IA + Métier » : des usages adaptés à votre fonction, de l'initiation au niveau professionnel.",
+    text: "Des formations sur mesure, avec des usages de l'IA adaptés à votre fonction et à vos outils.",
   },
 ];
 
@@ -59,9 +59,9 @@ const beyond = [
   },
   {
     icon: 'tabler:device-laptop',
-    title: 'Montée en compétences digitales',
-    text: "Nova Digital Master Program : les principaux métiers du digital, les outils professionnels et l'intelligence artificielle.",
-    href: formationHref('nova-digital-master-program'),
+    title: 'Marketing digital',
+    text: 'Media Buyer et Media Buying : lancer, suivre et optimiser vos campagnes publicitaires.',
+    href: categoryHref('marketing-digital'),
   },
 ];
 

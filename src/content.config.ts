@@ -78,8 +78,8 @@ const formationCollection = defineCollection({
   loader: glob({ pattern: ['*.md', '*.mdx'], base: 'src/data/formations' }),
   schema: z.object({
     title: z.string(),
-    /** ia | ia-metier | parcours | innovation | junior (voir CATEGORIES dans src/site.config.ts) */
-    categorie: z.enum(['ia', 'ia-metier', 'parcours', 'innovation', 'junior']),
+    /** ia | marketing-digital | vibe-coding | innovation | junior (voir CATEGORIES dans src/site.config.ts) */
+    categorie: z.enum(['ia', 'marketing-digital', 'vibe-coding', 'innovation', 'junior']),
     /** Libellé du niveau affiché (ex. « Niveau 1 — Débutant »). */
     niveau: z.string().default(TBD),
     /** 1, 2 ou 3 : sert au filtre du catalogue. Laisser vide si non applicable. */
@@ -90,6 +90,10 @@ const formationCollection = defineCollection({
     prixNote: z.string().optional(),
 
     resume: z.string(),
+    /** Texte long de la section « Description » de la fiche. Vide = section masquée. */
+    description_detaillee: z.string().default(''),
+    /** Outils affichés en pastilles (« Outils que vous allez apprendre »). Liste vide = section masquée. */
+    outils: z.array(z.string()).default([]),
     objectifs: z.array(z.string()).default([TBD]),
     programme: z
       .array(z.object({ titre: z.string(), points: z.array(z.string()).optional() }))

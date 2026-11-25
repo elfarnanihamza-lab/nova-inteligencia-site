@@ -46,7 +46,7 @@ export const priceKind = (prix?: number | null, devise?: string | null): PriceKi
 };
 export const formatPrice = (prix?: number | null, devise?: string | null) => {
   const kind = priceKind(prix, devise);
-  if (kind === 'unknown') return '[À COMPLÉTER]';
+  if (kind === 'unknown') return 'Tarif sur demande';
   if (kind === 'free') return 'Gratuit';
   if (kind === 'pending') return 'Tarif sur demande';
   return `${new Intl.NumberFormat('fr-FR').format(prix as number)} DH`.replace(/[\u202f\u00a0]/g, ' ');

@@ -13,10 +13,10 @@ import { formationHref, categoryHref } from '~/utils/formation-links';
 import { Icon } from 'astro-icon/components';
 
 const metadata = {
-  title: 'Formations IA au Maroc : catalogue ChatGPT et automatisation',
+  title: 'Formations IA, marketing digital et vibe coding au Maroc',
   ignoreTitleTemplate: true,
   description:
-    'Catalogue des formations IA au Maroc : formation ChatGPT, agents IA, automatisation IA, IA appliquée au métier et entrepreneuriat. Niveaux 1 à 3.',
+    'Catalogue Nova à Casablanca : Claude, ChatGPT, agents IA, Media Buying, vibe coding, entrepreneuriat et IA pour les enfants.',
   openGraph: { images: [{ url: '~/assets/images/og/formations.png', width: 1200, height: 630 }] },
 };
 
@@ -26,29 +26,24 @@ const formations = (await getCollection('formations', ({ data }) => !data.draft)
 // Guide « Comment choisir » : chaque situation renvoie à une formation (ou une catégorie) existante du catalogue.
 const guide = [
   {
-    situation: "Vous débutez avec l'IA",
-    answer: 'Level 1 – AI Foundations',
-    href: formationHref('level-1-ai-foundations'),
+    situation: "Vous voulez utiliser l'IA dans votre travail",
+    answer: 'Maîtriser Claude & ChatGPT',
+    href: formationHref('maitriser-claude-chatgpt'),
   },
   {
-    situation: 'Vous voulez gagner du temps et automatiser vos tâches',
-    answer: 'Level 2 – AI Productivity & Automation',
-    href: formationHref('level-2-ai-productivity-automation'),
+    situation: 'Vous voulez automatiser vos tâches et créer des agents IA',
+    answer: 'Agents IA & Automatisation',
+    href: formationHref('agents-ia-automatisation-n8n-make-claude'),
   },
   {
-    situation: 'Vous visez des workflows et des agents IA professionnels',
-    answer: 'Level 3 – AI Professional & Workflows',
-    href: formationHref('level-3-ai-professional-workflows'),
+    situation: 'Vous voulez lancer et optimiser des campagnes publicitaires',
+    answer: 'Nos formations en marketing digital',
+    href: categoryHref('marketing-digital'),
   },
   {
-    situation: "Vous voulez appliquer l'IA à votre métier",
-    answer: 'Le cursus IA + Métier (3 niveaux)',
-    href: categoryHref('ia-metier'),
-  },
-  {
-    situation: 'Vous préparez une carrière dans le digital',
-    answer: 'Nova Digital Master Program',
-    href: formationHref('nova-digital-master-program'),
+    situation: "Vous voulez créer un site ou une application avec l'IA",
+    answer: 'Nos formations Vibe coding',
+    href: categoryHref('vibe-coding'),
   },
   {
     situation: 'Vous portez un projet ou une startup',
@@ -75,8 +70,8 @@ const freeTotal = formations.filter((f) => priceKind(f.data.prix, f.data.devise)
   />
   <PageHero
     tagline="Catalogue"
-    title="Nos formations en intelligence artificielle et en digital"
-    subtitle="Des parcours pour débutants comme pour experts, de l'initiation à l'IA jusqu'aux workflows et agents professionnels."
+    title="Nos formations en IA, marketing digital et vibe coding"
+    subtitle="Utiliser l'IA, automatiser, lancer des campagnes, créer des sites et des applications : choisissez selon votre objectif."
     crumbs={[{ text: 'Formations' }]}
   />
 
@@ -98,13 +93,6 @@ const freeTotal = formations.filter((f) => priceKind(f.data.prix, f.data.devise)
           }
         </div>
         <div class="cat-row">
-          <div class="cat-group cat-group-sm" role="group" aria-label="Niveau" data-group="niveau">
-            <span class="cat-group-label">Niveau</span>
-            <button type="button" class="cat-chip" data-value="" aria-pressed="true">Tous</button>
-            <button type="button" class="cat-chip" data-value="1" aria-pressed="false">1</button>
-            <button type="button" class="cat-chip" data-value="2" aria-pressed="false">2</button>
-            <button type="button" class="cat-chip" data-value="3" aria-pressed="false">3</button>
-          </div>
           <div class="cat-group cat-group-sm" role="group" aria-label="Tarif" data-group="tarif">
             <span class="cat-group-label">Tarif</span>
             <button type="button" class="cat-chip" data-value="" aria-pressed="true">Tous</button>
@@ -136,8 +124,7 @@ const freeTotal = formations.filter((f) => priceKind(f.data.prix, f.data.devise)
       <div class="mt-20">
         <h2 class="font-heading text-2xl font-bold tracking-tight md:text-3xl">Comment choisir votre formation ?</h2>
         <p class="mt-2 max-w-2xl text-[#555555]">
-          Partez de votre situation : chaque niveau s'appuie sur le précédent, et un conseiller peut vous orienter si
-          vous hésitez.
+          Partez de votre situation : un conseiller peut vous orienter si vous hésitez.
         </p>
         <ul class="mt-8 grid gap-4 md:grid-cols-2" role="list">
           {
@@ -317,10 +304,10 @@ const freeTotal = formations.filter((f) => priceKind(f.data.prix, f.data.devise)
 </style>
 
 <script>
-  // Filtres du catalogue pilotés par l'URL (?categorie=…&niveau=…&tarif=…) : lus au chargement direct, après
+  // Filtres du catalogue pilotés par l'URL (?categorie=…&tarif=…) : lus au chargement direct, après
   // actualisation et après navigation interne (View Transitions), et mis à jour dans l'URL (sans nouvelle entrée
   // d'historique) pour rester partageables. Valeur inconnue : ignorée, tout le catalogue reste visible.
-  const GROUPS = ['categorie', 'niveau', 'tarif'] as const;
+  const GROUPS = ['categorie', 'tarif'] as const;
   type Group = (typeof GROUPS)[number];
 
   const init = () => {
@@ -331,7 +318,7 @@ const freeTotal = formations.filter((f) => priceKind(f.data.prix, f.data.devise)
       GROUPS.map((g) => [g, form.querySelector<HTMLElement>(`[data-group="${g}"]`)!])
     ) as Record<Group, HTMLElement>;
     const buttons = (g: Group) => [...groups[g].querySelectorAll<HTMLButtonElement>('button[data-value]')];
-    const state: Record<Group, string> = { categorie: '', niveau: '', tarif: '' };
+    const state: Record<Group, string> = { categorie: '', tarif: '' };
     const cards = [...document.querySelectorAll<HTMLElement>('.cat-card')];
     const compteur = document.getElementById('compteur')!;
     const vide = document.getElementById('vide')!;
@@ -352,7 +339,6 @@ const freeTotal = formations.filter((f) => priceKind(f.data.prix, f.data.devise)
       cards.forEach((c) => {
         const ok =
           (!state.categorie || c.dataset.categorie === state.categorie) &&
-          (!state.niveau || c.dataset.niveau === state.niveau) &&
           (!state.tarif || c.dataset.gratuit === state.tarif);
         const was = !c.classList.contains('hidden');
         c.classList.toggle('hidden', !ok);

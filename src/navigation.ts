@@ -47,9 +47,7 @@ export const footerData = {
       title: 'Formations',
       links: [
         { text: 'Tout le catalogue', href: getPermalink('/formations') },
-        ...Object.entries(CATEGORIES)
-          .slice(0, 4)
-          .map(([key, c]) => ({ text: c.label, href: categoryHref(key) })),
+        ...Object.entries(CATEGORIES).map(([key, c]) => ({ text: c.label, href: categoryHref(key) })),
       ],
     },
     {

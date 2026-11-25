@@ -12,7 +12,7 @@ export const worstCase: Testimonial[] = [
     name: 'Abdelmoumen Ould Sidi Mohamed El Hadj Bouazza-Benkirane',
     role: 'Directrice des ressources humaines et du développement des compétences',
     company: 'Société Marocaine de Distribution et de Services Numériques Associés',
-    formation: 'Level 2 – IA + « Métier » Techniques avancées : certification avancée',
+    formation: 'Media Buying : tracking, scaling & optimisation du ROAS',
     quote:
       "Grâce à cette formation, toute l'équipe des ressources humaines a pu automatiser la préparation des fiches de poste, la synthèse des entretiens annuels et le suivi des demandes de formation. Nous avons aussi mis en place une charte d'usage de l'IA validée par la direction juridique, puis formé trois filiales supplémentaires en l'espace d'un trimestre, avec des résultats mesurables sur le temps de traitement des dossiers et la qualité des réponses envoyées aux collaborateurs.",
     rating: 5,

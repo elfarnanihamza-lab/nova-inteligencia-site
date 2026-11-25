@@ -22,8 +22,7 @@ import { SITE_CONFIG, CATEGORIES } from '~/site.config';
 const metadata = {
   title: 'Formations en intelligence artificielle à Casablanca | Nova',
   ignoreTitleTemplate: true,
-  description:
-    "Apprenez à utiliser l'IA dans votre métier : programmes par niveau à Casablanca. Recevez le programme sur WhatsApp.",
+  description: 'Formations en IA, marketing digital et vibe coding à Casablanca. Recevez le programme sur WhatsApp.',
   robots: { index: false, follow: false },
 };
 
@@ -46,7 +45,7 @@ const groups = Object.entries(CATEGORIES)
   .map(([key, c]) => ({ key, ...c, items: all.filter((f) => f.data.categorie === key) }))
   .filter((g) => g.items.length);
 
-// Bandeau défilant : titres des programmes proposés (nettoyés des préfixes de niveau trop longs).
+// Bandeau défilant : titres des programmes proposés.
 const ticker = [...all.map((f) => f.data.title), 'Formation sur mesure pour entreprises', 'Marketing digital'];
 
 const facts = [
@@ -76,13 +75,13 @@ const steps = [
 const benefits = [
   {
     icon: 'tabler:stairs-up',
-    t: 'Un niveau pour chacun',
-    d: 'Des fondations de l’IA aux usages professionnels, vous entrez au niveau qui vous correspond.',
+    t: 'Un programme pour chaque objectif',
+    d: 'IA au travail, automatisation, publicité en ligne ou création de sites : vous choisissez selon votre besoin.',
   },
   {
     icon: 'tabler:briefcase',
-    t: 'L’IA appliquée à votre métier',
-    d: 'Des programmes « IA + Métier » pour utiliser l’IA dans votre travail de tous les jours.',
+    t: 'L’IA appliquée à votre travail',
+    d: 'Rédaction, analyse, automatisation : des usages de l’IA pour votre travail de tous les jours.',
   },
   {
     icon: 'tabler:brand-whatsapp',
@@ -95,12 +94,12 @@ const faq = [
   {
     question: 'Quel programme choisir ?',
     answer:
-      'Dans le formulaire, choisissez « Je ne sais pas encore, conseillez-moi ». Nous vous orienterons selon votre profil, votre niveau et votre objectif.',
+      'Dans le formulaire, choisissez « Je ne sais pas encore, conseillez-moi ». Nous vous orienterons selon votre profil et votre objectif.',
   },
   {
     question: 'Faut-il savoir programmer pour suivre une formation ?',
     answer:
-      "Non. Les programmes de niveau 1 sont conçus comme des fondations : vous n'avez pas besoin d'être informaticien pour commencer.",
+      'Cela dépend du programme. La formation Agents IA et automatisation se fait sans coder, et le Vibe Coding de site web sans savoir programmer. Pour les autres, écrivez-nous.',
   },
   {
     question: 'À qui s’adressent les formations ?',
@@ -187,8 +186,8 @@ const faq = [
             Apprenez à utiliser <span class="hl">l'IA</span> dans votre métier, à Casablanca
           </h1>
           <p class="hero-in mt-4 max-w-[680px] text-lg text-[#333333] max-sm:hidden" style="--d:160ms">
-            Des programmes par niveau pour étudiants, professionnels et enfants dès 5 ans. Laissez votre numéro : nous
-            vous conseillons le bon programme sur WhatsApp.
+            Formations en IA, marketing digital et vibe coding, avec aussi l'IA pour les enfants dès 5 ans. Laissez
+            votre numéro : nous vous conseillons le bon programme sur WhatsApp.
           </p>
           <p class="hero-in mt-3 text-base text-[#333333] sm:hidden" style="--d:160ms">
             Pour tous les profils, dès 5 ans. Laissez votre numéro : nous vous répondons sur WhatsApp.
@@ -198,7 +197,7 @@ const faq = [
               [
                 'Choisissez parmi tous nos programmes dans le formulaire',
                 'Aucun engagement, la réponse arrive sur WhatsApp',
-                'Un conseiller vous aide à choisir le bon niveau',
+                'Un conseiller vous aide à choisir le bon programme',
               ].map((t, i) => (
                 <li class="hero-in flex items-center gap-3" style={`--d:${240 + i * 80}ms`}>
                   <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#111111] text-[#e4f84a]">
@@ -345,8 +344,8 @@ const faq = [
           data-tagline
           class="text-3xl font-semibold tracking-tight text-balance md:text-4xl lg:col-span-7 lg:text-5xl"
         >
-          Comprendre l'IA ne demande pas d'être informaticien. Avec le bon programme, au bon niveau, chacun peut
-          l'utiliser dans son métier.
+          Comprendre l'IA ne demande pas d'être informaticien. Avec le bon programme et le bon accompagnement, chacun
+          peut l'utiliser dans son métier.
         </h2>
         <div class="lg:col-span-5">
           <LandingCube />
